@@ -1,0 +1,27 @@
+{
+  "name": "hanzi-wallet",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A local-first Chinese handwriting studio with neural and stroke-aware recognition.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build && node scripts/build_offline.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "preview": "vite preview --host 0.0.0.0",
+    "train": "python3 scripts/train_model.py",
+    "evaluate": "python3 scripts/train_model.py --evaluate-only"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vitest": "5.0.5",
+    "hanzi-writer-data": "2.0.1",
+    "@types/node": "24.9.1",
+    "prettier": "3.6.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

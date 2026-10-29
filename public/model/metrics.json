@@ -1,0 +1,17 @@
+{
+  "dataset": "Held-out synthetic perturbations of the same canonical stroke templates; no independent human data.",
+  "classes": 151,
+  "training_samples": 8456,
+  "test_samples": 1208,
+  "top1": 0.96026,
+  "top5": 0.99834,
+  "seed_train": 20261029,
+  "seed_test": 888,
+  "seconds": 78.45,
+  "limitations": [
+    "No real handwriting dataset validation.",
+    "One canonical template per class; synthetic split shares underlying character source.",
+    "Softmax outputs and match scores are not calibrated probabilities.",
+    "Vocabulary is limited to the bundled 151 characters."
+  ]
+}

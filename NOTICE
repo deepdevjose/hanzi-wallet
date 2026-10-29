@@ -1,0 +1,24 @@
+Hanzi Wallet 1.0.0
+
+Application source code is MIT licensed (see LICENSE).
+
+Character data are derived from hanzi-writer-data 2.0.1 by David Chanin and
+contributors, itself derived from Make Me a Hanzi by Shaunak Kishore and
+contributors, and from fonts released by Arphic Technology Co., Ltd.
+
+https://github.com/chanind/hanzi-writer-data
+https://github.com/skishore/makemeahanzi
+
+Stroke data and derivative trained weights are distributed with the Arphic
+Public License, included at public/data/ARPHICPL.txt. The source data are
+available in the named upstream projects; this repository includes the exact
+151 character templates used for training and a reproducible training script.
+
+Changes: 151 characters selected and repackaged in public/data/templates.json;
+median coordinates converted from 1024-unit, upward-y character space to a
+normalized downward-y plane. Stroke outlines are preserved. Synthetic pen
+trajectory augmentations are used to generate the derivative neural weights.
+The vocabulary's Spanish glosses were adapted from the user-provided prototype.
+
+The geometric app icon is original. Interface design is inspired by Apple's
+public Liquid Glass design language; no Apple proprietary assets are bundled.
