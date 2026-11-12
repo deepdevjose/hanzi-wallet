@@ -23,6 +23,11 @@ async function download(url) {
   throw lastError ?? new Error("Dictionary unavailable");
 }
 
+async function downloadText(url) {
+  const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
+  if (!response.ok) throw new Error("License notice unavailable: HTTP " + response.status);
+  return response.text();
+}
 const raw = await download(SOURCE);
 const result = {};
 for (const line of raw.split(/\r?\n/u)) {
@@ -38,5 +43,9 @@ const count = Object.keys(result).length;
 if (count < 3000 || count > 3500) throw new Error("Dictionary match outside expected range: " + count);
 await mkdir("public/data", { recursive: true });
 await writeFile("public/data/common-dictionary.json", JSON.stringify(result));
+const copying = await downloadText("https://raw.githubusercontent.com/skishore/makemeahanzi/master/COPYING");
+const lgpl = await downloadText("https://raw.githubusercontent.com/skishore/makemeahanzi/master/LGPL");
+await writeFile("public/data/MAKEME_A_HANZI_COPYING.txt", copying);
+await writeFile("public/data/MAKEME_A_HANZI_LGPL.txt", lgpl);
 const hash = createHash("sha256").update(raw).digest("hex");
 console.log("Make Me a Hanzi: " + count + "/3500 entries; SHA256 " + hash);
