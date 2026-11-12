@@ -18,7 +18,7 @@ import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
 import { mountProfile, exportProfile, importProfile } from "./profile";
-import { mountCatalog } from "./catalog";
+import { FirstVisit } from "./onboarding";
 import { learnText } from "./learning-content";
 import { InkCanvas } from "./ink";
 import { assess, normalize } from "./core/geometry";
@@ -672,7 +672,12 @@ function exportProgress(): void {
   const blob = new Blob(
     [
       JSON.stringify(
-        { ...state, avatarProfile: exportProfile(), exportedAt: new Date().toISOString() },
+        {
+          ...state,
+          avatarProfile: exportProfile(),
+          learningProgress: learning.exportProgress(),
+          exportedAt: new Date().toISOString(),
+        },
         null,
         2,
       ),
@@ -869,6 +874,7 @@ function listen(): void {
     if (!isLocale(locale)) return;
     state = { ...state, preferences: { ...state.preferences, locale } };
     setLocale(locale);
+    window.dispatchEvent(new Event("hanzi-wallet:locale"));
     save();
     translateStatic(root!);
     document
@@ -956,10 +962,19 @@ function listen(): void {
         backup !== null &&
         typeof backup === "object" &&
         !Array.isArray(backup) &&
+        "learningProgress" in backup
+      ) {
+        learning.importProgress(backup.learningProgress);
+      }
+      if (
+        backup !== null &&
+        typeof backup === "object" &&
+        !Array.isArray(backup) &&
         "avatarProfile" in backup
       ) {
         importProfile(backup.avatarProfile);
       }
+      learning.render();
       renderCharacter();
       renderWallet();
       renderStrip();
@@ -973,6 +988,8 @@ function listen(): void {
     }
   };
   document.addEventListener("keydown", (e) => {
+    if (document.querySelector(".welcome-dialog[open],.profile-setup[open]"))
+      return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       if (!el<HTMLDialogElement>("search-dialog").open) openSearch();
@@ -983,7 +1000,7 @@ function listen(): void {
     "change",
     applyPreferences,
   );
-  document.querySelectorAll<HTMLDialogElement>("dialog").forEach((d) =>
+  root!.querySelectorAll<HTMLDialogElement>("dialog").forEach((d) =>
     d.addEventListener("click", (e) => {
       if (e.target === d) {
         const r = d.getBoundingClientRect();
@@ -1007,6 +1024,7 @@ function listen(): void {
   );
 }
 async function init(): Promise<void> {
+  const welcome = new FirstVisit(base);
   try {
     [vocabulary, templates] = await Promise.all([
       json<VocabularyEntry[]>("data/vocabulary.json"),
@@ -1014,9 +1032,15 @@ async function init(): Promise<void> {
     ]);
     if (!vocabulary.length || templates.length !== vocabulary.length)
       throw new Error(t("El vocabulario está incompleto."));
+    welcome.resourceReady();
     const loaded = loadState(new Set(vocabulary.map((e) => e.char)));
     state = loaded.state;
-    setLocale(state.preferences.locale);
+    if (welcome.needed)
+      state = {
+        ...state,
+        preferences: { ...state.preferences, locale: getLocale() },
+      };
+    else setLocale(state.preferences.locale);
     // The first-run collection is a transparent starter set, never invented progress.
     let firstRun = false;
     try {
@@ -1035,7 +1059,6 @@ async function init(): Promise<void> {
     }
     renderShell();
     mountProfile();
-    mountCatalog(vocabulary, (char) => { choose(char); setMode("guide"); }, playPronunciation);
     learning = new LearningView(
       el("learn-view"),
       vocabulary,
@@ -1047,7 +1070,10 @@ async function init(): Promise<void> {
         window.scrollTo({ top: 0 });
       },
       toast,
-      () => { renderStats(); window.dispatchEvent(new Event("hanzi-wallet:progress")); },
+      () => {
+        renderStats();
+        window.dispatchEvent(new Event("hanzi-wallet:progress"));
+      },
     );
     ink = new InkCanvas(el<HTMLCanvasElement>("ink"));
     ink.onChange = onInkChange;
@@ -1082,7 +1108,7 @@ async function init(): Promise<void> {
     switchView("learn");
     save();
     if (loaded.warning) toast(loaded.warning);
-    else if (firstRun)
+    else if (firstRun && !welcome.needed)
       window.setTimeout(
         () => toast(t("Tu wallet empieza con 8 caracteres. Hazla tuya.")),
         700,
@@ -1100,6 +1126,7 @@ async function init(): Promise<void> {
         ),
       );
     }
+    welcome.resourceReady();
     try {
       worker = new Worker(new URL("./recognition.worker.ts", import.meta.url), {
         type: "module",
@@ -1185,7 +1212,18 @@ async function init(): Promise<void> {
         updateDateAndMetrics();
       })
       .catch(() => {});
+    await welcome.run(
+      templates,
+      () => pronunciation.preload(),
+      (locale) => {
+        const selector = el<HTMLSelectElement>("language-select");
+        selector.value = locale;
+        selector.dispatchEvent(new Event("change"));
+      },
+      (band) => learning.setStartingBand(band),
+    );
   } catch (error) {
+    welcome.dismiss();
     root!.innerHTML = `<div class="boot"><span>字</span><p>${t("No pudimos abrir tu espacio.")}<br>${escape(error instanceof Error ? error.message : t("Revisa tu conexión y vuelve a intentarlo."))}</p><button id="retry">${t("Volver a intentar")}</button></div>`;
     el("retry").onclick = () => location.reload();
   }

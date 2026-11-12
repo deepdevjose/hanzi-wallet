@@ -8,6 +8,10 @@ The production assets in `public/art/` were created with the built-in ImageGen t
 | --- | --- | --- |
 | `avatar-male.png` | Full-body male character base | 1024 × 1536, RGBA PNG |
 | `avatar-female.png` | Full-body female character base | 1024 × 1536, RGBA PNG |
+| `avatar-male-hanfu.png` | Male lunar hanfu wardrobe variant | 1024 × 1536, RGBA PNG |
+| `avatar-female-hanfu.png` | Female lunar hanfu wardrobe variant | 1024 × 1536, RGBA PNG |
+| `avatar-male-imperial.png` | Male imperial wardrobe variant | 1024 × 1536, RGBA PNG |
+| `avatar-female-imperial.png` | Female imperial wardrobe variant | 1024 × 1536, RGBA PNG |
 | `ink-landscape.webp` | First-visit welcome background | 1586 × 992, WebP |
 | `dragon.png` | Loading and welcome transition | Wide RGBA PNG |
 
@@ -22,6 +26,14 @@ Use case: stylized-concept. Asset type: premium app character sprite. One charmi
 ### Landscape
 
 Use case: stylized-concept. Asset type: widescreen background painting for a premium Mandarin learning app's first welcome screen. A quiet exquisite traditional Chinese shan shui ink wash landscape painted on ivory rice paper, pale slate gray misty layered mountains fading into clouds, delicate weathered pine and small classical pavilion on a rocky promontory in lower right, sparse elegant plum blossom branch with restrained muted cinnabar-red flowers entering from upper left. Large luminous empty center 65% suitable for dark calligraphy overlay. Broad painterly atmospheric washes, authentic brush texture, beautiful calm museum-quality subtle composition; Apple-like elegant restraint. Palette warm off-white ivory #f2f1ef, slate ink #4c5360, light taupe-gray, very restrained muted seal-red #99645c. Landscape 16:10, no text, no symbols, no logos, no lettering, no watermarks, no people. No strong orange or sepia wash; soft neutral paper.
+
+### Premium hanfu variants
+
+Use case: identity-preserve. Asset type: transparent full-body outfit variant for an existing dress-up game avatar. Input: the corresponding original male or female PNG above, inspected before editing. Edit the provided cartoon character, changing ONLY CLOTHING from the neck downward to beautiful traditional Chinese hanfu: flowing luminous lunar ivory robe with muted jade-green cross-collar trim and long sash belt, delicate pale gold cloud and bamboo embroidery, elegant layered skirt-like robe, tasteful soft silk folds. Keep this EXACT same person's face, eyes, hair, ears, skin color, expression, head size, head position, body proportions, hand positions, pose, frontal view, lighting and beautiful semi-realistic 3D cartoon rendering style. Keep both original neutral shoes visible beneath the robe and keep original 1024x1536 portrait canvas and scale, figure fits fully with no crop, head top near 2%, feet near98%. Hands relaxed slightly away from body; long flowing sleeves must remain coherent with the original hand pose. No crown, no hat, no jewelry, no props, no text, no watermark. Preserve genuinely transparent background; clean alpha cutout, no background or halo. This should feel like the same avatar wearing a premium serene traditional Chinese hanfu, not a different person.
+
+### Premium imperial variants
+
+Use case: identity-preserve. Asset type: highest-tier transparent full-body outfit variant for an existing dress-up game avatar. Input: the corresponding original male or female PNG above, inspected before editing. Edit the provided cartoon character, changing ONLY CLOTHING from the neck downward to luxurious classical Chinese imperial ceremonial attire: dignified muted cinnabar-red silk long robe, layered charcoal-jade lapels, fine antique gold Chinese long dragon embroidery across chest and hem (female variant also has phoenix embroidery), intricate restrained cloud and wave motifs, refined broad belt with small jade clasp, elegant layered long robe skirt and tailored flowing sleeves. Ultra-premium fine silk texture and exquisite sophisticated finish, rewards for an advanced Mandarin learner. Keep this EXACT same person's face, eyes, hair, ears, skin color, expression, head size, head position, body proportions, hand positions, pose, frontal view, lighting and beautiful semi-realistic 3D cartoon rendering style. Keep both original neutral shoes visible beneath robe and keep original 1024x1536 portrait canvas and scale, figure fully fits no crop, head top near2%, feet98%. Hands relaxed slightly away from body; sleeves coherent with original hand pose. No crown, no hat, no weapons, no props, no jewelry, no text, no watermark. Preserve genuinely transparent background, clean alpha cutout, no background halo. Same avatar in a magnificent authentic Chinese formal robe, not a different person, avoid Western royal costume.
 
 ### Dragon
 

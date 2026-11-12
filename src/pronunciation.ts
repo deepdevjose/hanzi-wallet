@@ -93,8 +93,12 @@ export class NativePronunciation {
     if (this.index && this.bytes) return Promise.resolve();
     if (this.loading) return this.loading;
     this.loading = Promise.all([
-      fetch(assetURL("audio/index.json", this.base)),
-      fetch(assetURL("audio/pronunciation.bin", this.base)),
+      fetch(assetURL("audio/index.json", this.base), {
+        signal: AbortSignal.timeout(30_000),
+      }),
+      fetch(assetURL("audio/pronunciation.bin", this.base), {
+        signal: AbortSignal.timeout(30_000),
+      }),
     ])
       .then(async ([a, b]) => {
         if (!a.ok || !b.ok)

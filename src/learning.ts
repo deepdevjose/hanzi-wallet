@@ -13,8 +13,8 @@ import {
   gradeLearning,
   LEARNING_KEY,
   readLearning,
+  mergeLearning,
   streak,
-  XP_PER_LEVEL,
   type Answer,
   type LearningProgress,
   type RoundKind,
@@ -30,6 +30,11 @@ import {
   type Lesson,
 } from "./learning-content";
 import hskLevels from "./hsk-levels.json";
+import {
+  levelProgress,
+  loadProfile,
+  setSessionLearningXP,
+} from "./core/profile";
 
 const LEVEL_KEY = "hanzi-wallet-hsk-level";
 const GROUPS_PER_PAGE = 8;
@@ -87,6 +92,7 @@ export class LearningView {
       this.canPersist = false;
     }
     this.progress = this.read();
+    setSessionLearningXP(this.canPersist ? null : this.progress.xp);
     host.addEventListener("click", (event) => this.click(event));
     host.addEventListener("submit", (event) => this.submit(event));
     window.addEventListener("storage", (event) => {
@@ -141,6 +147,7 @@ export class LearningView {
           this.notify(l("storageError"));
         }
       }
+      setSessionLearningXP(this.canPersist ? null : this.progress.xp);
       return xp;
     };
     const xp = navigator.locks
@@ -358,6 +365,38 @@ export class LearningView {
     }
   }
 
+  exportProgress(): LearningProgress {
+    return this.canPersist ? this.read() : this.progress;
+  }
+
+  importProgress(value: unknown): void {
+    this.progress = mergeLearning(this.exportProgress(), value, this.known);
+    try {
+      localStorage.setItem(LEARNING_KEY, JSON.stringify(this.progress));
+    } catch {
+      this.canPersist = false;
+      this.notify(l("storageError"));
+    }
+    this.round = null;
+    this.lesson = null;
+    setSessionLearningXP(this.canPersist ? null : this.progress.xp);
+    this.onProgress();
+    this.render();
+  }
+
+  setStartingBand(band: string): void {
+    const label = band === "0" ? "1" : band === "7-9" ? "7–9" : band;
+    this.level =
+      hskLevels.find((level) => level.label === label) ?? hskLevels[0]!;
+    this.page = 0;
+    try {
+      localStorage.setItem(LEVEL_KEY, this.level.label);
+    } catch {
+      this.canPersist = false;
+    }
+    this.render();
+  }
+
   updateLocale(): void {
     const item = this.current();
     if (item && this.options)
@@ -393,8 +432,8 @@ export class LearningView {
     const lessons = this.lessons;
     const start = this.page * GROUPS_PER_PAGE;
     const xp = this.progress.xp;
-    const level = Math.floor(xp / XP_PER_LEVEL) + 1;
-    const levelXp = xp % XP_PER_LEVEL;
+    const progress = levelProgress(loadProfile(xp), xp);
+    const level = progress.level;
     return `<div class="learn-level-picker">
       <div class="learn-level-tabs" role="group" aria-label="${l("path")}">${hskLevels
         .map(
@@ -411,7 +450,7 @@ export class LearningView {
       </div><div class="learn-art" aria-hidden="true"><span lang="zh-CN">学</span><small lang="zh-CN">汉字</small></div></section>
       <section class="glass learn-status" aria-label="${l("level", level)}">
         <div class="learn-level"><span class="learn-symbol">${icon("sparkle")}</span><div><h2>${l("level", level)}</h2><p>${xp} XP</p></div></div>
-        <progress class="learn-progress" value="${levelXp}" max="${XP_PER_LEVEL}" aria-label="${l("level", level)}"></progress>
+        <progress class="learn-progress" value="${progress.needed ? progress.current : 1}" max="${progress.needed || 1}" aria-label="${l("level", level)}"></progress>
         <div class="learn-stats"><div><strong>${streak(this.progress.active, now)}</strong><span>${l("streak")}</span></div><div><strong>${this.due}</strong><span>${l("due")}</span></div></div>
       </section>
     </div>

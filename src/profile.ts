@@ -1,173 +1,968 @@
 import "./profile.css";
-import { LEARNING_KEY, XP_PER_LEVEL, readLearning } from "./core/learning";
+import { createAvatar, createItemArt } from "./avatar";
+import { icon } from "./icons";
+import { getLocale, type Locale } from "./i18n";
+import { LEARNING_KEY } from "./core/learning";
+import {
+  ITEMS,
+  PROFILE_KEY,
+  loadProfile,
+  readProfile,
+  saveProfile,
+  syncProfile,
+  getLearningXP,
+  profileLevel,
+  levelProgress,
+  buyItem,
+  equipItem,
+  unequipItem,
+  itemName,
+  type Slot,
+} from "./core/profile";
+export { ITEMS } from "./core/profile";
 
-const STORAGE_KEY = "hanzi-wallet-avatar-v1";
-const COINS_PER_XP = 1;
-type Slot = "head" | "outfit" | "aura" | "frame";
-type Item = { readonly id: string; readonly title: string; readonly slot: Slot; readonly price: number; readonly level: number; readonly emoji: string };
-export const ITEMS: readonly Item[] = [
-  { id: "hat", title: "Sombrero de bambú", slot: "head", price: 0, level: 1, emoji: "🎋" },
-  { id: "red", title: "Traje festivo", slot: "outfit", price: 100, level: 3, emoji: "🧧" },
-  { id: "scholar", title: "Túnica del erudito", slot: "outfit", price: 300, level: 10, emoji: "📜" },
-  { id: "jade", title: "Marco de jade", slot: "frame", price: 550, level: 25, emoji: "🟢" },
-  { id: "lantern", title: "Aura de faroles", slot: "aura", price: 800, level: 50, emoji: "🏮" },
-  { id: "dragon", title: "Dragón celestial", slot: "aura", price: 2500, level: 400, emoji: "🐉" },
-];
-interface Profile {
-  readonly name: string;
-  readonly base: "traveller" | "scholar";
-  readonly coins: number;
-  readonly accountedXP: number;
-  readonly owned: readonly string[];
-  readonly equipped: Readonly<Partial<Record<Slot, string>>>;
-  readonly completed: boolean;
-}
-const initial = (xp: number): Profile => ({ name: "", base: "traveller", coins: 0, accountedXP: xp, owned: ["hat"], equipped: { head: "hat" }, completed: false });
-function isObject(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
-}
-function read(xp: number, input?: unknown): Profile {
-  try {
-    const parsed: unknown = input === undefined ? JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") : input;
-    if (!isObject(parsed)) return initial(xp);
-    const owned = Array.isArray(parsed.owned) ? parsed.owned.filter((v): v is string => typeof v === "string" && ITEMS.some((item) => item.id === v)) : [];
-    const equipped: Partial<Record<Slot, string>> = {};
-    if (isObject(parsed.equipped)) for (const slot of ["head", "outfit", "frame", "aura"] as const) {
-      const id = parsed.equipped[slot];
-      if (typeof id === "string" && owned.includes(id) && ITEMS.some((item) => item.id === id && item.slot === slot)) equipped[slot] = id;
-    }
-    return {
-      name: typeof parsed.name === "string" ? parsed.name.slice(0, 40) : "",
-      base: parsed.base === "scholar" ? "scholar" : "traveller",
-      coins: typeof parsed.coins === "number" && Number.isSafeInteger(parsed.coins) && parsed.coins >= 0 ? parsed.coins : 0,
-      accountedXP: typeof parsed.accountedXP === "number" && Number.isSafeInteger(parsed.accountedXP) && parsed.accountedXP >= 0 ? parsed.accountedXP : xp,
-      owned: [...new Set(["hat", ...owned])],
-      equipped,
-      completed: parsed.completed === true,
-    };
-  } catch { return initial(xp); }
-}
-function save(profile: Profile): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch { /* Storage may be blocked. */ }
-}
-function getXP(): number {
-  try {
-    const raw: unknown = JSON.parse(localStorage.getItem(LEARNING_KEY) ?? "null");
-    return readLearning(raw, new Set<string>()).xp;
-  } catch { return 0; }
-}
-function sync(profile: Profile, xp: number): Profile {
-  // Never mint twice for already-accounted XP. An XP reset does not mint on recovery.
-  const delta = Math.max(0, xp - profile.accountedXP);
-  return { ...profile, coins: Math.min(Number.MAX_SAFE_INTEGER, profile.coins + delta * COINS_PER_XP), accountedXP: Math.max(profile.accountedXP, xp) };
-}
-function node<K extends keyof HTMLElementTagNameMap>(tag: K, className = "", text = ""): HTMLElementTagNameMap[K] {
+const words = {
+  profile: ["Mi perfil", "My profile", "个人资料", "Mon profil", "Meu perfil"],
+  open: [
+    "Abrir mi perfil",
+    "Open my profile",
+    "打开个人资料",
+    "Ouvrir mon profil",
+    "Abrir meu perfil",
+  ],
+  title: [
+    "A tu manera.",
+    "Make it yours.",
+    "你的旅程，你的风格。",
+    "À votre image.",
+    "Do seu jeito.",
+  ],
+  setup: [
+    "Tu aventura empieza contigo.",
+    "Your journey begins with you.",
+    "旅程从你开始。",
+    "Votre aventure commence avec vous.",
+    "Sua aventura começa com você.",
+  ],
+  intro: [
+    "Un personaje que crece con cada nuevo descubrimiento.",
+    "A character that grows with every discovery.",
+    "每一次发现，都让你的角色成长。",
+    "Un personnage qui grandit à chaque découverte.",
+    "Um personagem que cresce a cada descoberta.",
+  ],
+  character: ["Personaje", "Character", "角色", "Personnage", "Personagem"],
+  wardrobe: ["Armario", "Wardrobe", "衣橱", "Garde-robe", "Guarda-roupa"],
+  shop: ["Tienda", "Shop", "商店", "Boutique", "Loja"],
+  achievements: ["Logros", "Achievements", "成就", "Succès", "Conquistas"],
+  close: [
+    "Cerrar perfil",
+    "Close profile",
+    "关闭资料",
+    "Fermer le profil",
+    "Fechar perfil",
+  ],
+  level: ["Nivel", "Level", "等级", "Niveau", "Nível"],
+  coins: ["monedas", "coins", "金币", "pièces", "moedas"],
+  next: [
+    "para el siguiente nivel",
+    "to the next level",
+    "即可升级",
+    "avant le prochain niveau",
+    "para o próximo nível",
+  ],
+  max: [
+    "Has llegado a la cima",
+    "You have reached the summit",
+    "你已到达巅峰",
+    "Vous avez atteint le sommet",
+    "Você chegou ao topo",
+  ],
+  name: [
+    "¿Cómo te llamas?",
+    "What is your name?",
+    "你叫什么名字？",
+    "Comment vous appelez-vous ?",
+    "Como você se chama?",
+  ],
+  nameHint: ["Tu nombre", "Your name", "你的名字", "Votre prénom", "Seu nome"],
+  body: [
+    "Elige tu personaje",
+    "Choose your character",
+    "选择你的角色",
+    "Choisissez votre personnage",
+    "Escolha seu personagem",
+  ],
+  male: ["Hombre", "Man", "男性", "Homme", "Homem"],
+  female: ["Mujer", "Woman", "女性", "Femme", "Mulher"],
+  identity: [
+    "Un poco de ti",
+    "A little about you",
+    "关于你",
+    "Quelques mots sur vous",
+    "Um pouco sobre você",
+  ],
+  optional: [
+    "Opcional. Puedes cambiarlo cuando quieras.",
+    "Optional. You can change this anytime.",
+    "选填，随时可以修改。",
+    "Facultatif. Modifiable à tout moment.",
+    "Opcional. Você pode mudar quando quiser.",
+  ],
+  country: ["Tu país", "Your country", "你的国家", "Votre pays", "Seu país"],
+  choose: [
+    "Sin seleccionar",
+    "Not selected",
+    "暂不选择",
+    "Non sélectionné",
+    "Não selecionado",
+  ],
+  age: ["Edad", "Age", "年龄", "Âge", "Idade"],
+  gender: ["Sexo", "Gender", "性别", "Sexe", "Sexo"],
+  unspecified: [
+    "Prefiero no decirlo",
+    "Prefer not to say",
+    "不愿透露",
+    "Je préfère ne pas le dire",
+    "Prefiro não informar",
+  ],
+  start: [
+    "Empezar mi aventura",
+    "Start my journey",
+    "开启我的旅程",
+    "Commencer mon aventure",
+    "Começar minha aventura",
+  ],
+  done: ["Listo", "Done", "完成", "Terminé", "Pronto"],
+  local: [
+    "Tu perfil y tu progreso se guardan en este navegador.",
+    "Your profile and progress stay in this browser.",
+    "你的资料和进度保存在此浏览器中。",
+    "Votre profil et vos progrès restent dans ce navigateur.",
+    "Seu perfil e progresso ficam neste navegador.",
+  ],
+  earned: [
+    "Aprende. Descubre. Colecciona.",
+    "Learn. Discover. Collect.",
+    "学习。发现。收藏。",
+    "Apprendre. Découvrir. Collectionner.",
+    "Aprenda. Descubra. Colecione.",
+  ],
+  shopIntro: [
+    "Cada acierto te acerca a algo nuevo. Solo monedas que ganas aprendiendo.",
+    "Every correct answer brings something new. Spend only coins earned by learning.",
+    "每次答对，都离新奖励更近。金币全部来自学习。",
+    "Chaque bonne réponse vous rapproche d'une nouveauté. Des pièces gagnées en apprenant.",
+    "Cada acerto traz algo novo. Use apenas moedas que ganha aprendendo.",
+  ],
+  wardrobeIntro: [
+    "Tu colección, tu estilo. Toca una pieza para llevarla contigo.",
+    "Your collection, your style. Choose a piece to make it yours.",
+    "你的收藏，你的风格。选择一件装备吧。",
+    "Votre collection, votre style. Choisissez une pièce à porter.",
+    "Sua coleção, seu estilo. Escolha uma peça para usar.",
+  ],
+  all: ["Todo", "All", "全部", "Tout", "Tudo"],
+  head: ["Sombreros", "Headwear", "头饰", "Chapeaux", "Chapéus"],
+  outfit: ["Ropa", "Clothing", "服装", "Vêtements", "Roupas"],
+  shoes: ["Zapatos", "Shoes", "鞋子", "Chaussures", "Sapatos"],
+  frame: ["Marcos", "Frames", "边框", "Cadres", "Molduras"],
+  background: ["Fondos", "Scenes", "背景", "Décors", "Fundos"],
+  aura: ["Compañeros", "Companions", "伙伴", "Compagnons", "Companheiros"],
+  expression: [
+    "Expresiones",
+    "Expressions",
+    "表情",
+    "Expressions",
+    "Expressões",
+  ],
+  skin: ["Tonos", "Tones", "色调", "Teintes", "Tons"],
+  available: [
+    "A mi alcance",
+    "Within reach",
+    "可购买",
+    "À ma portée",
+    "Ao meu alcance",
+  ],
+  equipped: ["Equipado", "Wearing", "已装备", "Équipé", "Equipado"],
+  unequip: ["Quitar", "Remove", "卸下", "Retirer", "Remover"],
+  equip: ["Equipar", "Wear", "装备", "Équiper", "Equipar"],
+  buy: ["Conseguir", "Get", "获取", "Obtenir", "Obter"],
+  locked: [
+    "Se desbloquea en nivel",
+    "Unlocks at level",
+    "解锁等级",
+    "Disponible au niveau",
+    "Desbloqueia no nível",
+  ],
+  insufficient: [
+    "Sigue aprendiendo para reunir más monedas.",
+    "Keep learning to earn more coins.",
+    "继续学习，赚取更多金币。",
+    "Continuez à apprendre pour gagner des pièces.",
+    "Continue aprendendo para ganhar mais moedas.",
+  ],
+  acquired: [
+    "Una nueva pieza para tu colección.",
+    "A new piece for your collection.",
+    "你的收藏又添新成员。",
+    "Une nouvelle pièce pour votre collection.",
+    "Uma nova peça para sua coleção.",
+  ],
+  wearing: [
+    "Tu personaje ya tiene un nuevo estilo.",
+    "Your character has a new look.",
+    "你的角色换上了新风格。",
+    "Votre personnage a un nouveau style.",
+    "Seu personagem tem um novo estilo.",
+  ],
+  empty: [
+    "Todavía no hay piezas en esta categoría.",
+    "No pieces in this category yet.",
+    "此分类暂无物品。",
+    "Aucune pièce dans cette catégorie pour le moment.",
+    "Ainda não há peças nesta categoria.",
+  ],
+  noAffordable: [
+    "Sigue practicando. Cada acierto suma monedas para tu próxima pieza.",
+    "Keep practising. Every correct answer earns coins for your next piece.",
+    "继续练习吧。每次答对都能为下一件物品积攒金币。",
+    "Continuez à pratiquer. Chaque bonne réponse rapproche de la prochaine pièce.",
+    "Continue praticando. Cada acerto rende moedas para a próxima peça.",
+  ],
+  first: [
+    "El primer paso",
+    "The first step",
+    "第一步",
+    "Le premier pas",
+    "O primeiro passo",
+  ],
+  firstDetail: [
+    "Tu aventura ya tiene protagonista.",
+    "Your journey has its main character.",
+    "你的旅程有了主角。",
+    "Votre aventure a son personnage principal.",
+    "Sua aventura tem um protagonista.",
+  ],
+  placementTitle: [
+    "Tu punto de partida",
+    "Your starting point",
+    "你的起点",
+    "Votre point de départ",
+    "Seu ponto de partida",
+  ],
+  placementHint: [
+    "Orientación de lectura. No es una certificación oficial.",
+    "Reading orientation. This is not an official certification.",
+    "阅读水平参考，并非官方认证。",
+    "Repère de lecture. Il ne s’agit pas d’une certification officielle.",
+    "Referência de leitura. Não é uma certificação oficial.",
+  ],
+  practice: [
+    "La tinta despierta",
+    "Ink awakens",
+    "墨香初起",
+    "L'encre s'éveille",
+    "A tinta desperta",
+  ],
+  practiceDetail: [
+    "Gana tus primeros 100 XP practicando.",
+    "Earn your first 100 XP through practice.",
+    "通过练习获得最初100经验值。",
+    "Gagnez vos 100 premiers XP en pratiquant.",
+    "Ganhe seus primeiros 100 XP praticando.",
+  ],
+  garden: [
+    "Jardín de jade",
+    "Jade garden",
+    "翡翠花园",
+    "Jardin de jade",
+    "Jardim de jade",
+  ],
+  scholar: [
+    "El camino del erudito",
+    "The scholar's path",
+    "学者之路",
+    "Le chemin de l'érudit",
+    "O caminho do erudito",
+  ],
+  dragon: [
+    "Entre dragones",
+    "Among dragons",
+    "与龙同行",
+    "Parmi les dragons",
+    "Entre dragões",
+  ],
+  summit: [
+    "El arte de perseverar",
+    "The art of perseverance",
+    "坚持的艺术",
+    "L'art de persévérer",
+    "A arte de perseverar",
+  ],
+  reach: [
+    "Alcanza el nivel",
+    "Reach level",
+    "达到等级",
+    "Atteignez le niveau",
+    "Alcance o nível",
+  ],
+  unlocked: ["Conseguido", "Unlocked", "已达成", "Débloqué", "Conquistado"],
+  collection: ["Colección", "Collection", "收藏", "Collection", "Coleção"],
+  pieces: ["piezas", "pieces", "件", "pièces", "peças"],
+  storeError: [
+    "El navegador no permite guardar ahora. Exporta una copia antes de salir.",
+    "Your browser cannot save right now. Export a backup before leaving.",
+    "浏览器暂时无法保存。离开前请导出备份。",
+    "Le navigateur ne peut pas sauvegarder. Exportez une copie avant de partir.",
+    "O navegador não pode salvar agora. Exporte uma cópia antes de sair.",
+  ],
+} as const;
+type CopyKey = keyof typeof words;
+const localeIndex: Record<Locale, number> = {
+  es: 0,
+  en: 1,
+  "zh-CN": 2,
+  fr: 3,
+  pt: 4,
+};
+const copy = (key: CopyKey): string => words[key][localeIndex[getLocale()]]!;
+const node = <K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className = "",
+  text = "",
+): HTMLElementTagNameMap[K] => {
   const element = document.createElement(tag);
   element.className = className;
   element.textContent = text;
   return element;
-}
-export function mountProfile(): void {
-  let xp = getXP();
-  let profile = sync(read(xp), xp);
-  save(profile);
-  const trigger = node("button", "profile-trigger", "🪙 Perfil · 0");
-  trigger.type = "button";
-  trigger.setAttribute("aria-label", "Abrir personaje y tienda");
-  document.querySelector(".top-actions")?.append(trigger);
-  const backdrop = node("div", "profile-backdrop");
-  backdrop.hidden = true;
-  const panel = node("section", "profile-panel");
-  panel.setAttribute("role", "dialog");
-  panel.setAttribute("aria-modal", "true");
-  panel.setAttribute("aria-label", "Tu personaje y recompensas");
-  backdrop.append(panel);
-  document.body.append(backdrop);
-  const level = (): number => Math.floor(xp / XP_PER_LEVEL) + 1;
-  const persist = (): void => { save(profile); trigger.textContent = "🪙 " + profile.coins + " · Perfil"; };
-  const close = (): void => { backdrop.hidden = true; };
-  const render = (): void => {
-    persist();
-    panel.replaceChildren();
-    const heading = node("div", "profile-heading");
-    heading.append(node("h2", "", "Tu aventura china"));
-    const dismiss = node("button", "profile-close", "Cerrar ✕");
-    dismiss.type = "button"; dismiss.onclick = close;
-    heading.append(dismiss); panel.append(heading);
-    panel.append(node("p", "profile-muted", "Personaliza tu personaje. Gana monedas al responder correctamente y avanzar en las lecciones."));
-    const identity = node("div", "profile-identity");
-    const avatar = node("div", "profile-avatar" + (profile.equipped.frame === "jade" ? " jade" : ""));
-    const face = node("span", "profile-face", profile.base === "scholar" ? "👩🏻‍🎓" : "🧑🏻");
-    avatar.append(face);
-    if (profile.equipped.head) avatar.append(node("span", "profile-hat", "🎋"));
-    if (profile.equipped.outfit) avatar.append(node("span", "profile-outfit", profile.equipped.outfit === "red" ? "🧧" : "📜"));
-    if (profile.equipped.aura) avatar.append(node("span", "profile-aura", profile.equipped.aura === "dragon" ? "🐉" : "🏮"));
-    identity.append(avatar);
-    const details = node("div", "profile-details");
-    const nameLabel = node("label", "", "Tu nombre");
-    const nameInput = node("input", "profile-input");
-    nameInput.maxLength = 40; nameInput.placeholder = "¿Cómo te llamas?"; nameInput.value = profile.name;
-    nameInput.onchange = () => { profile = { ...profile, name: nameInput.value.trim().slice(0,40) }; persist(); };
-    nameLabel.append(nameInput); details.append(nameLabel);
-    const baseLabel = node("label", "", "Personaje base");
-    const baseSelect = node("select", "profile-input");
-    for (const [id, title] of [["traveller", "Viajero"], ["scholar", "Estudiante"]] as const) {
-      const opt = node("option", "", title); opt.value = id; baseSelect.append(opt);
-    }
-    baseSelect.value = profile.base;
-    baseSelect.onchange = () => { profile = { ...profile, base: baseSelect.value === "scholar" ? "scholar" : "traveller" }; render(); };
-    baseLabel.append(baseSelect); details.append(baseLabel);
-    details.append(node("p", "profile-balance", "Nivel " + level() + " · " + profile.coins + " monedas"));
-    identity.append(details); panel.append(identity);
-    panel.append(node("h3", "", "Tienda de recompensas"));
-    const products = node("div", "profile-products");
-    for (const item of ITEMS) {
-      const card = node("div", "profile-product");
-      card.append(node("span", "profile-item-art", item.emoji));
-      const description = node("div");
-      description.append(node("strong", "", item.title));
-      description.append(node("small", "", "Nivel " + item.level + " · " + item.price + " monedas"));
-      card.append(description);
-      const owned = profile.owned.includes(item.id);
-      const equipped = profile.equipped[item.slot] === item.id;
-      const button = node("button", "profile-buy", equipped ? "Equipado" : owned ? "Equipar" : level() < item.level ? "Bloqueado" : "Comprar");
-      button.type = "button";
-      button.disabled = equipped || (!owned && (level() < item.level || profile.coins < item.price));
-      if (!owned && level() >= item.level && profile.coins < item.price) button.title = "Monedas insuficientes";
-      button.onclick = () => {
-        if (owned) profile = { ...profile, equipped: { ...profile.equipped, [item.slot]: item.id } };
-        else if (level() >= item.level && profile.coins >= item.price) profile = { ...profile, coins: profile.coins - item.price, owned: [...profile.owned, item.id], equipped: { ...profile.equipped, [item.slot]: item.id } };
-        render();
-      };
-      card.append(button); products.append(card);
-    }
-    panel.append(products);
-    panel.append(node("p", "profile-muted", "Monedas virtuales sin compras reales. El progreso está guardado únicamente en este navegador."));
-    const done = node("button", "profile-finish", profile.completed ? "Guardar personaje" : "Empezar mi aventura");
-    done.type = "button";
-    done.onclick = () => { profile = { ...profile, name: nameInput.value.trim().slice(0,40), completed: true }; persist(); close(); };
-    panel.append(done);
-  };
-  const open = (): void => { xp = getXP(); profile = sync(profile, xp); render(); backdrop.hidden = false; };
-  trigger.onclick = open;
-  backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(); });
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !backdrop.hidden) close(); });
-  window.addEventListener("storage", (event) => { if (event.key === LEARNING_KEY || event.key === STORAGE_KEY) { xp = getXP(); profile = sync(read(xp), xp); persist(); if (!backdrop.hidden) render(); } });
-  window.addEventListener("focus", () => { xp = getXP(); profile = sync(profile, xp); persist(); });
-  window.addEventListener("hanzi-wallet:profile-imported", () => { xp = getXP(); profile = sync(read(xp), xp); persist(); if (!backdrop.hidden) render(); });
-  window.addEventListener("hanzi-wallet:progress", () => { xp = getXP(); profile = sync(profile, xp); persist(); if (!backdrop.hidden) render(); });
-  persist();
-  if (!profile.completed) window.setTimeout(open, 500);
+};
+const button = (
+  className: string,
+  text: string,
+  action: () => void,
+): HTMLButtonElement => {
+  const element = node("button", className, text);
+  element.type = "button";
+  element.onclick = action;
+  return element;
+};
+const flag = (country: string): string =>
+  country
+    .toUpperCase()
+    .replace(/[A-Z]/g, (letter) =>
+      String.fromCodePoint(127397 + letter.charCodeAt(0)),
+    );
+const COUNTRY_CODES =
+  "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW".split(
+    " ",
+  );
+type Tab = "character" | "wardrobe" | "shop" | "achievements";
+let setupOpener: (() => Promise<void>) | null = null;
+
+export function openAvatarSetup(): Promise<void> {
+  if (!setupOpener) mountProfile();
+  return setupOpener!();
 }
 
-// Profiles are kept separate from the wallet internally but included in backups.
-// Imported values are schema-checked by read(); no arbitrary storage keys are accepted.
+export function mountProfile(): void {
+  if (setupOpener) return;
+  let xp = getLearningXP();
+  let profile = syncProfile(loadProfile(xp), xp);
+  let tab: Tab = "character";
+  let category: Slot | "all" = "all";
+  let affordable = false;
+  let setup = false;
+  let resolveSetup: (() => void) | null = null;
+  let previousFocus: HTMLElement | null = null;
+  let statusText = "";
+  let storageFailed = false;
+  const trigger = button("profile-trigger", "", () => open(false));
+  trigger.setAttribute("aria-haspopup", "dialog");
+  document.querySelector(".top-actions")?.append(trigger);
+  const dialog = node("dialog", "profile-panel");
+  dialog.id = "profile-dialog";
+  dialog.setAttribute("aria-labelledby", "profile-title");
+  document.body.append(dialog);
+  const refreshTrigger = (): void => {
+    trigger.setAttribute("aria-label", copy("open"));
+    const portrait = createAvatar(profile, { portrait: true });
+    portrait.setAttribute("aria-hidden", "true");
+    const label = node(
+      "span",
+      "profile-trigger-name",
+      profile.name || copy("profile"),
+    );
+    const chevron = node("span", "profile-trigger-chevron");
+    chevron.innerHTML = icon("next");
+    trigger.replaceChildren(portrait, label, chevron);
+  };
+  const persist = (): void => {
+    storageFailed = !saveProfile(profile);
+    refreshTrigger();
+  };
+  const close = (): void => {
+    if (!setup) dialog.close();
+  };
+  const finish = (): void => {
+    profile = { ...profile, completed: true };
+    persist();
+    setup = false;
+    dialog.close();
+    const done = resolveSetup;
+    resolveSetup = null;
+    done?.();
+  };
+  const render = (): void => {
+    const scroll =
+      dialog.querySelector<HTMLElement>(".profile-content")?.scrollTop ?? 0;
+    const focused = (document.activeElement as HTMLElement | null)?.dataset
+      .focus;
+    dialog.replaceChildren();
+    dialog.classList.toggle("profile-setup", setup);
+    const heading = node("header", "profile-heading");
+    const titleWrap = node("div");
+    titleWrap.append(node("p", "profile-eyebrow", "HANZI WALLET"));
+    const title = node("h2", "", copy(setup ? "setup" : "title"));
+    title.id = "profile-title";
+    titleWrap.append(title);
+    heading.append(titleWrap);
+    if (!setup) {
+      const dismiss = button("profile-close", "", close);
+      dismiss.innerHTML = icon("close");
+      dismiss.setAttribute("aria-label", copy("close"));
+      heading.append(dismiss);
+    }
+    dialog.append(heading);
+    if (!setup) {
+      const tabs = node("div", "profile-tabs");
+      tabs.setAttribute("role", "tablist");
+      tabs.setAttribute("aria-label", copy("profile"));
+      const tabNames = [
+        "character",
+        "wardrobe",
+        "shop",
+        "achievements",
+      ] as const;
+      tabNames.forEach((name, index) => {
+        const control = button(
+          "profile-tab" + (tab === name ? " active" : ""),
+          copy(name),
+          () => {
+            tab = name;
+            statusText = "";
+            render();
+            dialog
+              .querySelector<HTMLButtonElement>(
+                `.profile-tab[data-tab="${name}"]`,
+              )
+              ?.focus();
+          },
+        );
+        control.dataset.tab = name;
+        control.id = `profile-tab-${name}`;
+        control.setAttribute("aria-controls", "profile-tabpanel");
+        control.setAttribute("role", "tab");
+        control.setAttribute("aria-selected", String(tab === name));
+        control.tabIndex = tab === name ? 0 : -1;
+        control.onkeydown = (event) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+            return;
+          event.preventDefault();
+          const next =
+            event.key === "Home"
+              ? 0
+              : event.key === "End"
+                ? 3
+                : (index + (event.key === "ArrowRight" ? 1 : -1) + 4) % 4;
+          tab = tabNames[next]!;
+          render();
+          dialog
+            .querySelector<HTMLButtonElement>(`.profile-tab[data-tab="${tab}"]`)
+            ?.focus();
+        };
+        tabs.append(control);
+      });
+      dialog.append(tabs);
+    }
+    const layout = node("div", "profile-layout");
+    const stage = node("aside", "profile-stage");
+    stage.append(createAvatar(profile));
+    const titleName = node(
+      "h3",
+      "profile-stage-name",
+      `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`,
+    );
+    stage.append(titleName);
+    const progress = levelProgress(profile, xp);
+    stage.append(
+      node("p", "profile-level", `${copy("level")} ${progress.level}`),
+    );
+    const track = node("div", "profile-xp-track");
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", copy("level"));
+    track.setAttribute(
+      "aria-valuenow",
+      String(Math.round(progress.ratio * 100)),
+    );
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    const fill = node("i");
+    fill.style.width = `${progress.ratio * 100}%`;
+    track.append(fill);
+    stage.append(track);
+    stage.append(
+      node(
+        "p",
+        "profile-xp-caption",
+        progress.needed > 0
+          ? `${Math.max(0, progress.needed - progress.current)} XP ${copy("next")}`
+          : copy("max"),
+      ),
+    );
+    const balance = node("div", "profile-balance");
+    balance.append(
+      node("span", "profile-coin", "元"),
+      node("strong", "", profile.coins.toLocaleString(getLocale())),
+      node("span", "", copy("coins")),
+    );
+    stage.append(balance);
+    const content = node("section", "profile-content");
+    content.setAttribute("aria-label", copy(tab));
+    content.id = "profile-tabpanel";
+    if (!setup) {
+      content.setAttribute("role", "tabpanel");
+      content.setAttribute("aria-labelledby", `profile-tab-${tab}`);
+    }
+    if (setup || tab === "character") renderCharacter(content);
+    else if (tab === "shop" || tab === "wardrobe") renderProducts(content);
+    else renderAchievements(content);
+    layout.append(stage, content);
+    dialog.append(layout);
+    const footer = node("footer", "profile-footer");
+    const notice = node(
+      "p",
+      "profile-save-note",
+      storageFailed ? copy("storeError") : copy("local"),
+    );
+    if (storageFailed) notice.setAttribute("role", "alert");
+    footer.append(notice);
+    footer.append(
+      button(
+        "profile-finish",
+        copy(setup ? "start" : "done"),
+        setup
+          ? finish
+          : () => {
+              persist();
+              close();
+            },
+      ),
+    );
+    dialog.append(footer);
+    const live = node("p", "profile-live", statusText);
+    live.setAttribute("role", "status");
+    live.setAttribute("aria-live", "polite");
+    dialog.append(live);
+    const newContent = dialog.querySelector<HTMLElement>(".profile-content");
+    if (newContent) newContent.scrollTop = scroll;
+    if (focused)
+      dialog
+        .querySelector<HTMLElement>(`[data-focus="${focused}"]`)
+        ?.focus({ preventScroll: true });
+  };
+  const renderCharacter = (content: HTMLElement): void => {
+    content.append(node("p", "profile-intro", copy("intro")));
+    const nameLabel = node(
+      "label",
+      "profile-field profile-name-label",
+      copy("name"),
+    );
+    const nameInput = node("input", "profile-input");
+    nameInput.name = "nickname";
+    nameInput.setAttribute("autocomplete", "nickname");
+    nameInput.maxLength = 40;
+    nameInput.placeholder = copy("nameHint");
+    nameInput.value = profile.name;
+    nameInput.dataset.focus = "name";
+    nameInput.oninput = () => {
+      profile = { ...profile, name: nameInput.value.slice(0, 40) };
+      persist();
+      const title = stageName();
+      if (title)
+        title.textContent = `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`;
+    };
+    nameLabel.append(nameInput);
+    content.append(nameLabel);
+    content.append(node("h3", "profile-field-heading", copy("body")));
+    const bases = node("div", "profile-bases");
+    bases.setAttribute("role", "group");
+    bases.setAttribute("aria-label", copy("body"));
+    for (const base of ["male", "female"] as const) {
+      const choose = button(
+        "profile-base" + (profile.base === base ? " selected" : ""),
+        "",
+        () => {
+          profile = { ...profile, base };
+          persist();
+          render();
+          dialog
+            .querySelector<HTMLButtonElement>(`[data-focus="base-${base}"]`)
+            ?.focus();
+        },
+      );
+      choose.dataset.focus = `base-${base}`;
+      choose.setAttribute("aria-pressed", String(profile.base === base));
+      const baseArt = createAvatar({ ...profile, base }, { portrait: true });
+      baseArt.setAttribute("aria-hidden", "true");
+      choose.append(baseArt, node("span", "", copy(base)));
+      const check = node("span", "profile-base-check");
+      if (profile.base === base) check.innerHTML = icon("check");
+      choose.append(check);
+      bases.append(choose);
+    }
+    content.append(bases);
+    const optionalHeading = node("div", "profile-optional-heading");
+    optionalHeading.append(
+      node("h3", "profile-field-heading", copy("identity")),
+      node("p", "profile-muted", copy("optional")),
+    );
+    content.append(optionalHeading);
+    const fields = node("div", "profile-fields");
+    const countryLabel = node(
+      "label",
+      "profile-field profile-country",
+      copy("country"),
+    );
+    const country = node("select", "profile-input");
+    country.name = "country";
+    country.autocomplete = "country";
+    const empty = node("option", "", copy("choose"));
+    empty.value = "";
+    country.append(empty);
+    const names = new Intl.DisplayNames([getLocale()], { type: "region" });
+    for (const [code, name] of COUNTRY_CODES.map(
+      (code) => [code, names.of(code) || code] as const,
+    ).sort((a, b) => a[1].localeCompare(b[1], getLocale()))) {
+      const option = node("option", "", `${flag(code)} ${name}`);
+      option.value = code;
+      country.append(option);
+    }
+    country.value = profile.nationality;
+    country.onchange = () => {
+      profile = { ...profile, nationality: country.value };
+      persist();
+      const title = stageName();
+      if (title)
+        title.textContent = `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`;
+    };
+    countryLabel.append(country);
+    fields.append(countryLabel);
+    const ageLabel = node("label", "profile-field", copy("age"));
+    const age = node("input", "profile-input");
+    age.type = "number";
+    age.name = "age";
+    age.min = "1";
+    age.max = "120";
+    age.inputMode = "numeric";
+    age.placeholder = "—";
+    age.value = profile.age === null ? "" : String(profile.age);
+    age.onchange = () => {
+      const value = Number(age.value);
+      profile = {
+        ...profile,
+        age:
+          age.value && Number.isInteger(value) && value >= 1 && value <= 120
+            ? value
+            : null,
+      };
+      age.value = profile.age === null ? "" : String(profile.age);
+      persist();
+    };
+    ageLabel.append(age);
+    fields.append(ageLabel);
+    const genderLabel = node("label", "profile-field", copy("gender"));
+    const gender = node("select", "profile-input");
+    for (const value of ["unspecified", "female", "male"] as const) {
+      const option = node("option", "", copy(value));
+      option.value = value;
+      gender.append(option);
+    }
+    gender.value = profile.gender;
+    gender.onchange = () => {
+      profile = {
+        ...profile,
+        gender:
+          gender.value === "female"
+            ? "female"
+            : gender.value === "male"
+              ? "male"
+              : "unspecified",
+      };
+      persist();
+    };
+    genderLabel.append(gender);
+    fields.append(genderLabel);
+    content.append(fields);
+    const collection = node("div", "profile-collection-note");
+    collection.innerHTML = icon("sparkle");
+    collection.append(
+      node(
+        "span",
+        "",
+        `${copy("collection")} · ${profile.owned.length} ${copy("pieces")}`,
+      ),
+    );
+    content.append(collection);
+  };
+  const stageName = (): HTMLElement | null =>
+    dialog.querySelector(".profile-stage-name");
+  const renderProducts = (content: HTMLElement): void => {
+    content.append(
+      node(
+        "h3",
+        "profile-section-title",
+        copy(tab === "shop" ? "earned" : "wardrobe"),
+      ),
+      node(
+        "p",
+        "profile-intro",
+        copy(tab === "shop" ? "shopIntro" : "wardrobeIntro"),
+      ),
+    );
+    const filters = node("div", "profile-filters");
+    const select = node("select", "profile-category");
+    select.setAttribute("aria-label", copy("collection"));
+    for (const slot of [
+      "all",
+      "outfit",
+      "head",
+      "shoes",
+      "frame",
+      "background",
+      "aura",
+      "expression",
+      "skin",
+    ] as const) {
+      const option = node("option", "", copy(slot));
+      option.value = slot;
+      select.append(option);
+    }
+    select.value = category;
+    select.onchange = () => {
+      category = select.value as Slot | "all";
+      render();
+    };
+    filters.append(select);
+    if (tab === "shop") {
+      const label = node("label", "profile-affordable");
+      const toggle = node("input");
+      toggle.type = "checkbox";
+      toggle.checked = affordable;
+      toggle.onchange = () => {
+        affordable = toggle.checked;
+        render();
+      };
+      label.append(toggle, node("span", "", copy("available")));
+      filters.append(label);
+    }
+    content.append(filters);
+    const products = node("div", "profile-products");
+    const currentLevel = profileLevel(profile, xp);
+    const items = ITEMS.filter(
+      (item) =>
+        (category === "all" || item.slot === category) &&
+        (tab === "wardrobe"
+          ? profile.owned.includes(item.id)
+          : !affordable ||
+            profile.owned.includes(item.id) ||
+            (item.level <= currentLevel && item.price <= profile.coins)),
+    );
+    for (const item of items) {
+      const owned = profile.owned.includes(item.id),
+        equipped = profile.equipped[item.slot] === item.id,
+        locked = !owned && currentLevel < item.level;
+      const card = node(
+        "article",
+        "profile-product" +
+          (equipped ? " is-equipped" : "") +
+          (locked ? " is-locked" : ""),
+      );
+      const art = createItemArt(item, profile);
+      art.setAttribute("aria-hidden", "true");
+      card.append(art);
+      const details = node("div", "profile-product-info");
+      details.append(
+        node("span", "profile-product-category", copy(item.slot)),
+        node("h4", "", itemName(item, getLocale())),
+      );
+      details.append(
+        node(
+          "p",
+          "profile-product-price",
+          locked
+            ? `${copy("level")} ${item.level}`
+            : owned
+              ? copy("collection")
+              : `${item.price.toLocaleString(getLocale())} ${copy("coins")}`,
+        ),
+      );
+      const action = button(
+        "profile-buy" + (equipped ? " selected" : ""),
+        equipped
+          ? copy("unequip")
+          : owned
+            ? copy("equip")
+            : locked
+              ? `${copy("level")} ${item.level}`
+              : copy("buy"),
+        () => {
+          profile = syncProfile(loadProfile(xp), xp);
+          if (profile.equipped[item.slot] === item.id) {
+            profile = unequipItem(profile, item.slot);
+            statusText = copy("wearing");
+          } else if (profile.owned.includes(item.id)) {
+            profile = equipItem(profile, item.id);
+            statusText = copy("wearing");
+          } else {
+            profile = buyItem(profile, item.id, xp);
+            statusText = profile.owned.includes(item.id)
+              ? copy("acquired")
+              : copy("insufficient");
+          }
+          persist();
+          render();
+        },
+      );
+      action.dataset.focus = `item-${item.id}`;
+      action.disabled = locked || (!owned && item.price > profile.coins);
+      if (locked) action.title = `${copy("locked")} ${item.level}`;
+      else if (!owned && item.price > profile.coins)
+        action.title = copy("insufficient");
+      action.setAttribute(
+        "aria-label",
+        `${equipped ? copy("unequip") : owned ? copy("equip") : copy("buy")} ${itemName(item, getLocale())}`,
+      );
+      details.append(action);
+      card.append(details);
+      products.append(card);
+    }
+    if (!items.length)
+      products.append(
+        node(
+          "p",
+          "profile-empty",
+          copy(affordable && tab === "shop" ? "noAffordable" : "empty"),
+        ),
+      );
+    content.append(products);
+  };
+  const renderAchievements = (content: HTMLElement): void => {
+    content.append(
+      node("h3", "profile-section-title", copy("achievements")),
+      node("p", "profile-intro", copy("earned")),
+    );
+    const badges = node("div", "profile-achievements");
+    const currentLevel = profileLevel(profile, xp);
+    const data: readonly [CopyKey, string, boolean, string][] = [
+      ["first", "一", profile.completed, copy("firstDetail")],
+      ["practice", "墨", xp >= 100, copy("practiceDetail")],
+      ["garden", "玉", currentLevel >= 10, `${copy("reach")} 10`],
+      ["scholar", "文", currentLevel >= 40, `${copy("reach")} 40`],
+      ["dragon", "龙", currentLevel >= 70, `${copy("reach")} 70`],
+      ["summit", "道", currentLevel >= 90, `${copy("reach")} 90`],
+    ];
+    if (profile.placement?.awarded && profile.placement.band !== "0") {
+      const placement = node("article", "profile-achievement unlocked");
+      placement.append(
+        node("span", "profile-medal", "学"),
+        node("h4", "", copy("placementTitle")),
+        node("p", "", `HSK ${profile.placement.band}`),
+        node("p", "", copy("placementHint")),
+      );
+      badges.append(placement);
+    }
+    for (const [key, glyph, unlocked, detail] of data) {
+      const card = node(
+        "article",
+        "profile-achievement" + (unlocked ? " unlocked" : ""),
+      );
+      card.append(
+        node("span", "profile-medal", glyph),
+        node("h4", "", copy(key)),
+        node("p", "", detail),
+      );
+      if (unlocked)
+        card.append(
+          node("span", "profile-achievement-state", copy("unlocked")),
+        );
+      badges.append(card);
+    }
+    content.append(badges);
+  };
+  const open = (isSetup: boolean): void => {
+    xp = getLearningXP();
+    profile = syncProfile(loadProfile(xp), xp);
+    persist();
+    setup = isSetup;
+    tab = "character";
+    statusText = "";
+    previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : trigger;
+    render();
+    if (!dialog.open) dialog.showModal();
+    dialog
+      .querySelector<HTMLInputElement>(".profile-name-label input")
+      ?.focus({ preventScroll: true });
+  };
+  setupOpener = () =>
+    new Promise<void>((resolve) => {
+      resolveSetup = resolve;
+      open(true);
+    });
+  dialog.addEventListener("cancel", (event) => {
+    if (setup) event.preventDefault();
+  });
+  dialog.addEventListener("click", (event) => {
+    if (event.target !== dialog || setup) return;
+    const bounds = dialog.getBoundingClientRect();
+    if (
+      event.clientX < bounds.left ||
+      event.clientX > bounds.right ||
+      event.clientY < bounds.top ||
+      event.clientY > bounds.bottom
+    )
+      close();
+  });
+  dialog.addEventListener("close", () => {
+    previousFocus?.focus({ preventScroll: true });
+  });
+  const sync = (): void => {
+    xp = getLearningXP();
+    profile = syncProfile(loadProfile(xp), xp);
+    persist();
+    if (dialog.open) render();
+  };
+  window.addEventListener("storage", (event) => {
+    if (event.key === LEARNING_KEY || event.key === PROFILE_KEY) sync();
+  });
+  window.addEventListener("focus", sync);
+  window.addEventListener("hanzi-wallet:profile-imported", sync);
+  window.addEventListener("hanzi-wallet:progress", sync);
+  window.addEventListener("hanzi-wallet:locale", () => {
+    refreshTrigger();
+    if (dialog.open) render();
+  });
+  refreshTrigger();
+}
+
 export function exportProfile(): unknown {
-  return read(getXP());
+  return syncProfile(loadProfile(getLearningXP()), getLearningXP());
 }
 export function importProfile(input: unknown): void {
-  const xp = getXP();
-  const restored = sync(read(xp, input), xp);
-  save(restored);
+  const xp = getLearningXP();
+  saveProfile(syncProfile(readProfile(input, xp), xp));
   window.dispatchEvent(new Event("hanzi-wallet:profile-imported"));
 }

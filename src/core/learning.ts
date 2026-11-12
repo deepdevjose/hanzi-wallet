@@ -31,7 +31,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 function canonicalDay(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const date = new Date(`${value}T00:00:00.000Z`);
-  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  return (
+    Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
+  );
 }
 
 function days(value: unknown): string[] {
@@ -73,7 +75,11 @@ export function readLearning(
 /** Recover the review moment from the scheduling representation already stored. */
 function reviewedAt(card: SavedCharacter): number {
   if (card.reviews === 0) return card.addedAt;
-  return Math.max(0, card.nextReview - (card.interval === 0 ? 600_000 : card.interval * 86_400_000));
+  return Math.max(
+    0,
+    card.nextReview -
+      (card.interval === 0 ? 600_000 : card.interval * 86_400_000),
+  );
 }
 
 /**
@@ -86,13 +92,22 @@ export function mergeLearning(
   incoming: unknown,
   known: ReadonlySet<string>,
 ): LearningProgress {
-  const local = readLearning(current, known), imported = readLearning(incoming, known);
+  const local = readLearning(current, known),
+    imported = readLearning(incoming, known);
   const cards: Record<string, SavedCharacter> = { ...local.cards };
   for (const [char, other] of Object.entries(imported.cards)) {
     const existing = cards[char];
-    if (!existing) { cards[char] = other; continue; }
-    const localTime = reviewedAt(existing), otherTime = reviewedAt(other);
-    const newest = otherTime > localTime || (otherTime === localTime && other.reviews > existing.reviews) ? other : existing;
+    if (!existing) {
+      cards[char] = other;
+      continue;
+    }
+    const localTime = reviewedAt(existing),
+      otherTime = reviewedAt(other);
+    const newest =
+      otherTime > localTime ||
+      (otherTime === localTime && other.reviews > existing.reviews)
+        ? other
+        : existing;
     cards[char] = {
       ...newest,
       addedAt: Math.min(existing.addedAt, other.addedAt),
