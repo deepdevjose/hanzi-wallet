@@ -17,6 +17,8 @@ import {
 import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
+import { mountProfile } from "./profile";
+import { mountCatalog } from "./catalog";
 import { learnText } from "./learning-content";
 import { InkCanvas } from "./ink";
 import { assess, normalize } from "./core/geometry";
@@ -1023,6 +1025,8 @@ async function init(): Promise<void> {
       };
     }
     renderShell();
+    mountProfile();
+    mountCatalog(vocabulary, (char) => { choose(char); setMode("guide"); });
     learning = new LearningView(
       el("learn-view"),
       vocabulary,
@@ -1034,7 +1038,7 @@ async function init(): Promise<void> {
         window.scrollTo({ top: 0 });
       },
       toast,
-      renderStats,
+      () => { renderStats(); window.dispatchEvent(new Event("hanzi-wallet:progress")); },
     );
     ink = new InkCanvas(el<HTMLCanvasElement>("ink"));
     ink.onChange = onInkChange;
