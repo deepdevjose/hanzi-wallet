@@ -13,4 +13,12 @@ The open-source Make Me a Hanzi dictionary (https://github.com/skishore/makemeah
 
 ## User experience follow-up
 
-The catalog currently has full word entries for the 500 legacy characters only. Remaining characters are present and classified by HSK where possible, but do not masquerade as tested recall exercises. Next milestone: compile static local files from a pinned dictionary snapshot and separate handwriting templates from the 500-class recognition model.
+The original 500 multilingual word entries continue to support learning exercises; the remaining characters can now show English learner dictionary definitions and pinyin in read-only catalog cards when the generated dictionary is present. This does not imply new recognition model classes. Next milestone: pin the dictionary source revision and separate expanded handwriting templates from the 500-class recognition model.
+
+## New dictionary generation
+
+The script `scripts/build_common_dictionary.mjs` runs in `npm run build` (via `prebuild`), downloads Make Me a Hanzi `dictionary.txt`, joins its entries with the 3,500-character national standard, and writes `public/data/common-dictionary.json`. The generated JSON is served from the Hanzi Wallet origin, and therefore participates in the existing PWA service-worker cache. A first local `npm run dev` does not require access to GitHub but may show a dictionary-unavailable fallback until a production build has generated the file.
+
+Make Me a Hanzi's dictionary is distributed under LGPL-3.0-or-later, **not the application's MIT license**. The script carries upstream COPYING and LGPL notices into `public/data/`; keep these attribution/licence files in published artifacts. The source uses an upstream `master` URL, and build output logs its SHA-256; pin an immutable revision before declaring production reproducibility.
+
+The extra dictionary definitions are in English and may be absent for specific characters. New entries are for reading and reference, **not** automatically approved Spanish/French/Portuguese recall prompts. Voice playback attempts the first listed pronunciation using the local audio archive and may not cover all heteronyms.
