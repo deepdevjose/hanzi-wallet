@@ -9,6 +9,7 @@ export interface VocabularyEntry {
   readonly char: string;
   readonly pinyin: string;
   readonly meaning: string;
+  readonly meanings?: Readonly<Record<string, string>>;
   readonly category: string;
 }
 export interface CharacterTemplate {
@@ -61,6 +62,7 @@ export interface Preferences {
   readonly reducedGlass: boolean;
   readonly inkWidth: number;
   readonly goal: number;
+  readonly locale: "es" | "en" | "zh-CN" | "fr" | "pt";
 }
 export interface AppState {
   readonly version: 3;

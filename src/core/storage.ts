@@ -1,4 +1,5 @@
 import type { AppState, SavedCharacter, Preferences, Stroke } from "./types";
+import { isLocale } from "../i18n";
 const KEY = "hanzi-wallet-v3";
 const DAY = 86_400_000;
 export const defaults: Preferences = {
@@ -6,6 +7,7 @@ export const defaults: Preferences = {
   reducedGlass: false,
   inkWidth: 2.6,
   goal: 5,
+  locale: "es",
 };
 export const emptyState = (): AppState => ({
   version: 3,
@@ -109,6 +111,7 @@ export function parseState(
     history,
     personal,
     preferences: {
+      locale: isLocale(p.locale) ? p.locale : "es",
       theme: p.theme === "dark" || p.theme === "system" ? p.theme : "light",
       reducedGlass: p.reducedGlass === true,
       inkWidth: Math.min(6, Math.max(1.5, num(p.inkWidth, 2.6))),

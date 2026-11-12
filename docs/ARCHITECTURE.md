@@ -40,7 +40,7 @@ Reviews use a finite queue. Rating is disabled until the card is revealed. An in
 
 ## Offline and deployment
 
-`dist/` contains every required vocabulary, outline, median, model and code asset. The generated service worker precaches these together; the interface reports offline readiness only after the production worker becomes active. Updates install in the background and activate on a later visit instead of reloading an active drawing session.
+`dist/` contains every required vocabulary, outline, median, model and code asset. The generated service worker precaches these together; the interface reports offline readiness only after the production worker becomes active. Updates install completely in the background, then activate without reloading an active drawing. Un-hashed data URLs include a revision; cached assets ignore that query only within the new coherent cache.
 
 URLs are relative so a GitHub Pages repository subpath works. The Pages workflow builds the exact tested source. The optional `.openai/hosting.json` is specific to the companion Site and is not an application dependency.
 
@@ -49,5 +49,5 @@ URLs are relative so a GitHub Pages repository subpath works. The Pages workflow
 - A small MLP is easier to ship and inspect than a large handwriting model, but synthetic data limit its generalization. Geometry adds stroke information and personalization at a higher compute cost.
 - Candidate shortlisting keeps DTW responsive. A candidate omitted by all shortlisting paths cannot be recovered by reranking; future human benchmarks should measure shortlist recall.
 - A static architecture avoids backend setup and ink transmission. It also means progress requires manual backups across devices and can be lost with browser storage.
-- Web speech depends on installed voices. Missing Mandarin voices produce an explicit message; no undocumented remote speech service is added.
+- Pronunciation uses a bundled archive of individually decodable MP3 recordings through Web Audio. It resumes the audio context inside the click gesture, stops stale requests, and falls back to an asynchronously loaded Mandarin system voice only if necessary. No off-origin speech API is called at runtime.
 - A CSS Liquid Glass interpretation preserves web portability. It does not reproduce Apple's native compositor or imply an iOS-native application.

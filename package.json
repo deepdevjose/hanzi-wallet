@@ -1,9 +1,9 @@
 {
   "name": "hanzi-wallet",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
-  "description": "A local-first Chinese handwriting studio with neural and stroke-aware recognition.",
+  "description": "Mandarin character practice by HSK level with an offline writing studio.",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build && node scripts/build_offline.mjs",

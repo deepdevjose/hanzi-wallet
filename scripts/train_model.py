@@ -91,7 +91,7 @@ def main()->None:
             if i%25==0:print(f'Generating {i}/{len(classes)}',flush=True)
         train=np.asarray(x,np.float32);labels=np.asarray(y)
         print(f'Training on {len(labels)} synthetic samples, {train.shape[1]} features',flush=True)
-        clf=MLPClassifier(hidden_layer_sizes=(192,96,64),activation='relu',solver='adam',batch_size=192,learning_rate_init=.0015,max_iter=110,early_stopping=True,validation_fraction=.12,n_iter_no_change=12,random_state=29,verbose=False)
+        clf=MLPClassifier(hidden_layer_sizes=(256,160,96),activation='relu',solver='adam',batch_size=192,learning_rate_init=.0015,max_iter=130,early_stopping=True,validation_fraction=.12,n_iter_no_change=12,random_state=29,verbose=False)
         from threadpoolctl import threadpool_limits
         with threadpool_limits(limits=2):clf.fit(train,labels)
         print(f'Trained {clf.n_iter_} epochs; validation {clf.best_validation_score_:.4f}',flush=True)
@@ -112,7 +112,7 @@ def main()->None:
     for i,template in enumerate(templates):
         for _ in range(8):test.append(features(augment(template,rng,1.8)));truth.append(i)
     probabilities=forward(model,np.asarray(test,np.float32))
-    metrics=dict(dataset='Held-out synthetic perturbations of the same canonical stroke templates; no independent human data.',classes=len(classes),training_samples=len(classes)*56,test_samples=len(truth),top1=round(float(accuracy_score(truth,probabilities.argmax(axis=1))),5),top5=round(float(top_k_accuracy_score(truth,probabilities,k=5,labels=np.arange(len(classes)))),5),seed_train=20261029,seed_test=888,seconds=round(time.time()-start,2),limitations=['No real handwriting dataset validation.','One canonical template per class; synthetic split shares underlying character source.','Softmax outputs and match scores are not calibrated probabilities.','Vocabulary is limited to the bundled 151 characters.'])
+    metrics=dict(dataset='Held-out synthetic perturbations of the same canonical stroke templates; no independent human data.',classes=len(classes),training_samples=len(classes)*56,test_samples=len(truth),top1=round(float(accuracy_score(truth,probabilities.argmax(axis=1))),5),top5=round(float(top_k_accuracy_score(truth,probabilities,k=5,labels=np.arange(len(classes)))),5),seed_train=20261029,seed_test=888,seconds=round(time.time()-start,2),limitations=['No real handwriting dataset validation.','One canonical template per class; synthetic split shares underlying character source.','Softmax outputs and match scores are not calibrated probabilities.',f'Vocabulary is limited to the bundled {len(classes)} characters.'])
     (ROOT/'public/model/metrics.json').write_text(json.dumps(metrics,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(metrics,ensure_ascii=False,indent=2),flush=True)
 

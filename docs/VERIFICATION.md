@@ -10,7 +10,7 @@ Run date: 29 October 2026. All model accuracy numbers below are synthetic, not h
 
 - Python/JavaScript feature and inference parity for exported fixtures.
 - Vocabulary uniqueness and exact mapping between model classes and templates.
-- First-ranked retrieval of every one of the 151 canonical templates.
+- First-ranked retrieval of every one of the 500 canonical templates.
 - Translation, scale and point-density variation for representative characters.
 - Blank marks, accidental tiny taps, and geometric fallback without the neural model.
 - Correct, swapped, reversed, missing and additional strokes.
@@ -18,7 +18,7 @@ Run date: 29 October 2026. All model accuracy numbers below are synthetic, not h
 - Malformed imports, non-finite values, unknown characters, prototype validation and backup round trips.
 - Review interval growth, relearning, due times, mastery rules and interval bounds.
 
-The optimized complete canonical retrieval sweep takes about five seconds in the development container, compared with about 53 seconds before shortlisting. This is a local regression/performance check, not a mobile latency benchmark.
+The complete canonical retrieval sweep takes about 37 seconds for all 500 classes in the development container. This is a local regression/performance check, not a mobile latency benchmark.
 
 `npm run build` generates a static production build and a hashed cache list. Required assets are bundled rather than fetched from CDNs. The project also includes CI and GitHub Pages workflows.
 
@@ -26,7 +26,7 @@ The optimized complete canonical retrieval sweep takes about five seconds in the
 
 The cloud Chromium browser is used against the application preview. A horizontal pointer stroke is recognized as 一 while the selected character remains 永, verifying that the target does not supply the recognition answer. A two-stroke 十 drawn with the mouse was recognized first with 93% heuristic similarity; guided assessment returned 94% shape, 100% order and 100% direction. The goal advanced once. Search for unaccented `shi` found 十. Saving it increased the collection from eight to nine. A nine-card session disabled grading before reveal and ended on a completion screen. Export/import and reload preserved the nine saved cards, review due times, dark theme and one completed daily character. Undo removed exactly one stroke. No application-origin console errors were observed; unrelated browser-extension errors were excluded.
 
-The final installed development toolchain passes all 14 tests and strict type checking. `npm audit` reports zero known vulnerabilities after updating Vite and Vitest. Browser QA used Chromium with mouse input. An actual iOS/Android device and a disconnected-network reload were not exercised in this environment.
+The final installed development toolchain passes all 23 tests and strict type checking. `npm audit` reports zero known vulnerabilities after updating Vite and Vitest. Browser QA used Chromium with mouse input. An actual iOS/Android device and a disconnected-network reload were not exercised in this environment.
 
 ## Reproduce manually
 
@@ -42,3 +42,11 @@ The final installed development toolchain passes all 14 tests and strict type ch
 ## Not established
 
 No independent human handwriting accuracy, physical pen-device compatibility, native iOS implementation, or exhaustive assistive-technology audit is claimed. Browser voice availability and installation prompts vary by platform. GitHub repository creation and Pages publication must be confirmed by the provider before they are reported as completed.
+
+## Version 1.1 verification
+
+The expanded suite has 23 checks, including all 500 canonical characters, Python/JavaScript model parity, all five language glosses, translation parameter consistency, language preference migration, pinyin normalization (including ü and neutral tones), Mandarin voice selection, and complete MP3 byte-range coverage with a SHA-256 integrity check. A CSS regression fixture compares non-colour declarations against version 1.0 to verify that layout, sizing, spacing, typography and interaction declarations are unchanged.
+
+A native Web Audio playback was started from the Listen button in Chromium; the app recorded its playing state after the MP3 decoded. This verifies the browser API path, not physical speaker output or a native-speaker linguistic audit. The single edited neutral `me` clip is disclosed in the audio attribution and still needs listening review.
+
+The data and audio URLs carry an explicit asset revision to avoid mixing new JavaScript with old un-hashed model/data files under a previously installed worker. The generated worker ignores version queries for cached assets, activates only after the complete cache has installed, and does not reload an active drawing.

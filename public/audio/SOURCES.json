@@ -1,0 +1,342 @@
+{
+  "File:Zh-a.ogg": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Zh-a.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zh-a.ogg",
+    "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=3053600",
+    "extmetadata": {
+      "DateTime": {
+        "value": "2007-11-08 20:22:28",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+      },
+      "ObjectName": {
+        "value": "Zh-a",
+        "source": "mediawiki-metadata"
+      },
+      "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+      },
+      "Categories": {
+        "value": "Chinese pronunciation",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "ImageDescription": {
+        "value": "Pronunciation of \"a\" (啊) in Chinese. Male voice. Speaker from Pekin, China.",
+        "source": "commons-desc-page"
+      },
+      "DateTimeOriginal": {
+        "value": "2006-10-29",
+        "source": "commons-desc-page"
+      },
+      "Credit": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/Commons:Shtooka\" title=\"Commons:Shtooka\">The Shtooka Project</a>",
+        "source": "commons-desc-page"
+      },
+      "Artist": {
+        "value": "Wei Gao, Vion Nicolas",
+        "source": "commons-desc-page"
+      },
+      "Permission": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://packs.shtooka.net/chi-balm-hsk1/readme.txt\">http://packs.shtooka.net/chi-balm-hsk1/readme.txt</a>",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseShortName": {
+        "value": "CC BY 2.0 fr",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "UsageTerms": {
+        "value": "Creative Commons Attribution 2.0 fr",
+        "source": "commons-desc-page"
+      },
+      "AttributionRequired": {
+        "value": "true",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/2.0/fr/deed.en",
+        "source": "commons-desc-page"
+      },
+      "Copyrighted": {
+        "value": "True",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "License": {
+        "value": "cc-by-2.0-fr",
+        "source": "commons-templates",
+        "hidden": ""
+      }
+    }
+  },
+  "File:Zh-ba.ogg": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Zh-ba.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zh-ba.ogg",
+    "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=17337674",
+    "extmetadata": {
+      "DateTime": {
+        "value": "2011-11-13 20:10:16",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+      },
+      "ObjectName": {
+        "value": "Zh-ba",
+        "source": "mediawiki-metadata"
+      },
+      "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+      },
+      "Categories": {
+        "value": "Chinese pronunciation|BA letter combinations",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "ImageDescription": {
+        "value": "Pronunciation of \"ba\" (吧) in Chinese. Female voice. Speaker from Liaoning, China.",
+        "source": "commons-desc-page"
+      },
+      "DateTimeOriginal": {
+        "value": "2009-07-08",
+        "source": "commons-desc-page"
+      },
+      "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external text\" href=\"http://packs.shtooka.net/cmn-caen-tan/ogg/cmn-699b7708.ogg\">The Shtooka Project</a>",
+        "source": "commons-desc-page"
+      },
+      "Artist": {
+        "value": "Yue Tan",
+        "source": "commons-desc-page"
+      },
+      "Permission": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://packs.shtooka.net/cmn-caen-tan/readme.txt\">http://packs.shtooka.net/cmn-caen-tan/readme.txt</a>",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseShortName": {
+        "value": "CC BY-SA 3.0 us",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "UsageTerms": {
+        "value": "Creative Commons Attribution-Share Alike 3.0 us",
+        "source": "commons-desc-page"
+      },
+      "AttributionRequired": {
+        "value": "true",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by-sa/3.0/us/deed.en",
+        "source": "commons-desc-page"
+      },
+      "Copyrighted": {
+        "value": "True",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "License": {
+        "value": "cc-by-sa-3.0-us",
+        "source": "commons-templates",
+        "hidden": ""
+      }
+    }
+  },
+  "File:Zh-men.ogg": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/68/Zh-men.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zh-men.ogg",
+    "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=3053655",
+    "extmetadata": {
+      "DateTime": {
+        "value": "2007-11-08 20:24:43",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+      },
+      "ObjectName": {
+        "value": "Zh-men",
+        "source": "mediawiki-metadata"
+      },
+      "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+      },
+      "Categories": {
+        "value": "Chinese pronunciation",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "ImageDescription": {
+        "value": "Pronunciation of \"men\" (们) in Chinese. Male voice. Speaker from Pekin, China.",
+        "source": "commons-desc-page"
+      },
+      "DateTimeOriginal": {
+        "value": "2006-10-29",
+        "source": "commons-desc-page"
+      },
+      "Credit": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/Commons:Shtooka\" title=\"Commons:Shtooka\">The Shtooka Project</a>",
+        "source": "commons-desc-page"
+      },
+      "Artist": {
+        "value": "Wei Gao, Vion Nicolas",
+        "source": "commons-desc-page"
+      },
+      "Permission": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://packs.shtooka.net/chi-balm-hsk1/readme.txt\">http://packs.shtooka.net/chi-balm-hsk1/readme.txt</a>",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseShortName": {
+        "value": "CC BY 2.0 fr",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "UsageTerms": {
+        "value": "Creative Commons Attribution 2.0 fr",
+        "source": "commons-desc-page"
+      },
+      "AttributionRequired": {
+        "value": "true",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/2.0/fr/deed.en",
+        "source": "commons-desc-page"
+      },
+      "Copyrighted": {
+        "value": "True",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "License": {
+        "value": "cc-by-2.0-fr",
+        "source": "commons-templates",
+        "hidden": ""
+      }
+    }
+  },
+  "File:Zh-zhe.ogg": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Zh-zhe.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zh-zhe.ogg",
+    "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=3052696",
+    "extmetadata": {
+      "DateTime": {
+        "value": "2007-11-08 19:44:01",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+      },
+      "ObjectName": {
+        "value": "Zh-zhe",
+        "source": "mediawiki-metadata"
+      },
+      "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+      },
+      "Categories": {
+        "value": "Chinese pronunciation",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+      },
+      "ImageDescription": {
+        "value": "Pronunciation of \"zhe\" (着) in Chinese. Male voice. Speaker from Pekin, China.",
+        "source": "commons-desc-page"
+      },
+      "DateTimeOriginal": {
+        "value": "2006-10-29",
+        "source": "commons-desc-page"
+      },
+      "Credit": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/Commons:Shtooka\" title=\"Commons:Shtooka\">The Shtooka Project</a>",
+        "source": "commons-desc-page"
+      },
+      "Artist": {
+        "value": "Wei Gao, Vion Nicolas",
+        "source": "commons-desc-page"
+      },
+      "Permission": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://packs.shtooka.net/chi-balm-hsk1/readme.txt\">http://packs.shtooka.net/chi-balm-hsk1/readme.txt</a>",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseShortName": {
+        "value": "CC BY 2.0 fr",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "UsageTerms": {
+        "value": "Creative Commons Attribution 2.0 fr",
+        "source": "commons-desc-page"
+      },
+      "AttributionRequired": {
+        "value": "true",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/2.0/fr/deed.en",
+        "source": "commons-desc-page"
+      },
+      "Copyrighted": {
+        "value": "True",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+      },
+      "License": {
+        "value": "cc-by-2.0-fr",
+        "source": "commons-templates",
+        "hidden": ""
+      }
+    }
+  }
+}

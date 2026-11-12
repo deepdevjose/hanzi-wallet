@@ -1,4 +1,4 @@
-Hanzi Wallet 1.0.0
+Hanzi Wallet 1.1.0
 
 Application source code is MIT licensed (see LICENSE).
 
@@ -12,9 +12,9 @@ https://github.com/skishore/makemeahanzi
 Stroke data and derivative trained weights are distributed with the Arphic
 Public License, included at public/data/ARPHICPL.txt. The source data are
 available in the named upstream projects; this repository includes the exact
-151 character templates used for training and a reproducible training script.
+500 character templates used for training and a reproducible training script.
 
-Changes: 151 characters selected and repackaged in public/data/templates.json;
+Changes: 500 characters selected and repackaged in public/data/templates.json;
 median coordinates converted from 1024-unit, upward-y character space to a
 normalized downward-y plane. Stroke outlines are preserved. Synthetic pen
 trajectory augmentations are used to generate the derivative neural weights.
@@ -22,3 +22,12 @@ The vocabulary's Spanish glosses were adapted from the user-provided prototype.
 
 The geometric app icon is original. Interface design is inspired by Apple's
 public Liquid Glass design language; no Apple proprietary assets are bundled.
+
+Pronunciation recordings (version 1.1)
+
+Most recordings: David Fifield, mp3-chinese-pinyin-sound, The Unlicense.
+Additional Wikimedia recordings: Wei Gao and Vion Nicolas (CC BY 2.0 FR),
+and Yue Tan (CC BY-SA 3.0 US). Original and derivative clip details are in
+public/audio/ATTRIBUTION.txt and public/audio/SOURCES.json.
+The audio archive is a collection of independently licensed recordings;
+it is not covered by the application's MIT or character-data licence.

@@ -48,8 +48,8 @@ describe("Neural model and feature extraction", () => {
   it("rejects incompatible model input dimensions", () => {
     expect(() => infer(model, new Float32Array(3))).toThrow();
   });
-  it("contains 151 distinct classes matching the data", () => {
-    expect(new Set(model.classes).size).toBe(151);
+  it("contains 500 distinct classes matching the data", () => {
+    expect(new Set(model.classes).size).toBe(500);
     expect(model.classes).toEqual(templates.map((t) => t.char));
   });
 });
@@ -61,7 +61,7 @@ describe("Stroke recognition and evaluation", () => {
       expect(r.rejected, t.char).toBe(false);
       expect(r.candidates[0]?.char, t.char).toBe(t.char);
     }
-  }, 30000);
+  }, 90000);
   it("recognizes shifted, scaled and nonuniformly sampled strokes", () => {
     for (const char of ["你", "好", "学", "水", "永", "一", "十", "木"]) {
       const strokes = get(char).medians.map((s) =>

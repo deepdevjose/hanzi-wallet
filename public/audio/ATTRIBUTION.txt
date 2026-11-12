@@ -1,0 +1,37 @@
+Hanzi Wallet pronunciation recordings
+
+Most recordings: David Fifield, mp3-chinese-pinyin-sound. The Unlicense (public domain).
+https://github.com/davinfifield/mp3-chinese-pinyin-sound
+Archive SHA-256: bcc31e9f4444b636194ebf09f2d8595b33a1859cebcd30bca04f282b983ea37d
+Original audio re-encoded to mono MP3 at 24 kHz / 48 kbit/s. Individual clips are concatenated as a byte archive and decoded separately.
+
+File:Zh-a.ogg
+Wei Gao, Vion Nicolas
+CC BY 2.0 fr
+https://creativecommons.org/licenses/by/2.0/fr/deed.en
+https://commons.wikimedia.org/wiki/File:Zh-a.ogg
+Changes: re-encoded as MP3.
+
+File:Zh-ba.ogg
+Yue Tan
+CC BY-SA 3.0 us
+https://creativecommons.org/licenses/by-sa/3.0/us/deed.en
+https://commons.wikimedia.org/wiki/File:Zh-ba.ogg
+Changes: re-encoded as MP3.
+
+File:Zh-men.ogg
+Wei Gao, Vion Nicolas
+CC BY 2.0 fr
+https://creativecommons.org/licenses/by/2.0/fr/deed.en
+https://commons.wikimedia.org/wiki/File:Zh-men.ogg
+Changes: re-encoded as MP3.
+
+File:Zh-zhe.ogg
+Wei Gao, Vion Nicolas
+CC BY 2.0 fr
+https://creativecommons.org/licenses/by/2.0/fr/deed.en
+https://commons.wikimedia.org/wiki/File:Zh-zhe.ogg
+Changes: re-encoded as MP3.
+
+me5: edited from the neutral men recording by Wei Gao and Vion Nicolas; final /n/ removed, short fade added; CC BY 2.0 FR. This phonetic edit needs native-speaker listening validation.
+Source metadata is retained in SOURCES.json.

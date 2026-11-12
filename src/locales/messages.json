@@ -1,0 +1,1668 @@
+{
+  "Escribir": {
+    "es": "Escribir",
+    "en": "Write",
+    "zh-CN": "书写",
+    "fr": "Écrire",
+    "pt": "Escrever"
+  },
+  "Mi wallet": {
+    "es": "Mi wallet",
+    "en": "My wallet",
+    "zh-CN": "我的字库",
+    "fr": "Ma collection",
+    "pt": "Minha coleção"
+  },
+  "Repasar": {
+    "es": "Repasar",
+    "en": "Review",
+    "zh-CN": "复习",
+    "fr": "Réviser",
+    "pt": "Revisar"
+  },
+  "TU ESPACIO": {
+    "es": "TU ESPACIO",
+    "en": "YOUR SPACE",
+    "zh-CN": "你的空间",
+    "fr": "TON ESPACE",
+    "pt": "SEU ESPAÇO"
+  },
+  "Tu pequeño hábito": {
+    "es": "Tu pequeño hábito",
+    "en": "Your daily habit",
+    "zh-CN": "每日小习惯",
+    "fr": "Ton petit rituel",
+    "pt": "Seu pequeno hábito"
+  },
+  "Unos minutos hoy.": {
+    "es": "Unos minutos hoy.",
+    "en": "A few minutes today.",
+    "zh-CN": "今天练习几分钟。",
+    "fr": "Quelques minutes aujourd'hui.",
+    "pt": "Alguns minutos hoje."
+  },
+  "Un poco más cerca mañana.": {
+    "es": "Un poco más cerca mañana.",
+    "en": "One step closer tomorrow.",
+    "zh-CN": "明天更进一步。",
+    "fr": "Un pas de plus demain.",
+    "pt": "Um passo mais perto amanhã."
+  },
+  "Tu progreso se queda contigo.": {
+    "es": "Tu progreso se queda contigo.",
+    "en": "Your progress stays with you.",
+    "zh-CN": "进度保存在你身边。",
+    "fr": "Tes progrès restent avec toi.",
+    "pt": "Seu progresso fica com você."
+  },
+  "Barra lateral": {
+    "es": "Barra lateral",
+    "en": "Sidebar",
+    "zh-CN": "侧边栏",
+    "fr": "Barre latérale",
+    "pt": "Barra lateral"
+  },
+  "Navegación principal": {
+    "es": "Navegación principal",
+    "en": "Main navigation",
+    "zh-CN": "主导航",
+    "fr": "Navigation principale",
+    "pt": "Navegação principal"
+  },
+  "Meta diaria": {
+    "es": "Meta diaria",
+    "en": "Daily goal",
+    "zh-CN": "每日目标",
+    "fr": "Objectif quotidien",
+    "pt": "Meta diária"
+  },
+  "Buscar caracteres": {
+    "es": "Buscar caracteres",
+    "en": "Search characters",
+    "zh-CN": "查找汉字",
+    "fr": "Chercher des caractères",
+    "pt": "Buscar caracteres"
+  },
+  "Buscar un carácter": {
+    "es": "Buscar un carácter",
+    "en": "Find a character",
+    "zh-CN": "查找一个汉字",
+    "fr": "Chercher un caractère",
+    "pt": "Buscar um caractere"
+  },
+  "Cambiar tema": {
+    "es": "Cambiar tema",
+    "en": "Change theme",
+    "zh-CN": "切换主题",
+    "fr": "Changer de thème",
+    "pt": "Alterar tema"
+  },
+  "Preferencias": {
+    "es": "Preferencias",
+    "en": "Preferences",
+    "zh-CN": "偏好设置",
+    "fr": "Préférences",
+    "pt": "Preferências"
+  },
+  "Cambiar a modo claro": {
+    "es": "Cambiar a modo claro",
+    "en": "Switch to light mode",
+    "zh-CN": "切换为浅色",
+    "fr": "Passer au mode clair",
+    "pt": "Mudar para modo claro"
+  },
+  "Cambiar a modo oscuro": {
+    "es": "Cambiar a modo oscuro",
+    "en": "Switch to dark mode",
+    "zh-CN": "切换为深色",
+    "fr": "Passer au mode sombre",
+    "pt": "Mudar para modo escuro"
+  },
+  "UN POCO CADA DÍA": {
+    "es": "UN POCO CADA DÍA",
+    "en": "A LITTLE EVERY DAY",
+    "zh-CN": "每天进步一点",
+    "fr": "UN PEU CHAQUE JOUR",
+    "pt": "UM POUCO A CADA DIA"
+  },
+  "Dale forma a tu chino.": {
+    "es": "Dale forma a tu chino.",
+    "en": "Shape your Chinese.",
+    "zh-CN": "一笔一画，写好汉字。",
+    "fr": "Donne forme à ton chinois.",
+    "pt": "Dê forma ao seu chinês."
+  },
+  "Un espacio para escribir, descubrir y recordar. A tu ritmo.": {
+    "es": "Un espacio para escribir, descubrir y recordar. A tu ritmo.",
+    "en": "A space to write, discover and remember. At your pace.",
+    "zh-CN": "书写、探索、记忆。按照你的节奏。",
+    "fr": "Un espace pour écrire, découvrir et retenir. À ton rythme.",
+    "pt": "Um espaço para escrever, descobrir e lembrar. No seu ritmo."
+  },
+  "Writing studio": {
+    "es": "Writing studio",
+    "en": "Writing studio",
+    "zh-CN": "书写练习",
+    "fr": "Atelier d'écriture",
+    "pt": "Estúdio de escrita"
+  },
+  "Estudio de escritura": {
+    "es": "Estudio de escritura",
+    "en": "Writing studio",
+    "zh-CN": "书写练习",
+    "fr": "Atelier d'écriture",
+    "pt": "Estúdio de escrita"
+  },
+  "En tu dispositivo": {
+    "es": "En tu dispositivo",
+    "en": "On your device",
+    "zh-CN": "在此设备上",
+    "fr": "Sur ton appareil",
+    "pt": "No seu dispositivo"
+  },
+  "Listo sin conexión": {
+    "es": "Listo sin conexión",
+    "en": "Ready offline",
+    "zh-CN": "离线已就绪",
+    "fr": "Prêt hors connexion",
+    "pt": "Pronto sem conexão"
+  },
+  "Sin conexión": {
+    "es": "Sin conexión",
+    "en": "Offline",
+    "zh-CN": "离线",
+    "fr": "Hors connexion",
+    "pt": "Sem conexão"
+  },
+  "Modo de escritura": {
+    "es": "Modo de escritura",
+    "en": "Writing mode",
+    "zh-CN": "书写模式",
+    "fr": "Mode d'écriture",
+    "pt": "Modo de escrita"
+  },
+  "Libre": {
+    "es": "Libre",
+    "en": "Freehand",
+    "zh-CN": "自由书写",
+    "fr": "Libre",
+    "pt": "Livre"
+  },
+  "Con guía": {
+    "es": "Con guía",
+    "en": "Guided",
+    "zh-CN": "描写练习",
+    "fr": "Avec guide",
+    "pt": "Com guia"
+  },
+  "Ver trazos": {
+    "es": "Ver trazos",
+    "en": "Strokes",
+    "zh-CN": "查看笔顺",
+    "fr": "Traits",
+    "pt": "Traços"
+  },
+  "Tu siguiente hanzi empieza aquí.": {
+    "es": "Tu siguiente hanzi empieza aquí.",
+    "en": "Your next hanzi starts here.",
+    "zh-CN": "下一个汉字，从这里开始。",
+    "fr": "Ton prochain hanzi commence ici.",
+    "pt": "Seu próximo hanzi começa aqui."
+  },
+  "Lienzo para escribir un carácter chino con mouse, dedo o lápiz": {
+    "es": "Lienzo para escribir un carácter chino con mouse, dedo o lápiz",
+    "en": "Canvas for a Chinese character using mouse, finger or pen",
+    "zh-CN": "使用鼠标、手指或笔书写汉字的画布",
+    "fr": "Zone d'écriture au doigt, à la souris ou au stylet",
+    "pt": "Área para escrever com mouse, dedo ou caneta"
+  },
+  "DIBUJA UN SOLO CARÁCTER": {
+    "es": "DIBUJA UN SOLO CARÁCTER",
+    "en": "WRITE A SINGLE CHARACTER",
+    "zh-CN": "书写一个汉字",
+    "fr": "ÉCRIS UN SEUL CARACTÈRE",
+    "pt": "ESCREVA UM ÚNICO CARACTERE"
+  },
+  "OBSERVA EL ORDEN Y LA DIRECCIÓN": {
+    "es": "OBSERVA EL ORDEN Y LA DIRECCIÓN",
+    "en": "WATCH THE ORDER AND DIRECTION",
+    "zh-CN": "观察笔顺和方向",
+    "fr": "OBSERVE L'ORDRE ET LE SENS",
+    "pt": "OBSERVE A ORDEM E A DIREÇÃO"
+  },
+  "ESCRIBE {char} · SIGUE EL PUNTO": {
+    "es": "ESCRIBE {char} · SIGUE EL PUNTO",
+    "en": "WRITE {char} · FOLLOW THE DOT",
+    "zh-CN": "书写 {char} · 从圆点开始",
+    "fr": "ÉCRIS {char} · SUIS LE POINT",
+    "pt": "ESCREVA {char} · SIGA O PONTO"
+  },
+  "{count} trazo": {
+    "es": "{count} trazo",
+    "en": "{count} stroke",
+    "zh-CN": "{count} 笔",
+    "fr": "{count} trait",
+    "pt": "{count} traço"
+  },
+  "{count} trazos": {
+    "es": "{count} trazos",
+    "en": "{count} strokes",
+    "zh-CN": "{count} 笔",
+    "fr": "{count} traits",
+    "pt": "{count} traços"
+  },
+  "Deshacer último trazo": {
+    "es": "Deshacer último trazo",
+    "en": "Undo last stroke",
+    "zh-CN": "撤销上一笔",
+    "fr": "Annuler le dernier trait",
+    "pt": "Desfazer último traço"
+  },
+  "Deshacer": {
+    "es": "Deshacer",
+    "en": "Undo",
+    "zh-CN": "撤销",
+    "fr": "Annuler",
+    "pt": "Desfazer"
+  },
+  "Borrar lienzo": {
+    "es": "Borrar lienzo",
+    "en": "Clear canvas",
+    "zh-CN": "清空画布",
+    "fr": "Effacer la zone",
+    "pt": "Limpar área"
+  },
+  "Borrar": {
+    "es": "Borrar",
+    "en": "Clear",
+    "zh-CN": "清空",
+    "fr": "Effacer",
+    "pt": "Limpar"
+  },
+  "Grosor de la tinta": {
+    "es": "Grosor de la tinta",
+    "en": "Ink width",
+    "zh-CN": "笔迹粗细",
+    "fr": "Épaisseur du trait",
+    "pt": "Espessura da tinta"
+  },
+  "Mostrar el siguiente trazo": {
+    "es": "Mostrar el siguiente trazo",
+    "en": "Show next stroke",
+    "zh-CN": "显示下一笔",
+    "fr": "Montrer le prochain trait",
+    "pt": "Mostrar próximo traço"
+  },
+  "Analizar": {
+    "es": "Analizar",
+    "en": "Analyze",
+    "zh-CN": "识别",
+    "fr": "Analyser",
+    "pt": "Analisar"
+  },
+  "Tinta fina. Reconocimiento automático.": {
+    "es": "Tinta fina. Reconocimiento automático.",
+    "en": "Fine ink. Automatic recognition.",
+    "zh-CN": "细笔迹，自动识别。",
+    "fr": "Trait fin. Reconnaissance automatique.",
+    "pt": "Traço fino. Reconhecimento automático."
+  },
+  "Mouse, dedo o lápiz.": {
+    "es": "Mouse, dedo o lápiz.",
+    "en": "Mouse, finger or pen.",
+    "zh-CN": "鼠标、手指或笔。",
+    "fr": "Souris, doigt ou stylet.",
+    "pt": "Mouse, dedo ou caneta."
+  },
+  "Carácter seleccionado": {
+    "es": "Carácter seleccionado",
+    "en": "Selected character",
+    "zh-CN": "选中的汉字",
+    "fr": "Caractère choisi",
+    "pt": "Caractere selecionado"
+  },
+  "EN TU RADAR": {
+    "es": "EN TU RADAR",
+    "en": "ON YOUR RADAR",
+    "zh-CN": "正在关注",
+    "fr": "À DÉCOUVRIR",
+    "pt": "NO SEU RADAR"
+  },
+  "Carácter simplificado": {
+    "es": "Carácter simplificado",
+    "en": "Simplified character",
+    "zh-CN": "简体汉字",
+    "fr": "Caractère simplifié",
+    "pt": "Caractere simplificado"
+  },
+  "Escuchar": {
+    "es": "Escuchar",
+    "en": "Listen",
+    "zh-CN": "听读音",
+    "fr": "Écouter",
+    "pt": "Ouvir"
+  },
+  "En tu wallet": {
+    "es": "En tu wallet",
+    "en": "In your wallet",
+    "zh-CN": "已加入字库",
+    "fr": "Dans ta collection",
+    "pt": "Na sua coleção"
+  },
+  "Guardar en mi wallet": {
+    "es": "Guardar en mi wallet",
+    "en": "Save to my wallet",
+    "zh-CN": "加入我的字库",
+    "fr": "Ajouter à ma collection",
+    "pt": "Salvar na minha coleção"
+  },
+  "Quitar de mi wallet": {
+    "es": "Quitar de mi wallet",
+    "en": "Remove from my wallet",
+    "zh-CN": "从我的字库移除",
+    "fr": "Retirer de ma collection",
+    "pt": "Remover da minha coleção"
+  },
+  "Siguiente carácter": {
+    "es": "Siguiente carácter",
+    "en": "Next character",
+    "zh-CN": "下一个汉字",
+    "fr": "Caractère suivant",
+    "pt": "Próximo caractere"
+  },
+  "Resultado del reconocimiento": {
+    "es": "Resultado del reconocimiento",
+    "en": "Recognition result",
+    "zh-CN": "识别结果",
+    "fr": "Résultat de reconnaissance",
+    "pt": "Resultado do reconhecimento"
+  },
+  "Lo que dice tu tinta": {
+    "es": "Lo que dice tu tinta",
+    "en": "What your ink says",
+    "zh-CN": "笔迹里的汉字",
+    "fr": "Ce que dit ton trait",
+    "pt": "O que sua tinta diz"
+  },
+  "Pequeños pasos, nuevos caracteres.": {
+    "es": "Pequeños pasos, nuevos caracteres.",
+    "en": "Small steps, new characters.",
+    "zh-CN": "小步前行，认识新字。",
+    "fr": "Petits pas, nouveaux caractères.",
+    "pt": "Pequenos passos, novos caracteres."
+  },
+  "Seis ideas para tu próxima práctica.": {
+    "es": "Seis ideas para tu próxima práctica.",
+    "en": "Six ideas for your next practice.",
+    "zh-CN": "下一次练习的六个灵感。",
+    "fr": "Six idées pour la prochaine séance.",
+    "pt": "Seis ideias para sua próxima prática."
+  },
+  "Explorar todos": {
+    "es": "Explorar todos",
+    "en": "Explore all",
+    "zh-CN": "浏览全部",
+    "fr": "Tout explorer",
+    "pt": "Explorar todos"
+  },
+  "En tu colección": {
+    "es": "En tu colección",
+    "en": "In your collection",
+    "zh-CN": "字库中的汉字",
+    "fr": "Dans ta collection",
+    "pt": "Na sua coleção"
+  },
+  "Consolidados": {
+    "es": "Consolidados",
+    "en": "Established",
+    "zh-CN": "已巩固",
+    "fr": "Consolidés",
+    "pt": "Consolidados"
+  },
+  "Listos para repasar": {
+    "es": "Listos para repasar",
+    "en": "Ready to review",
+    "zh-CN": "待复习",
+    "fr": "À réviser",
+    "pt": "Prontos para revisar"
+  },
+  "Filtrar colección": {
+    "es": "Filtrar colección",
+    "en": "Filter collection",
+    "zh-CN": "筛选字库",
+    "fr": "Filtrer la collection",
+    "pt": "Filtrar coleção"
+  },
+  "Mi colección": {
+    "es": "Mi colección",
+    "en": "My collection",
+    "zh-CN": "我的收藏",
+    "fr": "Ma collection",
+    "pt": "Minha coleção"
+  },
+  "Explorar los {count}": {
+    "es": "Explorar los {count}",
+    "en": "Explore all {count}",
+    "zh-CN": "浏览全部 {count} 字",
+    "fr": "Explorer les {count}",
+    "pt": "Explorar os {count}"
+  },
+  "Por repasar": {
+    "es": "Por repasar",
+    "en": "Due for review",
+    "zh-CN": "待复习",
+    "fr": "À réviser",
+    "pt": "Para revisar"
+  },
+  "Busca hanzi, pinyin o significado…": {
+    "es": "Busca hanzi, pinyin o significado…",
+    "en": "Search hanzi, pinyin or meaning…",
+    "zh-CN": "搜索汉字、拼音或释义…",
+    "fr": "Hanzi, pinyin ou sens…",
+    "pt": "Busque hanzi, pinyin ou significado…"
+  },
+  "Buscar en la colección": {
+    "es": "Buscar en la colección",
+    "en": "Search collection",
+    "zh-CN": "搜索字库",
+    "fr": "Chercher dans la collection",
+    "pt": "Buscar na coleção"
+  },
+  "Filtrar por categoría": {
+    "es": "Filtrar por categoría",
+    "en": "Filter by category",
+    "zh-CN": "按类别筛选",
+    "fr": "Filtrer par catégorie",
+    "pt": "Filtrar por categoria"
+  },
+  "Todas las categorías": {
+    "es": "Todas las categorías",
+    "en": "All categories",
+    "zh-CN": "所有类别",
+    "fr": "Toutes les catégories",
+    "pt": "Todas as categorias"
+  },
+  "Exportar colección": {
+    "es": "Exportar colección",
+    "en": "Export collection",
+    "zh-CN": "导出字库",
+    "fr": "Exporter la collection",
+    "pt": "Exportar coleção"
+  },
+  "Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.": {
+    "es": "Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.",
+    "en": "Save what you want to learn. Each character has its own review rhythm.",
+    "zh-CN": "收藏你想学的汉字，每个字都有自己的复习节奏。",
+    "fr": "Garde ce que tu veux apprendre. Chaque caractère suit son rythme de révision.",
+    "pt": "Salve o que quer aprender. Cada caractere tem seu ritmo de revisão."
+  },
+  "Repaso espaciado": {
+    "es": "Repaso espaciado",
+    "en": "Spaced review",
+    "zh-CN": "间隔复习",
+    "fr": "Révision espacée",
+    "pt": "Revisão espaçada"
+  },
+  "Dirección del repaso": {
+    "es": "Dirección del repaso",
+    "en": "Review direction",
+    "zh-CN": "复习方向",
+    "fr": "Sens de révision",
+    "pt": "Direção da revisão"
+  },
+  "Hanzi → significado": {
+    "es": "Hanzi → significado",
+    "en": "Hanzi → meaning",
+    "zh-CN": "汉字 → 释义",
+    "fr": "Hanzi → sens",
+    "pt": "Hanzi → significado"
+  },
+  "Significado → hanzi": {
+    "es": "Significado → hanzi",
+    "en": "Meaning → hanzi",
+    "zh-CN": "释义 → 汉字",
+    "fr": "Sens → hanzi",
+    "pt": "Significado → hanzi"
+  },
+  "Recuerda antes de revelar. Los repasos se ajustan a tu respuesta y se guardan en este dispositivo.": {
+    "es": "Recuerda antes de revelar. Los repasos se ajustan a tu respuesta y se guardan en este dispositivo.",
+    "en": "Recall before revealing. Reviews adapt to your answer and stay on this device.",
+    "zh-CN": "先回忆，再揭晓。复习根据你的回答调整，并保存在本设备上。",
+    "fr": "Rappelle-toi avant de révéler. Les révisions s'adaptent à ta réponse et restent sur cet appareil.",
+    "pt": "Lembre antes de revelar. As revisões se ajustam à resposta e ficam neste dispositivo."
+  },
+  "Sin cuentas. Sin distracciones. Sólo tú y tus trazos.": {
+    "es": "Sin cuentas. Sin distracciones. Sólo tú y tus trazos.",
+    "en": "No accounts. No distractions. Just you and your strokes.",
+    "zh-CN": "无需账户，专注你和每一笔。",
+    "fr": "Sans compte. Sans distraction. Juste toi et tes traits.",
+    "pt": "Sem contas. Sem distrações. Só você e seus traços."
+  },
+  "Acerca de Hanzi Wallet": {
+    "es": "Acerca de Hanzi Wallet",
+    "en": "About Hanzi Wallet",
+    "zh-CN": "关于 Hanzi Wallet",
+    "fr": "À propos de Hanzi Wallet",
+    "pt": "Sobre Hanzi Wallet"
+  },
+  "Un trazo a la vez.": {
+    "es": "Un trazo a la vez.",
+    "en": "One stroke at a time.",
+    "zh-CN": "一笔一画。",
+    "fr": "Un trait à la fois.",
+    "pt": "Um traço de cada vez."
+  },
+  "Navegación móvil": {
+    "es": "Navegación móvil",
+    "en": "Mobile navigation",
+    "zh-CN": "移动导航",
+    "fr": "Navigation mobile",
+    "pt": "Navegação móvel"
+  },
+  "Un carácter, una nueva idea.": {
+    "es": "Un carácter, una nueva idea.",
+    "en": "One character, a new idea.",
+    "zh-CN": "一个汉字，一个新想法。",
+    "fr": "Un caractère, une nouvelle idée.",
+    "pt": "Um caractere, uma nova ideia."
+  },
+  "Cerrar búsqueda": {
+    "es": "Cerrar búsqueda",
+    "en": "Close search",
+    "zh-CN": "关闭搜索",
+    "fr": "Fermer la recherche",
+    "pt": "Fechar busca"
+  },
+  "你, nǐ, tú…": {
+    "es": "你, nǐ, tú…",
+    "en": "你, nǐ, you…",
+    "zh-CN": "你、nǐ、释义…",
+    "fr": "你, nǐ, toi…",
+    "pt": "你, nǐ, você…"
+  },
+  "Buscar hanzi, pinyin o significado": {
+    "es": "Buscar hanzi, pinyin o significado",
+    "en": "Search hanzi, pinyin or meaning",
+    "zh-CN": "搜索汉字、拼音或释义",
+    "fr": "Chercher hanzi, pinyin ou sens",
+    "pt": "Buscar hanzi, pinyin ou significado"
+  },
+  "A tu manera.": {
+    "es": "A tu manera.",
+    "en": "Make it yours.",
+    "zh-CN": "按照你的习惯。",
+    "fr": "À ta façon.",
+    "pt": "Do seu jeito."
+  },
+  "Cerrar preferencias": {
+    "es": "Cerrar preferencias",
+    "en": "Close preferences",
+    "zh-CN": "关闭设置",
+    "fr": "Fermer les préférences",
+    "pt": "Fechar preferências"
+  },
+  "Idioma": {
+    "es": "Idioma",
+    "en": "Language",
+    "zh-CN": "界面语言",
+    "fr": "Langue",
+    "pt": "Idioma"
+  },
+  "La interfaz y los significados cambian contigo.": {
+    "es": "La interfaz y los significados cambian contigo.",
+    "en": "The interface and meanings follow your language.",
+    "zh-CN": "界面和释义使用你选择的语言。",
+    "fr": "L'interface et les sens suivent ta langue.",
+    "pt": "A interface e os significados acompanham seu idioma."
+  },
+  "Apariencia": {
+    "es": "Apariencia",
+    "en": "Appearance",
+    "zh-CN": "外观",
+    "fr": "Apparence",
+    "pt": "Aparência"
+  },
+  "Un espacio que se adapta a ti.": {
+    "es": "Un espacio que se adapta a ti.",
+    "en": "A space that adapts to you.",
+    "zh-CN": "适合你的练习空间。",
+    "fr": "Un espace qui te ressemble.",
+    "pt": "Um espaço que se adapta a você."
+  },
+  "Claro": {
+    "es": "Claro",
+    "en": "Light",
+    "zh-CN": "浅色",
+    "fr": "Clair",
+    "pt": "Claro"
+  },
+  "Oscuro": {
+    "es": "Oscuro",
+    "en": "Dark",
+    "zh-CN": "深色",
+    "fr": "Sombre",
+    "pt": "Escuro"
+  },
+  "Sistema": {
+    "es": "Sistema",
+    "en": "System",
+    "zh-CN": "跟随系统",
+    "fr": "Système",
+    "pt": "Sistema"
+  },
+  "Menos transparencia": {
+    "es": "Menos transparencia",
+    "en": "Less transparency",
+    "zh-CN": "减少透明效果",
+    "fr": "Moins de transparence",
+    "pt": "Menos transparência"
+  },
+  "Superficies más sólidas para leer mejor.": {
+    "es": "Superficies más sólidas para leer mejor.",
+    "en": "More solid surfaces for easier reading.",
+    "zh-CN": "更实的背景，阅读更清晰。",
+    "fr": "Des surfaces plus opaques pour mieux lire.",
+    "pt": "Superfícies mais sólidas para facilitar a leitura."
+  },
+  "Caracteres escritos con guía y sin errores de orden.": {
+    "es": "Caracteres escritos con guía y sin errores de orden.",
+    "en": "Distinct characters passed in guided writing.",
+    "zh-CN": "通过描写评估的不同汉字。",
+    "fr": "Caractères distincts réussis avec le guide.",
+    "pt": "Caracteres distintos aprovados com guia."
+  },
+  "{count} caracteres": {
+    "es": "{count} caracteres",
+    "en": "{count} characters",
+    "zh-CN": "{count} 个汉字",
+    "fr": "{count} caractères",
+    "pt": "{count} caracteres"
+  },
+  "Tu progreso, contigo.": {
+    "es": "Tu progreso, contigo.",
+    "en": "Your progress, with you.",
+    "zh-CN": "让进度伴随你。",
+    "fr": "Tes progrès t'accompagnent.",
+    "pt": "Seu progresso, com você."
+  },
+  "Guarda una copia para llevar tu colección y tus ejemplos de escritura a otro dispositivo.": {
+    "es": "Guarda una copia para llevar tu colección y tus ejemplos de escritura a otro dispositivo.",
+    "en": "Save a backup to take your collection and handwriting examples to another device.",
+    "zh-CN": "保存备份，将字库和笔迹示例带到另一台设备。",
+    "fr": "Enregistre une copie pour retrouver ta collection et tes exemples sur un autre appareil.",
+    "pt": "Salve uma cópia para levar sua coleção e exemplos de escrita a outro dispositivo."
+  },
+  "Exportar copia": {
+    "es": "Exportar copia",
+    "en": "Export backup",
+    "zh-CN": "导出备份",
+    "fr": "Exporter une copie",
+    "pt": "Exportar cópia"
+  },
+  "Importar copia": {
+    "es": "Importar copia",
+    "en": "Import backup",
+    "zh-CN": "导入备份",
+    "fr": "Importer une copie",
+    "pt": "Importar cópia"
+  },
+  "La importación combina colecciones. Conserva primero una copia si quieres guardar el estado actual.": {
+    "es": "La importación combina colecciones. Conserva primero una copia si quieres guardar el estado actual.",
+    "en": "Import merges collections. Export a backup first if you want to keep the current state.",
+    "zh-CN": "导入会合并字库。如需保留当前状态，请先导出备份。",
+    "fr": "L'import fusionne les collections. Exporte d'abord une copie pour conserver l'état actuel.",
+    "pt": "A importação combina coleções. Exporte uma cópia antes para preservar o estado atual."
+  },
+  "Cerrar información": {
+    "es": "Cerrar información",
+    "en": "Close information",
+    "zh-CN": "关闭信息",
+    "fr": "Fermer les informations",
+    "pt": "Fechar informações"
+  },
+  "Hanzi Wallet es tu espacio personal para practicar escritura china, reunir caracteres y recordarlos con repasos espaciados.": {
+    "es": "Hanzi Wallet es tu espacio personal para practicar escritura china, reunir caracteres y recordarlos con repasos espaciados.",
+    "en": "Hanzi Wallet is your space to practise Chinese handwriting, collect characters and remember them with spaced review.",
+    "zh-CN": "Hanzi Wallet 是你的汉字书写、收藏和间隔复习空间。",
+    "fr": "Hanzi Wallet est ton espace pour écrire en chinois, collectionner des caractères et les retenir avec des révisions espacées.",
+    "pt": "Hanzi Wallet é seu espaço para praticar a escrita chinesa, colecionar caracteres e lembrá-los com revisões espaçadas."
+  },
+  "Cómo entiende tu escritura": {
+    "es": "Cómo entiende tu escritura",
+    "en": "How it reads your writing",
+    "zh-CN": "如何识别你的笔迹",
+    "fr": "Comment il lit ton écriture",
+    "pt": "Como entende sua escrita"
+  },
+  "Una red neuronal ya entrenada combina la forma visual con un comparador de trayectorias. La guía evalúa forma, orden y dirección por separado. Puedes confirmar ejemplos para que el reconocimiento se adapte a tu letra en este dispositivo.": {
+    "es": "Una red neuronal ya entrenada combina la forma visual con un comparador de trayectorias. La guía evalúa forma, orden y dirección por separado. Puedes confirmar ejemplos para que el reconocimiento se adapte a tu letra en este dispositivo.",
+    "en": "A pretrained neural network combines visual shape with stroke trajectories. The guide checks shape, order and direction separately. Confirm examples to adapt recognition to your writing on this device.",
+    "zh-CN": "预训练神经网络结合字形与笔画轨迹。描写模式分别评估形状、顺序和方向。确认示例可以让本设备的识别更适合你的笔迹。",
+    "fr": "Un réseau préentraîné combine la forme et les trajectoires. Le guide évalue séparément forme, ordre et sens. Confirme des exemples pour adapter la reconnaissance à ton écriture sur cet appareil.",
+    "pt": "Uma rede pré-treinada combina forma e trajetórias. O guia avalia forma, ordem e direção separadamente. Confirme exemplos para adaptar o reconhecimento à sua letra neste dispositivo."
+  },
+  "Reconoce los {count} caracteres incluidos.": {
+    "es": "Reconoce los {count} caracteres incluidos.",
+    "en": "Recognizes the {count} bundled characters.",
+    "zh-CN": "可识别内置的 {count} 个汉字。",
+    "fr": "Reconnaît les {count} caractères inclus.",
+    "pt": "Reconhece os {count} caracteres incluídos."
+  },
+  "La evaluación disponible usa muestras sintéticas; falta validarla con escritura humana independiente.": {
+    "es": "La evaluación disponible usa muestras sintéticas; falta validarla con escritura humana independiente.",
+    "en": "Evaluation uses synthetic samples; independent human handwriting validation is still needed.",
+    "zh-CN": "当前评估使用合成样本，尚需独立的真人笔迹验证。",
+    "fr": "L'évaluation utilise des exemples synthétiques ; une validation indépendante sur écriture humaine reste nécessaire.",
+    "pt": "A avaliação usa amostras sintéticas; falta validar com escrita humana independente."
+  },
+  "La coincidencia es una medida de similitud, no una probabilidad ni una calificación lingüística.": {
+    "es": "La coincidencia es una medida de similitud, no una probabilidad ni una calificación lingüística.",
+    "en": "The match is a similarity measure, not a probability or a language grade.",
+    "zh-CN": "匹配值表示相似程度，不是概率或语言评分。",
+    "fr": "La correspondance mesure une similarité, pas une probabilité ni une note linguistique.",
+    "pt": "A correspondência mede similaridade, não probabilidade nem nota linguística."
+  },
+  "Privado por diseño": {
+    "es": "Privado por diseño",
+    "en": "Private by design",
+    "zh-CN": "注重隐私",
+    "fr": "Conçu pour la confidentialité",
+    "pt": "Privado desde a concepção"
+  },
+  "Tu tinta y tu progreso se procesan en este navegador. Después de la primera carga completa, puedes volver sin conexión. La práctica funciona de forma local y conserva tus trazos en el navegador.": {
+    "es": "Tu tinta y tu progreso se procesan en este navegador. Después de la primera carga completa, puedes volver sin conexión. La práctica funciona de forma local y conserva tus trazos en el navegador.",
+    "en": "Your ink and progress are processed in this browser. Return offline after the first complete load. Practice runs locally and keeps your strokes in the browser.",
+    "zh-CN": "笔迹和进度在浏览器内处理。首次完整加载后可离线使用。练习在本地运行，笔迹保存在浏览器中。",
+    "fr": "Tes traits et tes progrès sont traités dans ce navigateur. Reviens hors connexion après le premier chargement complet. La pratique fonctionne localement et garde tes traits dans le navigateur.",
+    "pt": "Sua tinta e seu progresso são processados no navegador. Após a primeira carga completa, use sem conexão. A prática funciona localmente e guarda os traços no navegador."
+  },
+  "Créditos": {
+    "es": "Créditos",
+    "en": "Credits",
+    "zh-CN": "致谢",
+    "fr": "Crédits",
+    "pt": "Créditos"
+  },
+  "Datos de trazos de": {
+    "es": "Datos de trazos de",
+    "en": "Stroke data from",
+    "zh-CN": "笔画数据来自",
+    "fr": "Données des traits :",
+    "pt": "Dados dos traços de"
+  },
+  ", derivados de fuentes Arphic y distribuidos bajo": {
+    "es": ", derivados de fuentes Arphic y distribuidos bajo",
+    "en": ", derived from Arphic fonts and distributed under",
+    "zh-CN": "，源于 Arphic 字体，依据以下许可证分发：",
+    "fr": ", dérivées des polices Arphic et distribuées sous",
+    "pt": ", derivados de fontes Arphic e distribuídos sob"
+  },
+  "Arphic Public License": {
+    "es": "Arphic Public License",
+    "en": "Arphic Public License",
+    "zh-CN": "Arphic 公共许可证",
+    "fr": "Arphic Public License",
+    "pt": "Arphic Public License"
+  },
+  "Interfaz web inspirada en los materiales Liquid Glass de Apple.": {
+    "es": "Interfaz web inspirada en los materiales Liquid Glass de Apple.",
+    "en": "Web interface inspired by Apple's Liquid Glass materials.",
+    "zh-CN": "网页界面受到 Apple Liquid Glass 材质启发。",
+    "fr": "Interface web inspirée des matériaux Liquid Glass d'Apple.",
+    "pt": "Interface web inspirada nos materiais Liquid Glass da Apple."
+  },
+  "Audio de pronunciación incluido, con reproducción nativa en el navegador.": {
+    "es": "Audio de pronunciación incluido, con reproducción nativa en el navegador.",
+    "en": "Bundled pronunciation audio, played natively in your browser.",
+    "zh-CN": "内置发音录音，由浏览器原生播放。",
+    "fr": "Prononciations incluses, lues nativement dans le navigateur.",
+    "pt": "Áudio de pronúncia incluído, reproduzido nativamente no navegador."
+  },
+  "Grabaciones de David Fifield, publicadas en dominio público.": {
+    "es": "Grabaciones de David Fifield, publicadas en dominio público.",
+    "en": "Recordings by David Fifield, released into the public domain.",
+    "zh-CN": "David Fifield 发布的公共领域录音。",
+    "fr": "Enregistrements de David Fifield, publiés dans le domaine public.",
+    "pt": "Gravações de David Fifield, publicadas em domínio público."
+  },
+  "PALABRAS QUE SE QUEDAN": {
+    "es": "PALABRAS QUE SE QUEDAN",
+    "en": "CHARACTERS THAT STAY",
+    "zh-CN": "让汉字留在记忆中",
+    "fr": "DES CARACTÈRES QUI RESTENT",
+    "pt": "CARACTERES QUE FICAM"
+  },
+  "Tu chino, en tu bolsillo.": {
+    "es": "Tu chino, en tu bolsillo.",
+    "en": "Your Chinese, in your pocket.",
+    "zh-CN": "把你的汉字装进口袋。",
+    "fr": "Ton chinois, dans ta poche.",
+    "pt": "Seu chinês, no seu bolso."
+  },
+  "Una colección que crece contigo. Cada carácter, una pequeña conquista.": {
+    "es": "Una colección que crece contigo. Cada carácter, una pequeña conquista.",
+    "en": "A collection that grows with you. Each character, a small achievement.",
+    "zh-CN": "字库与你共同成长。每个汉字，都是小小的进步。",
+    "fr": "Une collection qui grandit avec toi. Chaque caractère, une petite victoire.",
+    "pt": "Uma coleção que cresce com você. Cada caractere, uma pequena conquista."
+  },
+  "VOLVER PARA RECORDAR": {
+    "es": "VOLVER PARA RECORDAR",
+    "en": "RETURN TO REMEMBER",
+    "zh-CN": "温故知新",
+    "fr": "REVENIR POUR RETENIR",
+    "pt": "VOLTAR PARA LEMBRAR"
+  },
+  "Haz espacio en tu memoria.": {
+    "es": "Haz espacio en tu memoria.",
+    "en": "Make room in your memory.",
+    "zh-CN": "让记忆更深一些。",
+    "fr": "Fais une place dans ta mémoire.",
+    "pt": "Abra espaço na sua memória."
+  },
+  "Un pequeño repaso hoy. Un recuerdo más fuerte mañana.": {
+    "es": "Un pequeño repaso hoy. Un recuerdo más fuerte mañana.",
+    "en": "A short review today. A stronger memory tomorrow.",
+    "zh-CN": "今天小小复习，明天记得更牢。",
+    "fr": "Une petite révision aujourd'hui. Un souvenir plus solide demain.",
+    "pt": "Uma pequena revisão hoje. Uma memória mais forte amanhã."
+  },
+  "Mira cada trazo. Después, prueba con guía.": {
+    "es": "Mira cada trazo. Después, prueba con guía.",
+    "en": "Watch each stroke. Then try guided practice.",
+    "zh-CN": "观察每一笔，然后试试描写。",
+    "fr": "Observe chaque trait, puis essaie avec le guide.",
+    "pt": "Observe cada traço. Depois, tente com guia."
+  },
+  "Sigue la guía; cada movimiento cuenta como un trazo.": {
+    "es": "Sigue la guía; cada movimiento cuenta como un trazo.",
+    "en": "Follow the guide; each pen-down gesture counts as a stroke.",
+    "zh-CN": "跟随指引，每次落笔算一笔。",
+    "fr": "Suis le guide ; chaque geste compte pour un trait.",
+    "pt": "Siga o guia; cada movimento conta como um traço."
+  },
+  "Tu turno. Cambia a «Con guía» para practicar.": {
+    "es": "Tu turno. Cambia a «Con guía» para practicar.",
+    "en": "Your turn. Switch to Guided to practise.",
+    "zh-CN": "轮到你了。切换到描写练习。",
+    "fr": "À toi. Passe au mode Avec guide pour pratiquer.",
+    "pt": "Sua vez. Mude para Com guia para praticar."
+  },
+  "Tu tinta tiene mucho que decir.": {
+    "es": "Tu tinta tiene mucho que decir.",
+    "en": "Your ink has a lot to say.",
+    "zh-CN": "你的笔迹里藏着很多汉字。",
+    "fr": "Ton trait a beaucoup à dire.",
+    "pt": "Sua tinta tem muito a dizer."
+  },
+  "Escribe un carácter y descubrirás qué reconoce tu trazo.": {
+    "es": "Escribe un carácter y descubrirás qué reconoce tu trazo.",
+    "en": "Write a character to see what your strokes suggest.",
+    "zh-CN": "写一个字，看看笔迹会被识别成什么。",
+    "fr": "Écris un caractère pour découvrir ce que tes traits suggèrent.",
+    "pt": "Escreva um caractere para descobrir o que seus traços sugerem."
+  },
+  "Vamos a intentarlo de nuevo.": {
+    "es": "Vamos a intentarlo de nuevo.",
+    "en": "Let's try again.",
+    "zh-CN": "再试一次。",
+    "fr": "Essayons encore.",
+    "pt": "Vamos tentar de novo."
+  },
+  "Leyendo tus trazos…": {
+    "es": "Leyendo tus trazos…",
+    "en": "Reading your strokes…",
+    "zh-CN": "正在识别笔迹…",
+    "fr": "Lecture de tes traits…",
+    "pt": "Lendo seus traços…"
+  },
+  "Todo el análisis ocurre en este dispositivo.": {
+    "es": "Todo el análisis ocurre en este dispositivo.",
+    "en": "All analysis happens on this device.",
+    "zh-CN": "所有分析都在本设备上进行。",
+    "fr": "Tout est analysé sur cet appareil.",
+    "pt": "Toda a análise ocorre neste dispositivo."
+  },
+  "Termina el carácter o haz una pausa para ver las opciones.": {
+    "es": "Termina el carácter o haz una pausa para ver las opciones.",
+    "en": "Finish the character or pause to see candidates.",
+    "zh-CN": "完成汉字或稍作停顿，即可查看候选字。",
+    "fr": "Termine le caractère ou fais une pause pour voir les propositions.",
+    "pt": "Termine o caractere ou faça uma pausa para ver as opções."
+  },
+  "Cuando hagas una pausa, aparecerán las coincidencias.": {
+    "es": "Cuando hagas una pausa, aparecerán las coincidencias.",
+    "en": "Pause to see matching characters.",
+    "zh-CN": "稍作停顿即可查看匹配结果。",
+    "fr": "Fais une pause pour voir les correspondances.",
+    "pt": "Faça uma pausa para ver as correspondências."
+  },
+  "Bien hecho. Un carácter más cerca.": {
+    "es": "Bien hecho. Un carácter más cerca.",
+    "en": "Well done. One character closer.",
+    "zh-CN": "写得不错，又进步了一个字。",
+    "fr": "Bien joué. Un caractère de plus.",
+    "pt": "Muito bem. Mais um caractere aprendido."
+  },
+  "Forma": {
+    "es": "Forma",
+    "en": "Shape",
+    "zh-CN": "形状",
+    "fr": "Forme",
+    "pt": "Forma"
+  },
+  "Orden": {
+    "es": "Orden",
+    "en": "Order",
+    "zh-CN": "顺序",
+    "fr": "Ordre",
+    "pt": "Ordem"
+  },
+  "Dirección": {
+    "es": "Dirección",
+    "en": "Direction",
+    "zh-CN": "方向",
+    "fr": "Sens",
+    "pt": "Direção"
+  },
+  "{score}% similitud": {
+    "es": "{score}% similitud",
+    "en": "{score}% similarity",
+    "zh-CN": "{score}% 相似度",
+    "fr": "{score}% de similarité",
+    "pt": "{score}% de similaridade"
+  },
+  "Posibles caracteres": {
+    "es": "Posibles caracteres",
+    "en": "Possible characters",
+    "zh-CN": "候选汉字",
+    "fr": "Caractères possibles",
+    "pt": "Possíveis caracteres"
+  },
+  "Comparar con {char}": {
+    "es": "Comparar con {char}",
+    "en": "Compare with {char}",
+    "zh-CN": "与 {char} 对比",
+    "fr": "Comparer avec {char}",
+    "pt": "Comparar com {char}"
+  },
+  "Seleccionar {char} para comparar": {
+    "es": "Seleccionar {char} para comparar",
+    "en": "Select {char} to compare",
+    "zh-CN": "选择 {char} 进行对比",
+    "fr": "Choisir {char} pour comparer",
+    "pt": "Selecionar {char} para comparar"
+  },
+  "Elige el que querías escribir para comparar tus trazos.": {
+    "es": "Elige el que querías escribir para comparar tus trazos.",
+    "en": "Choose the character you meant to compare your strokes.",
+    "zh-CN": "选择你想写的汉字，对比笔迹。",
+    "fr": "Choisis le caractère voulu pour comparer tes traits.",
+    "pt": "Escolha o caractere desejado para comparar os traços."
+  },
+  "Sí, escribí {char}. Aprender de este ejemplo.": {
+    "es": "Sí, escribí {char}. Aprender de este ejemplo.",
+    "en": "Yes, I wrote {char}. Learn from this example.",
+    "zh-CN": "是的，我写的是 {char}。保存此笔迹示例。",
+    "fr": "Oui, j'ai écrit {char}. Retenir cet exemple.",
+    "pt": "Sim, escrevi {char}. Aprender com este exemplo."
+  },
+  "Ejemplo guardado ✓": {
+    "es": "Ejemplo guardado ✓",
+    "en": "Example saved ✓",
+    "zh-CN": "示例已保存 ✓",
+    "fr": "Exemple enregistré ✓",
+    "pt": "Exemplo salvo ✓"
+  },
+  "Actualizamos uno de tus cinco ejemplos personales.": {
+    "es": "Actualizamos uno de tus cinco ejemplos personales.",
+    "en": "Updated one of your five personal examples.",
+    "zh-CN": "已更新五个个人示例中的一个。",
+    "fr": "Un de tes cinq exemples personnels a été mis à jour.",
+    "pt": "Atualizamos um de seus cinco exemplos pessoais."
+  },
+  "Tu ejemplo se guardó sólo en este dispositivo.": {
+    "es": "Tu ejemplo se guardó sólo en este dispositivo.",
+    "en": "Your example was saved only on this device.",
+    "zh-CN": "示例仅保存在本设备。",
+    "fr": "Ton exemple reste uniquement sur cet appareil.",
+    "pt": "Seu exemplo foi salvo somente neste dispositivo."
+  },
+  "Empieza en el punto y sigue el trazo {count}.": {
+    "es": "Empieza en el punto y sigue el trazo {count}.",
+    "en": "Start at the dot and follow stroke {count}.",
+    "zh-CN": "从圆点开始，书写第 {count} 笔。",
+    "fr": "Pars du point et suis le trait {count}.",
+    "pt": "Comece no ponto e siga o traço {count}."
+  },
+  "Escribe {char} · {count} de {total} trazos.": {
+    "es": "Escribe {char} · {count} de {total} trazos.",
+    "en": "Write {char} · {count} of {total} strokes.",
+    "zh-CN": "书写 {char} · 已写 {count}/{total} 笔。",
+    "fr": "Écris {char} · {count} traits sur {total}.",
+    "pt": "Escreva {char} · {count} de {total} traços."
+  },
+  "Escribe un carácter para evaluar tus trazos.": {
+    "es": "Escribe un carácter para evaluar tus trazos.",
+    "en": "Write a character to assess your strokes.",
+    "zh-CN": "书写一个汉字以评估笔迹。",
+    "fr": "Écris un caractère pour évaluer tes traits.",
+    "pt": "Escreva um caractere para avaliar seus traços."
+  },
+  "Muy bien. La forma, el orden y la dirección coinciden.": {
+    "es": "Muy bien. La forma, el orden y la dirección coinciden.",
+    "en": "Great. Shape, order and direction match.",
+    "zh-CN": "很好，形状、顺序和方向都正确。",
+    "fr": "Très bien. La forme, l'ordre et le sens correspondent.",
+    "pt": "Muito bem. Forma, ordem e direção correspondem."
+  },
+  "Llevas {count} de {total} trazos. Completa el carácter.": {
+    "es": "Llevas {count} de {total} trazos. Completa el carácter.",
+    "en": "You have {count} of {total} strokes. Finish the character.",
+    "zh-CN": "已写 {count}/{total} 笔。请完成汉字。",
+    "fr": "Tu as {count} traits sur {total}. Termine le caractère.",
+    "pt": "Você tem {count} de {total} traços. Complete o caractere."
+  },
+  "Hay trazos extra; deshaz o vuelve a intentarlo.": {
+    "es": "Hay trazos extra; deshaz o vuelve a intentarlo.",
+    "en": "There are extra strokes; undo or try again.",
+    "zh-CN": "笔画过多，请撤销或重试。",
+    "fr": "Il y a des traits en trop ; annule ou réessaie.",
+    "pt": "Há traços extras; desfaça ou tente novamente."
+  },
+  "Ajusta la posición y la proporción. Activa la guía para comparar.": {
+    "es": "Ajusta la posición y la proporción. Activa la guía para comparar.",
+    "en": "Adjust position and proportion. Use the guide to compare.",
+    "zh-CN": "调整位置和比例，开启指引进行对比。",
+    "fr": "Ajuste la position et les proportions. Utilise le guide pour comparer.",
+    "pt": "Ajuste a posição e a proporção. Use o guia para comparar."
+  },
+  "La forma se parece, pero revisa el orden. Mira la animación e inténtalo de nuevo.": {
+    "es": "La forma se parece, pero revisa el orden. Mira la animación e inténtalo de nuevo.",
+    "en": "The shape is close, but check the order. Watch the animation and try again.",
+    "zh-CN": "字形接近，请检查笔顺。观看动画后再试一次。",
+    "fr": "La forme est proche, mais vérifie l'ordre. Regarde l'animation et réessaie.",
+    "pt": "A forma está próxima, mas revise a ordem. Veja a animação e tente de novo."
+  },
+  "Revisa la dirección: normalmente de arriba abajo y de izquierda a derecha.": {
+    "es": "Revisa la dirección: normalmente de arriba abajo y de izquierda a derecha.",
+    "en": "Check direction: usually top to bottom and left to right.",
+    "zh-CN": "检查方向，通常从上到下、从左到右。",
+    "fr": "Vérifie le sens : en général de haut en bas et de gauche à droite.",
+    "pt": "Revise a direção: normalmente de cima para baixo e da esquerda para a direita."
+  },
+  "Escribe un carácter más grande para poder reconocerlo.": {
+    "es": "Escribe un carácter más grande para poder reconocerlo.",
+    "en": "Write a larger character so it can be recognized.",
+    "zh-CN": "请把字写大一些，方便识别。",
+    "fr": "Écris un caractère plus grand pour le reconnaître.",
+    "pt": "Escreva um caractere maior para reconhecê-lo."
+  },
+  "Hay demasiados trazos. Prueba con un solo carácter.": {
+    "es": "Hay demasiados trazos. Prueba con un solo carácter.",
+    "en": "Too many strokes. Try one character at a time.",
+    "zh-CN": "笔画过多，请一次书写一个汉字。",
+    "fr": "Trop de traits. Essaie un seul caractère à la fois.",
+    "pt": "Há traços demais. Tente um único caractere."
+  },
+  "Sin coincidencia clara. Prueba otra vez o elige un carácter para practicar.": {
+    "es": "Sin coincidencia clara. Prueba otra vez o elige un carácter para practicar.",
+    "en": "No clear match. Try again or choose a practice character.",
+    "zh-CN": "暂时没有明确匹配。请重试或选择一个字练习。",
+    "fr": "Pas de correspondance claire. Réessaie ou choisis un caractère.",
+    "pt": "Sem correspondência clara. Tente de novo ou escolha um caractere."
+  },
+  "Compara las opciones y elige la que querías escribir.": {
+    "es": "Compara las opciones y elige la que querías escribir.",
+    "en": "Compare the options and choose your intended character.",
+    "zh-CN": "对比候选字，选择你想写的那个。",
+    "fr": "Compare les propositions et choisis le caractère voulu.",
+    "pt": "Compare as opções e escolha o caractere desejado."
+  },
+  "Todavía no lo encontramos.": {
+    "es": "Todavía no lo encontramos.",
+    "en": "We haven't found it yet.",
+    "zh-CN": "暂时没有找到。",
+    "fr": "Pas encore trouvé.",
+    "pt": "Ainda não encontramos."
+  },
+  "Aquí empieza tu colección.": {
+    "es": "Aquí empieza tu colección.",
+    "en": "Your collection starts here.",
+    "zh-CN": "你的字库从这里开始。",
+    "fr": "Ta collection commence ici.",
+    "pt": "Sua coleção começa aqui."
+  },
+  "Prueba con otro carácter, pinyin o significado.": {
+    "es": "Prueba con otro carácter, pinyin o significado.",
+    "en": "Try another character, pinyin or meaning.",
+    "zh-CN": "试试其他汉字、拼音或释义。",
+    "fr": "Essaie un autre caractère, pinyin ou sens.",
+    "pt": "Tente outro caractere, pinyin ou significado."
+  },
+  "Prueba con otro hanzi, pinyin o significado.": {
+    "es": "Prueba con otro hanzi, pinyin o significado.",
+    "en": "Try another hanzi, pinyin or meaning.",
+    "zh-CN": "试试其他汉字、拼音或释义。",
+    "fr": "Essaie un autre hanzi, pinyin ou sens.",
+    "pt": "Tente outro hanzi, pinyin ou significado."
+  },
+  "Explora los caracteres y guarda los que quieres aprender.": {
+    "es": "Explora los caracteres y guarda los que quieres aprender.",
+    "en": "Explore characters and save those you want to learn.",
+    "zh-CN": "浏览汉字，收藏想学习的字。",
+    "fr": "Explore les caractères et garde ceux que tu veux apprendre.",
+    "pt": "Explore os caracteres e salve os que quer aprender."
+  },
+  "Explorar caracteres": {
+    "es": "Explorar caracteres",
+    "en": "Explore characters",
+    "zh-CN": "浏览汉字",
+    "fr": "Explorer les caractères",
+    "pt": "Explorar caracteres"
+  },
+  "{count} caracteres. Elige uno para practicar y añadirlo a tu wallet.": {
+    "es": "{count} caracteres. Elige uno para practicar y añadirlo a tu wallet.",
+    "en": "{count} characters. Choose one to practise and save.",
+    "zh-CN": "共 {count} 个汉字，选择一个来练习并加入字库。",
+    "fr": "{count} caractères. Choisis-en un pour pratiquer et le garder.",
+    "pt": "{count} caracteres. Escolha um para praticar e salvar."
+  },
+  "Un carácter se consolida al alcanzar un intervalo de al menos siete días de repaso.": {
+    "es": "Un carácter se consolida al alcanzar un intervalo de al menos siete días de repaso.",
+    "en": "A character is established when its review interval reaches at least seven days.",
+    "zh-CN": "复习间隔达到至少七天时，该汉字被标记为已巩固。",
+    "fr": "Un caractère est consolidé quand son intervalle de révision atteint sept jours.",
+    "pt": "Um caractere é consolidado quando o intervalo de revisão chega a sete dias."
+  },
+  "Un poco más tuyo.": {
+    "es": "Un poco más tuyo.",
+    "en": "A little more yours.",
+    "zh-CN": "又记牢了一点。",
+    "fr": "Un peu plus à toi.",
+    "pt": "Um pouco mais seu."
+  },
+  "Todo al día.": {
+    "es": "Todo al día.",
+    "en": "All caught up.",
+    "zh-CN": "复习已完成。",
+    "fr": "Tout est à jour.",
+    "pt": "Tudo em dia."
+  },
+  "No tienes caracteres pendientes para este momento.": {
+    "es": "No tienes caracteres pendientes para este momento.",
+    "en": "You have no characters due right now.",
+    "zh-CN": "目前没有待复习的汉字。",
+    "fr": "Aucun caractère à réviser pour le moment.",
+    "pt": "Não há caracteres pendentes agora."
+  },
+  "Repasar toda mi colección": {
+    "es": "Repasar toda mi colección",
+    "en": "Review my whole collection",
+    "zh-CN": "复习整个字库",
+    "fr": "Réviser toute ma collection",
+    "pt": "Revisar toda a coleção"
+  },
+  "{count} de {total}": {
+    "es": "{count} de {total}",
+    "en": "{count} of {total}",
+    "zh-CN": "{count}/{total}",
+    "fr": "{count} sur {total}",
+    "pt": "{count} de {total}"
+  },
+  "Completaste {count} repasos. Nos vemos en la próxima sesión.": {
+    "es": "Completaste {count} repasos. Nos vemos en la próxima sesión.",
+    "en": "You completed {count} reviews. See you next session.",
+    "zh-CN": "你完成了 {count} 次复习。下次见。",
+    "fr": "Tu as terminé {count} révisions. À la prochaine séance.",
+    "pt": "Você concluiu {count} revisões. Até a próxima sessão."
+  },
+  "¿LO RECORDABAS?": {
+    "es": "¿LO RECORDABAS?",
+    "en": "DID YOU REMEMBER?",
+    "zh-CN": "你记住了吗？",
+    "fr": "TU T'EN SOUVENAIS ?",
+    "pt": "VOCÊ LEMBRAVA?"
+  },
+  "TÓMATE UN MOMENTO": {
+    "es": "TÓMATE UN MOMENTO",
+    "en": "TAKE A MOMENT",
+    "zh-CN": "先想一想",
+    "fr": "PRENDS UN INSTANT",
+    "pt": "PENSE UM POUCO"
+  },
+  "Revelar respuesta": {
+    "es": "Revelar respuesta",
+    "en": "Reveal answer",
+    "zh-CN": "显示答案",
+    "fr": "Révéler la réponse",
+    "pt": "Revelar resposta"
+  },
+  "Ocultar respuesta": {
+    "es": "Ocultar respuesta",
+    "en": "Hide answer",
+    "zh-CN": "隐藏答案",
+    "fr": "Masquer la réponse",
+    "pt": "Ocultar resposta"
+  },
+  "Elige cómo te fue.": {
+    "es": "Elige cómo te fue.",
+    "en": "Choose how you did.",
+    "zh-CN": "选择你的记忆情况。",
+    "fr": "Choisis comment cela s'est passé.",
+    "pt": "Escolha como foi."
+  },
+  "Toca o pulsa Espacio para revelar.": {
+    "es": "Toca o pulsa Espacio para revelar.",
+    "en": "Tap or press Space to reveal.",
+    "zh-CN": "点击或按空格显示答案。",
+    "fr": "Touche ou appuie sur Espace pour révéler.",
+    "pt": "Toque ou pressione Espaço para revelar."
+  },
+  "Otra vez": {
+    "es": "Otra vez",
+    "en": "Again",
+    "zh-CN": "再复习",
+    "fr": "À revoir",
+    "pt": "Outra vez"
+  },
+  "En 10 minutos": {
+    "es": "En 10 minutos",
+    "en": "In 10 minutes",
+    "zh-CN": "10 分钟后",
+    "fr": "Dans 10 minutes",
+    "pt": "Em 10 minutos"
+  },
+  "Con esfuerzo": {
+    "es": "Con esfuerzo",
+    "en": "With effort",
+    "zh-CN": "有点困难",
+    "fr": "Avec effort",
+    "pt": "Com esforço"
+  },
+  "Lo recordé": {
+    "es": "Lo recordé",
+    "en": "Remembered",
+    "zh-CN": "记住了",
+    "fr": "Je savais",
+    "pt": "Lembrei"
+  },
+  "{count} día": {
+    "es": "{count} día",
+    "en": "{count} day",
+    "zh-CN": "{count} 天",
+    "fr": "{count} jour",
+    "pt": "{count} dia"
+  },
+  "{count} días": {
+    "es": "{count} días",
+    "en": "{count} days",
+    "zh-CN": "{count} 天",
+    "fr": "{count} jours",
+    "pt": "{count} dias"
+  },
+  "Tu copia está lista. Guárdala en un lugar seguro.": {
+    "es": "Tu copia está lista. Guárdala en un lugar seguro.",
+    "en": "Your backup is ready. Keep it somewhere safe.",
+    "zh-CN": "备份已就绪，请妥善保存。",
+    "fr": "Ta copie est prête. Garde-la en lieu sûr.",
+    "pt": "Sua cópia está pronta. Guarde-a em local seguro."
+  },
+  "Carácter retirado. Puedes añadirlo cuando quieras.": {
+    "es": "Carácter retirado. Puedes añadirlo cuando quieras.",
+    "en": "Character removed. You can add it again anytime.",
+    "zh-CN": "汉字已移除，随时可以再次添加。",
+    "fr": "Caractère retiré. Tu peux le rajouter quand tu veux.",
+    "pt": "Caractere removido. Você pode adicioná-lo novamente."
+  },
+  "Un nuevo carácter en tu wallet.": {
+    "es": "Un nuevo carácter en tu wallet.",
+    "en": "A new character in your wallet.",
+    "zh-CN": "字库新增了一个汉字。",
+    "fr": "Un nouveau caractère dans ta collection.",
+    "pt": "Um novo caractere na sua coleção."
+  },
+  "Copia importada. Tu colección está al día.": {
+    "es": "Copia importada. Tu colección está al día.",
+    "en": "Backup imported. Your collection is up to date.",
+    "zh-CN": "备份已导入，字库已更新。",
+    "fr": "Copie importée. Ta collection est à jour.",
+    "pt": "Cópia importada. Sua coleção está atualizada."
+  },
+  "La copia no es válida.": {
+    "es": "La copia no es válida.",
+    "en": "The backup is invalid.",
+    "zh-CN": "备份无效。",
+    "fr": "La copie n'est pas valide.",
+    "pt": "A cópia não é válida."
+  },
+  "La copia debe pesar menos de 5 MB.": {
+    "es": "La copia debe pesar menos de 5 MB.",
+    "en": "The backup must be smaller than 5 MB.",
+    "zh-CN": "备份文件必须小于 5 MB。",
+    "fr": "La copie doit faire moins de 5 Mo.",
+    "pt": "A cópia deve ter menos de 5 MB."
+  },
+  "No se pudo guardar. Exporta una copia de tu progreso.": {
+    "es": "No se pudo guardar. Exporta una copia de tu progreso.",
+    "en": "Couldn't save. Export a progress backup.",
+    "zh-CN": "无法保存，请导出进度备份。",
+    "fr": "Impossible d'enregistrer. Exporte une copie de tes progrès.",
+    "pt": "Não foi possível salvar. Exporte uma cópia do progresso."
+  },
+  "No se pudo guardar.": {
+    "es": "No se pudo guardar.",
+    "en": "Couldn't save.",
+    "zh-CN": "无法保存。",
+    "fr": "Impossible d'enregistrer.",
+    "pt": "Não foi possível salvar."
+  },
+  "No se pudieron leer los trazos.": {
+    "es": "No se pudieron leer los trazos.",
+    "en": "Couldn't read the strokes.",
+    "zh-CN": "无法读取笔迹。",
+    "fr": "Impossible de lire les traits.",
+    "pt": "Não foi possível ler os traços."
+  },
+  "No se pudo iniciar el reconocimiento. Recarga para volver a intentarlo.": {
+    "es": "No se pudo iniciar el reconocimiento. Recarga para volver a intentarlo.",
+    "en": "Recognition couldn't start. Reload to try again.",
+    "zh-CN": "识别无法启动，请刷新后重试。",
+    "fr": "La reconnaissance n'a pas démarré. Recharge pour réessayer.",
+    "pt": "Não foi possível iniciar o reconhecimento. Recarregue para tentar de novo."
+  },
+  "Este navegador no admite reconocimiento en segundo plano.": {
+    "es": "Este navegador no admite reconocimiento en segundo plano.",
+    "en": "This browser doesn't support background recognition.",
+    "zh-CN": "此浏览器不支持后台识别。",
+    "fr": "Ce navigateur ne permet pas la reconnaissance en arrière-plan.",
+    "pt": "Este navegador não suporta reconhecimento em segundo plano."
+  },
+  "El vocabulario está incompleto.": {
+    "es": "El vocabulario está incompleto.",
+    "en": "The vocabulary is incomplete.",
+    "zh-CN": "字库数据不完整。",
+    "fr": "Le vocabulaire est incomplet.",
+    "pt": "O vocabulário está incompleto."
+  },
+  "Modelo incompatible.": {
+    "es": "Modelo incompatible.",
+    "en": "Incompatible model.",
+    "zh-CN": "模型不兼容。",
+    "fr": "Modèle incompatible.",
+    "pt": "Modelo incompatível."
+  },
+  "Reconocimiento por trazos disponible. No se pudo cargar la red neuronal.": {
+    "es": "Reconocimiento por trazos disponible. No se pudo cargar la red neuronal.",
+    "en": "Stroke recognition is available. The neural model couldn't load.",
+    "zh-CN": "轨迹识别仍然可用，神经网络模型暂未加载。",
+    "fr": "La reconnaissance des traits fonctionne. Le modèle neuronal n'a pas pu charger.",
+    "pt": "O reconhecimento por traços está disponível. A rede neural não carregou."
+  },
+  "Tu wallet empieza con 8 caracteres. Hazla tuya.": {
+    "es": "Tu wallet empieza con 8 caracteres. Hazla tuya.",
+    "en": "Your wallet starts with 8 characters. Make it yours.",
+    "zh-CN": "字库从 8 个汉字开始，慢慢变成你的收藏。",
+    "fr": "Ta collection commence avec 8 caractères. Fais-la tienne.",
+    "pt": "Sua coleção começa com 8 caracteres. Faça dela a sua."
+  },
+  "Hay una nueva versión. Se abrirá en tu próxima visita.": {
+    "es": "Hay una nueva versión. Se abrirá en tu próxima visita.",
+    "en": "An update is ready. It will open on your next visit.",
+    "zh-CN": "新版本已就绪，下次访问时启用。",
+    "fr": "Une mise à jour est prête pour ta prochaine visite.",
+    "pt": "Uma atualização está pronta para sua próxima visita."
+  },
+  "No pudimos abrir tu espacio.": {
+    "es": "No pudimos abrir tu espacio.",
+    "en": "We couldn't open your space.",
+    "zh-CN": "暂时无法打开练习空间。",
+    "fr": "Impossible d'ouvrir ton espace.",
+    "pt": "Não foi possível abrir seu espaço."
+  },
+  "Revisa tu conexión y vuelve a intentarlo.": {
+    "es": "Revisa tu conexión y vuelve a intentarlo.",
+    "en": "Check your connection and try again.",
+    "zh-CN": "检查网络连接后重试。",
+    "fr": "Vérifie ta connexion et réessaie.",
+    "pt": "Verifique a conexão e tente novamente."
+  },
+  "Volver a intentar": {
+    "es": "Volver a intentar",
+    "en": "Try again",
+    "zh-CN": "重试",
+    "fr": "Réessayer",
+    "pt": "Tentar novamente"
+  },
+  "Abriendo tu espacio…": {
+    "es": "Abriendo tu espacio…",
+    "en": "Opening your space…",
+    "zh-CN": "正在打开练习空间…",
+    "fr": "Ouverture de ton espace…",
+    "pt": "Abrindo seu espaço…"
+  },
+  "No se pudo reproducir el audio en este dispositivo.": {
+    "es": "No se pudo reproducir el audio en este dispositivo.",
+    "en": "Audio couldn't play on this device.",
+    "zh-CN": "本设备暂时无法播放音频。",
+    "fr": "L'audio n'a pas pu être lu sur cet appareil.",
+    "pt": "Não foi possível reproduzir o áudio neste dispositivo."
+  },
+  "Preparando pronunciación…": {
+    "es": "Preparando pronunciación…",
+    "en": "Preparing pronunciation…",
+    "zh-CN": "正在准备发音…",
+    "fr": "Préparation de la prononciation…",
+    "pt": "Preparando pronúncia…"
+  },
+  "Reproduciendo pronunciación.": {
+    "es": "Reproduciendo pronunciación.",
+    "en": "Playing pronunciation.",
+    "zh-CN": "正在播放发音。",
+    "fr": "Lecture de la prononciation.",
+    "pt": "Reproduzindo pronúncia."
+  },
+  "Pronunciación terminada.": {
+    "es": "Pronunciación terminada.",
+    "en": "Pronunciation finished.",
+    "zh-CN": "发音播放完毕。",
+    "fr": "Prononciation terminée.",
+    "pt": "Pronúncia concluída."
+  },
+  "El archivo no contiene una wallet válida.": {
+    "es": "El archivo no contiene una wallet válida.",
+    "en": "The file doesn't contain a valid wallet.",
+    "zh-CN": "文件中没有有效字库。",
+    "fr": "Le fichier ne contient pas de collection valide.",
+    "pt": "O arquivo não contém uma coleção válida."
+  },
+  "Recuperamos tu colección de Hanzi Studio.": {
+    "es": "Recuperamos tu colección de Hanzi Studio.",
+    "en": "Recovered your Hanzi Studio collection.",
+    "zh-CN": "已恢复你的 Hanzi Studio 字库。",
+    "fr": "Ta collection Hanzi Studio a été récupérée.",
+    "pt": "Recuperamos sua coleção do Hanzi Studio."
+  },
+  "No se pudo leer el progreso anterior. Puedes importar una copia.": {
+    "es": "No se pudo leer el progreso anterior. Puedes importar una copia.",
+    "en": "Couldn't read previous progress. You can import a backup.",
+    "zh-CN": "无法读取之前的进度，你可以导入备份。",
+    "fr": "Impossible de lire les anciens progrès. Tu peux importer une copie.",
+    "pt": "Não foi possível ler o progresso anterior. Você pode importar uma cópia."
+  },
+  "La red obtuvo {score}% de acierto en {count} muestras sintéticas; falta validarla con escritura humana independiente.": {
+    "es": "La red obtuvo {score}% de acierto en {count} muestras sintéticas; falta validarla con escritura humana independiente.",
+    "en": "The network scored {score}% on {count} synthetic samples; independent human handwriting validation is still needed.",
+    "zh-CN": "模型在 {count} 个合成样本上的准确率为 {score}%，尚需独立真人笔迹验证。",
+    "fr": "Le réseau a obtenu {score}% sur {count} exemples synthétiques ; une validation indépendante sur écriture humaine reste nécessaire.",
+    "pt": "A rede obteve {score}% em {count} amostras sintéticas; falta validar com escrita humana independente."
+  },
+  "No se pudo cargar {path} ({status}).": {
+    "es": "No se pudo cargar {path} ({status}).",
+    "en": "Couldn't load {path} ({status}).",
+    "zh-CN": "无法加载 {path}（{status}）。",
+    "fr": "Impossible de charger {path} ({status}).",
+    "pt": "Não foi possível carregar {path} ({status})."
+  },
+  "Practicar {char}, {pinyin}, {meaning}": {
+    "es": "Practicar {char}, {pinyin}, {meaning}",
+    "en": "Practise {char}, {pinyin}, {meaning}",
+    "zh-CN": "练习 {char}，{pinyin}，{meaning}",
+    "fr": "Pratiquer {char}, {pinyin}, {meaning}",
+    "pt": "Praticar {char}, {pinyin}, {meaning}"
+  },
+  "Pronombres": {
+    "es": "Pronombres",
+    "en": "Pronouns",
+    "zh-CN": "代词",
+    "fr": "Pronoms",
+    "pt": "Pronomes"
+  },
+  "Básicos": {
+    "es": "Básicos",
+    "en": "Fundamentals",
+    "zh-CN": "基础",
+    "fr": "Bases",
+    "pt": "Fundamentos"
+  },
+  "Gramática": {
+    "es": "Gramática",
+    "en": "Grammar",
+    "zh-CN": "语法",
+    "fr": "Grammaire",
+    "pt": "Gramática"
+  },
+  "Verbos": {
+    "es": "Verbos",
+    "en": "Verbs",
+    "zh-CN": "动词",
+    "fr": "Verbes",
+    "pt": "Verbos"
+  },
+  "Personas": {
+    "es": "Personas",
+    "en": "People",
+    "zh-CN": "人物",
+    "fr": "Personnes",
+    "pt": "Pessoas"
+  },
+  "Lugares": {
+    "es": "Lugares",
+    "en": "Places",
+    "zh-CN": "地点",
+    "fr": "Lieux",
+    "pt": "Lugares"
+  },
+  "Estudio": {
+    "es": "Estudio",
+    "en": "Study",
+    "zh-CN": "学习",
+    "fr": "Études",
+    "pt": "Estudo"
+  },
+  "Números": {
+    "es": "Números",
+    "en": "Numbers",
+    "zh-CN": "数字",
+    "fr": "Nombres",
+    "pt": "Números"
+  },
+  "Adjetivos": {
+    "es": "Adjetivos",
+    "en": "Adjectives",
+    "zh-CN": "形容词",
+    "fr": "Adjectifs",
+    "pt": "Adjetivos"
+  },
+  "Comida": {
+    "es": "Comida",
+    "en": "Food",
+    "zh-CN": "饮食",
+    "fr": "Alimentation",
+    "pt": "Comida"
+  },
+  "Preguntas": {
+    "es": "Preguntas",
+    "en": "Questions",
+    "zh-CN": "疑问",
+    "fr": "Questions",
+    "pt": "Perguntas"
+  },
+  "Tiempo": {
+    "es": "Tiempo",
+    "en": "Time",
+    "zh-CN": "时间",
+    "fr": "Temps",
+    "pt": "Tempo"
+  },
+  "Familia": {
+    "es": "Familia",
+    "en": "Family",
+    "zh-CN": "家庭",
+    "fr": "Famille",
+    "pt": "Família"
+  },
+  "Clasificadores": {
+    "es": "Clasificadores",
+    "en": "Measure words",
+    "zh-CN": "量词",
+    "fr": "Classificateurs",
+    "pt": "Classificadores"
+  },
+  "Tecnología": {
+    "es": "Tecnología",
+    "en": "Technology",
+    "zh-CN": "科技",
+    "fr": "Technologie",
+    "pt": "Tecnologia"
+  },
+  "Cuerpo": {
+    "es": "Cuerpo",
+    "en": "Body",
+    "zh-CN": "身体",
+    "fr": "Corps",
+    "pt": "Corpo"
+  },
+  "Transporte": {
+    "es": "Transporte",
+    "en": "Transport",
+    "zh-CN": "交通",
+    "fr": "Transport",
+    "pt": "Transporte"
+  },
+  "Naturaleza": {
+    "es": "Naturaleza",
+    "en": "Nature",
+    "zh-CN": "自然",
+    "fr": "Nature",
+    "pt": "Natureza"
+  },
+  "Colores": {
+    "es": "Colores",
+    "en": "Colours",
+    "zh-CN": "颜色",
+    "fr": "Couleurs",
+    "pt": "Cores"
+  },
+  "Animales": {
+    "es": "Animales",
+    "en": "Animals",
+    "zh-CN": "动物",
+    "fr": "Animaux",
+    "pt": "Animais"
+  },
+  "Compras": {
+    "es": "Compras",
+    "en": "Shopping",
+    "zh-CN": "购物",
+    "fr": "Achats",
+    "pt": "Compras"
+  },
+  "Trabajo": {
+    "es": "Trabajo",
+    "en": "Work",
+    "zh-CN": "工作",
+    "fr": "Travail",
+    "pt": "Trabalho"
+  }
+}
