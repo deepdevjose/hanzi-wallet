@@ -1049,6 +1049,12 @@ async function init(): Promise<void> {
     };
     applyPreferences();
     listen();
+    // Download the Chinese voice archive on first load rather than waiting for
+    // the first tap. This is independent of OS-installed Mandarin TTS voices.
+    // It does not block handwriting, learning, or initial rendering.
+    void pronunciation.preload().catch(() => {
+      // The click handler retries loading and can still use system TTS.
+    });
     updateDateAndMetrics();
     el("category-filter").insertAdjacentHTML(
       "beforeend",

@@ -112,6 +112,20 @@ export class NativePronunciation {
       });
     return this.loading;
   }
+  /**
+   * Preload the same-origin Chinese pronunciation archive as soon as the app is
+   * usable. The browser's versioned service worker also persists these assets
+   * for offline use; this instance retains them in memory for instant playback.
+   * Failures are deliberately retryable from the next user-initiated playback.
+   */
+  public preload(): Promise<void> {
+    return this.load();
+  }
+
+  public get isPrepared(): boolean {
+    return this.index !== null && this.bytes !== null;
+  }
+
   public stop(): void {
     this.generation++;
     if (this.active) {
