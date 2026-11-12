@@ -1,14 +1,13 @@
 import "./catalog.css";
 import common from "./common-3500.json";
-import hskLevels from "./hsk-levels.json";
+import hskAll from "./hsk-all.json";
 import type { VocabularyEntry } from "./core/types";
 
 const PAGE_SIZE = 100;
 const chars: readonly string[] = common;
 export function mountCatalog(vocabulary: readonly VocabularyEntry[], choose: (char: string) => void): void {
   const supported = new Map(vocabulary.map((entry) => [entry.char, entry]));
-  const hsk = new Map<string, string>();
-  for (const level of hskLevels) for (const char of level.chars) if (!hsk.has(char)) hsk.set(char, "HSK " + level.label);
+  const hsk = new Map<string, string>(Object.entries(hskAll));
   const button = document.createElement("button");
   button.type = "button"; button.className = "profile-trigger"; button.textContent = "字 3,500 hanzi";
   document.querySelector(".top-actions")?.prepend(button);
@@ -26,7 +25,7 @@ export function mountCatalog(vocabulary: readonly VocabularyEntry[], choose: (ch
   const tools = document.createElement("div"); tools.className = "catalog-tools";
   const search = document.createElement("input"); search.type="search"; search.placeholder="Buscar carácter, pinyin o significado"; search.setAttribute("aria-label","Buscar en catálogo");
   const select = document.createElement("select"); select.setAttribute("aria-label","Filtrar nivel HSK");
-  for (const [id,label] of [["all","Todos los niveles"],["HSK 1","HSK 1"],["HSK 2","HSK 2"],["HSK 3","HSK 3"],["HSK 4","HSK 4"],["HSK 5","HSK 5"],["HSK 6","HSK 6"],["HSK 7-9","HSK 7–9"],["none","Sin clasificación HSK"]] as const) {
+  for (const [id,label] of [["all","Todos los niveles"],["HSK1","HSK 1"],["HSK2","HSK 2"],["HSK3","HSK 3"],["HSK4","HSK 4"],["HSK5","HSK 5"],["HSK6","HSK 6"],["HSK7-9","HSK 7–9"],["none","Sin clasificación HSK"]] as const) {
     const option = document.createElement("option"); option.value=id; option.textContent=label; select.append(option);
   }
   tools.append(search,select); dialog.append(tools);
