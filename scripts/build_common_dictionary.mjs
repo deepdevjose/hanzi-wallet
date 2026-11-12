@@ -2,6 +2,8 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
 const SOURCE = "https://raw.githubusercontent.com/skishore/makemeahanzi/master/dictionary.txt";
+// Pinned content digest verified from the successful GitHub Actions build.
+const EXPECTED_SHA256 = "744bb05d5b0742e9ee35c37791f94d56a173349b3367569e7ca11e510364d203";
 const common = JSON.parse(await readFile(new URL("../src/common-3500.json", import.meta.url), "utf8"));
 const allowed = new Set(common);
 if (allowed.size !== 3500) throw new Error("Expected exactly 3500 national-standard characters.");
@@ -29,6 +31,8 @@ async function downloadText(url) {
   return response.text();
 }
 const raw = await download(SOURCE);
+const hash = createHash("sha256").update(raw).digest("hex");
+if (hash !== EXPECTED_SHA256) throw new Error("Upstream dictionary changed; review and repin before rebuilding");
 const result = {};
 for (const line of raw.split(/\r?\n/u)) {
   if (!line.trim()) continue;
@@ -47,5 +51,4 @@ const copying = await downloadText("https://raw.githubusercontent.com/skishore/m
 const lgpl = await downloadText("https://raw.githubusercontent.com/skishore/makemeahanzi/master/LGPL");
 await writeFile("public/data/MAKEME_A_HANZI_COPYING.txt", copying);
 await writeFile("public/data/MAKEME_A_HANZI_LGPL.txt", lgpl);
-const hash = createHash("sha256").update(raw).digest("hex");
 console.log("Make Me a Hanzi: " + count + "/3500 entries; SHA256 " + hash);
