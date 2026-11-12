@@ -1035,7 +1035,7 @@ async function init(): Promise<void> {
     }
     renderShell();
     mountProfile();
-    mountCatalog(vocabulary, (char) => { choose(char); setMode("guide"); });
+    mountCatalog(vocabulary, (char) => { choose(char); setMode("guide"); }, playPronunciation);
     learning = new LearningView(
       el("learn-view"),
       vocabulary,
