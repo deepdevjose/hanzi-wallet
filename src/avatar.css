@@ -216,3 +216,13 @@
 .avatar-mini[data-item-slot="aura"] .avatar-body {
   opacity: 0.3;
 }
+
+.avatar-frame-ornament {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px #51442a20);
+}

@@ -147,6 +147,16 @@ export function createAvatar(
       ),
     );
   wrapper.append(figure);
+  if (frame?.id === "dragon-frame" && !options.plain && !options.portrait) {
+    // A pair of slender gilded guardians stays at the paper's edges.
+    const guardian = `<path d="M16 270Q5 260 16 248C32 231 2 216 14 196S28 166 15 149S3 122 16 103S27 76 17 59Q9 45 24 35" stroke="#9c8357" stroke-width="5" stroke-linecap="round"/><path d="M16 270Q5 260 16 248C32 231 2 216 14 196S28 166 15 149S3 122 16 103S27 76 17 59Q9 45 24 35" stroke="#dcc696" stroke-width="2" stroke-linecap="round"/><path d="M13 241L19 238M16 218L11 216M14 194L20 190M18 170L12 167M13 144L19 140M15 119L21 116M19 94L13 91M17 69L12 66M15 51L21 49" stroke="#718d7f" stroke-width="2.3" stroke-linecap="round"/><path d="M21 36Q20 28 28 25L36 27L42 25L40 32L33 35L28 42L20 40Z" fill="#c3aa78" stroke="#94794c" stroke-width=".9"/><path d="M26 26L22 17L28 21M31 26L33 16L36 18M20 32L16 29M22 40L17 45" stroke="#a18b5f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M37 32Q49 33 44 43M34 35Q40 43 35 46" stroke="#ad9360" stroke-width="1" stroke-linecap="round"/><circle cx="33" cy="29.5" r="1.2" fill="#435c50"/><path d="M13 268L7 273M16 270L20 277" stroke="#a78b57" stroke-width="1.7" stroke-linecap="round"/>`;
+    const ornament = svg(
+      `<g>${guardian}</g><g transform="translate(200 0) scale(-1 1)">${guardian}</g><path d="M44 15H76M124 15H156M25 285H71M129 285H175" stroke="#b69b68" stroke-width=".9" opacity=".7"/><path d="M100 10L106 15L100 20L94 15Z" fill="#b69b68" opacity=".8"/>`,
+      "avatar-frame-ornament",
+    );
+    ornament.setAttribute("preserveAspectRatio", "none");
+    wrapper.append(ornament);
+  }
   if (aura) {
     if (aura.id === "dragon") {
       const dragon = document.createElement("img");

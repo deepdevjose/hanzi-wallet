@@ -24,6 +24,8 @@ npm run build        # production bundle and versioned offline service worker
 npm run preview      # inspect the production build
 ```
 
+The application build uses bundled learning resources and does not download an external dictionary. The former 3,500-character toolbar catalogue has been removed. Its optional reference-data generator remains available as `npm run build:dictionary`; it verifies the pinned upstream SHA256 and requires a network connection.
+
 ## HSK learning
 
 - **First visit** prepares pronunciation recordings, handwriting resources and character artwork, then shows a short ink-written greeting. A five-language setup starts with your browser language. Choose a fresh start or a 21-question reading orientation, then your character. Completed setup is remembered; interrupted character selection resumes with its placement and chosen language.
