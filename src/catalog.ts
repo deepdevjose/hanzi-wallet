@@ -8,7 +8,7 @@ const chars: readonly string[] = common;
 export function mountCatalog(vocabulary: readonly VocabularyEntry[], choose: (char: string) => void): void {
   const supported = new Map(vocabulary.map((entry) => [entry.char, entry]));
   const hsk = new Map<string, string>();
-  for (const level of hskLevels) for (const char of level.chars) if (!hsk.has(char)) hsk.set(char, level.label);
+  for (const level of hskLevels) for (const char of level.chars) if (!hsk.has(char)) hsk.set(char, "HSK " + level.label);
   const button = document.createElement("button");
   button.type = "button"; button.className = "profile-trigger"; button.textContent = "字 3,500 hanzi";
   document.querySelector(".top-actions")?.prepend(button);
