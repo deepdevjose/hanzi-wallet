@@ -242,7 +242,8 @@ export class FirstVisit {
         this.resourceReady();
         await this.artwork();
         this.resourceReady();
-        await delay(Math.max(0, 1800 - (performance.now() - this.started)));
+        if (!this.reduced)
+          await delay(Math.max(0, 1800 - (performance.now() - this.started)));
         break;
       } catch {
         await new Promise<void>((resolve) => {
