@@ -17,7 +17,7 @@ import {
 import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
-import { mountProfile } from "./profile";
+import { mountProfile, exportProfile, importProfile } from "./profile";
 import { mountCatalog } from "./catalog";
 import { learnText } from "./learning-content";
 import { InkCanvas } from "./ink";
@@ -672,7 +672,7 @@ function exportProgress(): void {
   const blob = new Blob(
     [
       JSON.stringify(
-        { ...state, exportedAt: new Date().toISOString() },
+        { ...state, avatarProfile: exportProfile(), exportedAt: new Date().toISOString() },
         null,
         2,
       ),
@@ -931,8 +931,9 @@ function listen(): void {
     try {
       if (file.size > 5_000_000)
         throw new Error(t("La copia debe pesar menos de 5 MB."));
+      const backup: unknown = JSON.parse(await file.text());
       const incoming = parseState(
-        JSON.parse(await file.text()) as unknown,
+        backup,
         new Set(vocabulary.map((e) => e.char)),
       );
       state = {
@@ -951,6 +952,14 @@ function listen(): void {
         personal: { ...state.personal, ...incoming.personal },
       };
       save();
+      if (
+        backup !== null &&
+        typeof backup === "object" &&
+        !Array.isArray(backup) &&
+        "avatarProfile" in backup
+      ) {
+        importProfile(backup.avatarProfile);
+      }
       renderCharacter();
       renderWallet();
       renderStrip();
