@@ -12,8 +12,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "train": "python3 scripts/train_model.py",
     "evaluate": "python3 scripts/train_model.py --evaluate-only",
-    "prebuild": "node scripts/build_common_dictionary.mjs",
-    "predev": "node scripts/build_common_dictionary.mjs"
+    "prebuild": "node scripts/build_common_dictionary.mjs"
   },
   "devDependencies": {
     "typescript": "5.9.3",
