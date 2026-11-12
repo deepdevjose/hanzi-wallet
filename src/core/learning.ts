@@ -28,13 +28,19 @@ export const emptyLearning = (): LearningProgress => ({
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+function canonicalDay(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 function days(value: unknown): string[] {
   return Array.isArray(value)
     ? [
         ...new Set(
           value.filter(
             (day): day is string =>
-              typeof day === "string" && /^\d{4}-\d{2}-\d{2}$/.test(day),
+              typeof day === "string" && canonicalDay(day),
           ),
         ),
       ]
@@ -61,6 +67,46 @@ export function readLearning(
         : 0,
     active: days(value.active),
     challenges: days(value.challenges),
+  };
+}
+
+/** Recover the review moment from the scheduling representation already stored. */
+function reviewedAt(card: SavedCharacter): number {
+  if (card.reviews === 0) return card.addedAt;
+  return Math.max(0, card.nextReview - (card.interval === 0 ? 600_000 : card.interval * 86_400_000));
+}
+
+/**
+ * Importing the same backup twice must neither mint XP nor roll a recent lapse
+ * back to an older, longer successful-review interval. XP is a cumulative high
+ * water mark; we cannot sum independent-device practice without an event log.
+ */
+export function mergeLearning(
+  current: LearningProgress,
+  incoming: unknown,
+  known: ReadonlySet<string>,
+): LearningProgress {
+  const local = readLearning(current, known), imported = readLearning(incoming, known);
+  const cards: Record<string, SavedCharacter> = { ...local.cards };
+  for (const [char, other] of Object.entries(imported.cards)) {
+    const existing = cards[char];
+    if (!existing) { cards[char] = other; continue; }
+    const localTime = reviewedAt(existing), otherTime = reviewedAt(other);
+    const newest = otherTime > localTime || (otherTime === localTime && other.reviews > existing.reviews) ? other : existing;
+    cards[char] = {
+      ...newest,
+      addedAt: Math.min(existing.addedAt, other.addedAt),
+      reviews: Math.max(existing.reviews, other.reviews),
+      lapses: Math.max(existing.lapses, other.lapses),
+      writing: Math.max(existing.writing, other.writing),
+      bestScore: Math.max(existing.bestScore, other.bestScore),
+    };
+  }
+  return {
+    cards,
+    xp: Math.max(local.xp, imported.xp),
+    active: days([...local.active, ...imported.active]),
+    challenges: days([...local.challenges, ...imported.challenges]),
   };
 }
 

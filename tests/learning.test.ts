@@ -11,10 +11,11 @@ import {
   finishLearning,
   gradeLearning,
   readLearning,
+  mergeLearning,
   streak,
 } from "../src/core/learning";
 import { LOCALES } from "../src/i18n";
-import { dayKey } from "../src/core/storage";
+import { dayKey, saved, schedule } from "../src/core/storage";
 import type { VocabularyEntry } from "../src/core/types";
 
 describe("HSK character practice", () => {
@@ -105,5 +106,45 @@ describe("HSK character practice", () => {
         for (const term of gloss(item).split(/[/;,；、，]/u))
           expect(correctMeaning(term, gloss(target))).toBe(false);
     }
+  });
+});
+
+
+describe("learning backup merging", () => {
+  const known = new Set(["你", "好", "水"]);
+  const day = 86_400_000;
+
+  it("restores XP, review cards and activity without counting a backup twice", () => {
+    const local = { ...emptyLearning(), xp: 90, cards: { 你: schedule(saved("你", day), "good", day) }, active: ["2026-11-11"], challenges: ["2026-11-11"] };
+    const backup = { ...emptyLearning(), xp: 140, cards: { 好: schedule(saved("好", day), "good", day) }, active: ["2026-11-10", "2026-11-11"], challenges: ["2026-11-10"] };
+    const merged = mergeLearning(local, backup, known);
+    expect(merged.xp).toBe(140);
+    expect(Object.keys(merged.cards).sort()).toEqual(["你", "好"].sort());
+    expect(merged.active).toEqual(["2026-11-10", "2026-11-11"]);
+    expect(merged.challenges).toEqual(["2026-11-10", "2026-11-11"]);
+    expect(mergeLearning(merged, backup, known)).toEqual(merged);
+    expect(mergeLearning(merged, { ...backup, xp: 20 }, known).xp).toBe(140);
+  });
+
+  it("keeps a newer lapse even when an old successful review was due much later", () => {
+    const oldTime = day * 10, newTime = day * 11;
+    const longInterval = schedule({ ...saved("你", day), reviews: 8, interval: 30, bestScore: 96, writing: 3 }, "good", oldTime);
+    const newerLapse = schedule(longInterval, "again", newTime);
+    expect(longInterval.nextReview).toBeGreaterThan(newerLapse.nextReview);
+    const importedNew = mergeLearning({ ...emptyLearning(), cards: { 你: longInterval } }, { cards: { 你: newerLapse } }, known);
+    expect(importedNew.cards.你).toMatchObject({ interval: 0, nextReview: newTime + 600_000, mastered: false, lapses: 1, bestScore: 96, writing: 3 });
+    const importedOld = mergeLearning({ ...emptyLearning(), cards: { 你: newerLapse } }, { cards: { 你: longInterval } }, known);
+    expect(importedOld.cards.你).toEqual(importedNew.cards.你);
+  });
+
+  it("validates incoming records and rejects impossible calendar dates", () => {
+    const imported = mergeLearning(emptyLearning(), { xp: Infinity, cards: { 水: { ...saved("水", 10), bestScore: 500, interval: 9999 }, unknown: saved("unknown", 10), 好: null }, active: ["2026-13-01", "2026-02-30", "2026-11-12", "2026-11-12", "2024-02-29"], challenges: ["2025-02-29", "2026-11-12", 123] }, known);
+    expect(imported.xp).toBe(0);
+    expect(Object.keys(imported.cards)).toEqual(["水"]);
+    expect(imported.cards.水?.bestScore).toBe(100);
+    expect(imported.cards.水?.interval).toBe(365);
+    expect(imported.active).toEqual(["2024-02-29", "2026-11-12"]);
+    expect(imported.challenges).toEqual(["2026-11-12"]);
+    expect(mergeLearning(imported, null, known)).toEqual(imported);
   });
 });
