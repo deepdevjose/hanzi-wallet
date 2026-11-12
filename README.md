@@ -87,7 +87,7 @@ The output is the static `dist/` directory. Relative asset URLs support deployme
 ## Privacy and limits
 
 - Ink, personal examples, collection, learning progress, and history stay in this browser's storage. There is no analytics SDK or remote inference API.
-- Normal page and asset requests still reach whichever host serves the application. Pronunciation plays bundled MP3 recordings through the native Web Audio API. An asynchronously loaded Mandarin system voice is a fallback, not a requirement.
+- Normal page and asset requests still reach whichever host serves the application. A complete Mandarin MP3 archive is fetched from the application origin during initial loading, held in memory during the session, and included in the production PWA's versioned offline cache. Pressing Listen decodes and plays the requested syllable through Web Audio; a Mandarin system voice is only an optional fallback. No device-level Chinese language pack is required. If initial downloading fails, playback retries when requested.
 - Local storage is not an account or cross-device sync. Private browsing, storage eviction, and device loss can erase it. Export a copy when you need to keep progress.
 - If the neural model cannot load, geometric recognition remains available. Initial data loading and Web Worker failures are reported in the interface.
 - The code has no production npm dependencies. Training and development dependencies are separate from the shipped application.
