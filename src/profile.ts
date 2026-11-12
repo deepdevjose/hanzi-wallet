@@ -26,9 +26,9 @@ const initial = (xp: number): Profile => ({ name: "", base: "traveller", coins: 
 function isObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
-function read(xp: number): Profile {
+function read(xp: number, input?: unknown): Profile {
   try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+    const parsed: unknown = input === undefined ? JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") : input;
     if (!isObject(parsed)) return initial(xp);
     const owned = Array.isArray(parsed.owned) ? parsed.owned.filter((v): v is string => typeof v === "string" && ITEMS.some((item) => item.id === v)) : [];
     const equipped: Partial<Record<Slot, string>> = {};
@@ -154,7 +154,20 @@ export function mountProfile(): void {
   document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !backdrop.hidden) close(); });
   window.addEventListener("storage", (event) => { if (event.key === LEARNING_KEY || event.key === STORAGE_KEY) { xp = getXP(); profile = sync(read(xp), xp); persist(); if (!backdrop.hidden) render(); } });
   window.addEventListener("focus", () => { xp = getXP(); profile = sync(profile, xp); persist(); });
+  window.addEventListener("hanzi-wallet:profile-imported", () => { xp = getXP(); profile = sync(read(xp), xp); persist(); if (!backdrop.hidden) render(); });
   window.addEventListener("hanzi-wallet:progress", () => { xp = getXP(); profile = sync(profile, xp); persist(); if (!backdrop.hidden) render(); });
   persist();
   if (!profile.completed) window.setTimeout(open, 500);
+}
+
+// Profiles are kept separate from the wallet internally but included in backups.
+// Imported values are schema-checked by read(); no arbitrary storage keys are accepted.
+export function exportProfile(): unknown {
+  return read(getXP());
+}
+export function importProfile(input: unknown): void {
+  const xp = getXP();
+  const restored = sync(read(xp, input), xp);
+  save(restored);
+  window.dispatchEvent(new Event("hanzi-wallet:profile-imported"));
 }
