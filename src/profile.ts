@@ -154,15 +154,7 @@ export function mountProfile(): void {
   document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !backdrop.hidden) close(); });
   window.addEventListener("storage", (event) => { if (event.key === LEARNING_KEY || event.key === STORAGE_KEY) { xp = getXP(); profile = sync(read(xp), xp); persist(); if (!backdrop.hidden) render(); } });
   window.addEventListener("focus", () => { xp = getXP(); profile = sync(profile, xp); persist(); });
-  // LearnView writes XP to localStorage in the same tab. Observe only that
-  // specific key via a lightweight, scoped interception of Storage.setItem.
-  const originalSetItem = Storage.prototype.setItem;
-  Storage.prototype.setItem = function(key: string, value: string): void {
-    originalSetItem.call(this, key, value);
-    if (this === localStorage && key === LEARNING_KEY) {
-      try { const raw: unknown = JSON.parse(value); xp = readLearning(raw, new Set<string>()).xp; profile = sync(profile, xp); persist(); if (!backdrop.hidden) render(); } catch { /* Ignore malformed progress. */ }
-    }
-  };
+  window.addEventListener("hanzi-wallet:progress", () => { xp = getXP(); profile = sync(profile, xp); persist(); if (!backdrop.hidden) render(); });
   persist();
   if (!profile.completed) window.setTimeout(open, 500);
 }
