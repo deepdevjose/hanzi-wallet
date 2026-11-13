@@ -169,10 +169,7 @@ export class FirstVisit {
   }
   private async artwork(): Promise<void> {
     await Promise.all(
-      [
-        "ink-landscape.webp",
-        "dragon.png",
-      ].map(async (path) => {
+      ["ink-landscape.webp", "dragon.png"].map(async (path) => {
         const image = new Image();
         image.src = new URL(`art/${path}`, this.base).href;
         let timeout = 0;

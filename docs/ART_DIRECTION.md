@@ -31,10 +31,10 @@ The SVG source is the canonical character artwork. Adjust its shared proportions
 
 The welcome uses two retained illustrations created with the built-in ImageGen tool for this project on 13 November 2026. They are original generated illustrations, not extracted reference stickers. No external image API or paid CLI fallback was used. Profile backgrounds are drawn in the same native 2D system as the characters. The detailed dragon belongs to the welcome transition; the shop's dragon companion is drawn in the character system's 2D style.
 
-| File                            | Use                                            | Format                    |
-| ------------------------------- | ---------------------------------------------- | ------------------------- |
+| File                            | Use                             | Format                    |
+| ------------------------------- | ------------------------------- | ------------------------- |
 | `public/art/ink-landscape.webp` | Ink-painting welcome background | 1586 × 992, WebP          |
-| `public/art/dragon.png`         | Welcome dragon transition                      | Wide transparent RGBA PNG |
+| `public/art/dragon.png`         | Welcome dragon transition       | Wide transparent RGBA PNG |
 
 The landscape was converted from the generated PNG to WebP at quality 88 without changing the illustration. Preserve the dragon's transparent alpha when reusing it.
 
