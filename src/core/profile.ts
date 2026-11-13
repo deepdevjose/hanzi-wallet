@@ -1,5 +1,13 @@
 import { LEARNING_KEY, readLearning } from "./learning";
 import type { Locale } from "../i18n";
+import {
+  APPEARANCE_OPTIONS,
+  defaultAppearance,
+  isAppearanceValue,
+  readAppearance,
+  type Appearance,
+  type AppearanceField,
+} from "./appearance";
 
 // Keep the original key so an existing wallet never loses its avatar or purchases.
 export const PROFILE_KEY = "hanzi-wallet-avatar-v1";
@@ -652,6 +660,7 @@ export interface Profile {
   readonly name: string;
   readonly base: "male" | "female";
   readonly shirtColor: string;
+  readonly appearance: Appearance;
   readonly nationality: string;
   readonly age: number | null;
   readonly gender: "male" | "female" | "unspecified";
@@ -672,6 +681,7 @@ export function initialProfile(xp = 0): Profile {
     name: "",
     base: "male",
     shirtColor: DEFAULT_SHIRT_COLOR,
+    appearance: defaultAppearance("male"),
     nationality: "",
     age: null,
     gender: "unspecified",
@@ -719,6 +729,23 @@ export function readProfile(input: unknown, xp = 0): Profile {
       )
         equipped[slot] = id;
     }
+  const base =
+    input.base === "female" || input.base === "scholar" ? "female" : "male";
+  const legacySkin = ITEMS.find(
+    (entry) => entry.slot === "skin" && entry.id === equipped.skin,
+  );
+  const appearance = readAppearance(input.appearance, base, legacySkin?.tone);
+  // An explicit creator tone is authoritative over an older equipped swatch.
+  if (equipped.skin && legacySkin?.tone !== appearance.skinTone) {
+    const matching = ITEMS.find(
+      (entry) =>
+        entry.slot === "skin" &&
+        entry.tone === appearance.skinTone &&
+        owned.includes(entry.id),
+    );
+    if (matching) equipped.skin = matching.id;
+    else delete equipped.skin;
+  }
   const placement =
     object(input.placement) && isPlacementBand(input.placement.band)
       ? {
@@ -729,9 +756,9 @@ export function readProfile(input: unknown, xp = 0): Profile {
       : null;
   return {
     name: typeof input.name === "string" ? input.name.trim().slice(0, 40) : "",
-    base:
-      input.base === "female" || input.base === "scholar" ? "female" : "male",
+    base,
     shirtColor: readShirtColor(input.shirtColor),
+    appearance,
     nationality:
       typeof input.nationality === "string" &&
       /^[A-Z]{2}$/.test(input.nationality)
@@ -792,6 +819,49 @@ export function saveProfile(profile: Profile): boolean {
     sessionFallback = profile;
     return false;
   }
+}
+
+/** All creator choices are free and independent from identity or progression. */
+export function changeAppearance<Key extends AppearanceField>(
+  profile: Profile,
+  key: Key,
+  value: unknown,
+): Profile {
+  if (!Object.hasOwn(APPEARANCE_OPTIONS, key)) return profile;
+  const normalized =
+    typeof value === "string" && (key.endsWith("Color") || key === "skinTone")
+      ? value.toLowerCase()
+      : value;
+  if (!isAppearanceValue(key, normalized)) return profile;
+  const appearance = { ...profile.appearance, [key]: normalized };
+  if (key !== "skinTone") return { ...profile, appearance };
+  const equipped = { ...profile.equipped };
+  const matching = ITEMS.find(
+    (entry) =>
+      entry.slot === "skin" &&
+      entry.tone === normalized &&
+      profile.owned.includes(entry.id),
+  );
+  if (matching) equipped.skin = matching.id;
+  else delete equipped.skin;
+  return { ...profile, appearance, equipped };
+}
+
+/** Switching base updates its defaults while retaining deliberately chosen features. */
+export function changeBase(profile: Profile, base: Profile["base"]): Profile {
+  if ((base !== "male" && base !== "female") || base === profile.base)
+    return profile;
+  const before = defaultAppearance(profile.base);
+  const after = defaultAppearance(base);
+  const appearance = Object.fromEntries(
+    (Object.keys(APPEARANCE_OPTIONS) as AppearanceField[]).map((key) => [
+      key,
+      profile.appearance[key] === before[key]
+        ? after[key]
+        : profile.appearance[key],
+    ]),
+  ) as Appearance;
+  return { ...profile, base, appearance };
 }
 // LearningView owns the authoritative in-memory progress after storage fails.
 // Clearing this snapshot returns the shared profile view to persisted progress.
@@ -907,22 +977,41 @@ export function buyItem(profile: Profile, id: string, xp: number): Profile {
     profile.coins < entry.price
   )
     return profile;
-  return {
+  const next = {
     ...profile,
     coins: profile.coins - entry.price,
     owned: [...profile.owned, id],
     equipped: { ...profile.equipped, [entry.slot]: id },
   };
+  return entry.slot === "skin"
+    ? changeAppearance(next, "skinTone", entry.tone)
+    : next;
 }
 export function equipItem(profile: Profile, id: string): Profile {
   const entry = ITEMS.find((value) => value.id === id);
   if (!entry || !profile.owned.includes(id)) return profile;
-  return { ...profile, equipped: { ...profile.equipped, [entry.slot]: id } };
+  const next = {
+    ...profile,
+    equipped: { ...profile.equipped, [entry.slot]: id },
+  };
+  return entry.slot === "skin"
+    ? changeAppearance(next, "skinTone", entry.tone)
+    : next;
 }
 export function unequipItem(profile: Profile, slot: Slot): Profile {
   const equipped = { ...profile.equipped };
   delete equipped[slot];
-  return { ...profile, equipped };
+  return {
+    ...profile,
+    equipped,
+    appearance:
+      slot === "skin"
+        ? {
+            ...profile.appearance,
+            skinTone: defaultAppearance(profile.base).skinTone,
+          }
+        : profile.appearance,
+  };
 }
 export function itemName(entry: Item, locale: Locale): string {
   return entry.names[locale];

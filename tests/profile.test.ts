@@ -7,6 +7,8 @@ import {
   MAX_LEVEL,
   applyPlacement,
   buyItem,
+  changeAppearance,
+  changeBase,
   equipItem,
   getLearningXP,
   initialProfile,
@@ -23,6 +25,7 @@ import {
   xpForLevel,
 } from "../src/core/profile";
 import { PLACEMENT_QUESTIONS, assessPlacement } from "../src/core/placement";
+import { defaultAppearance, type Appearance } from "../src/core/appearance";
 
 describe("avatar progression and one-time rewards", () => {
   afterEach(() => {
@@ -142,6 +145,160 @@ describe("avatar progression and one-time rewards", () => {
     expect(profile.placement).toBeNull();
     expect(syncProfile(profile, 250).coins).toBe(87);
     expect(readProfile(null, 200).accountedXP).toBe(200);
+  });
+
+  it("migrates the legacy skin swatch into a distinct base appearance without changing progress", () => {
+    const profile = readProfile(
+      {
+        name: "Mei",
+        base: "scholar",
+        coins: 195,
+        accountedXP: 180,
+        completed: true,
+        owned: ["deep", "hat", "red"],
+        equipped: { skin: "deep", head: "hat", outfit: "red" },
+        placement: { band: "2", level: 10, awarded: true },
+        achievements: ["first-step", "placement-2"],
+      },
+      180,
+    );
+    expect(profile).toMatchObject({
+      name: "Mei",
+      base: "female",
+      coins: 195,
+      accountedXP: 180,
+      completed: true,
+      equipped: { skin: "deep", head: "hat", outfit: "red" },
+      appearance: { ...defaultAppearance("female"), skinTone: "#89583f" },
+      placement: { band: "2", level: 10, awarded: true },
+    });
+    expect(profile.achievements).toEqual(["first-step", "placement-2"]);
+    expect(syncProfile(profile, 180).coins).toBe(195);
+  });
+
+  it("preserves the complete creator appearance through backups, XP, purchases and temporary storage failure", () => {
+    const appearance: Appearance = {
+      face: "round",
+      eyes: "monolid",
+      brows: "straight",
+      nose: "defined",
+      mouth: "small",
+      hair: "flowing",
+      hairColor: "#805548",
+      eyeColor: "#667c8b",
+      skinTone: "#b57b55",
+      body: "slender",
+      height: "tall",
+      cheeks: "freckles",
+    };
+    const entries = new Map<string, string>();
+    const storage = {
+      getItem: (key: string): string | null => entries.get(key) ?? null,
+      setItem: (key: string, value: string): void => {
+        entries.set(key, value);
+      },
+    };
+    vi.stubGlobal("localStorage", storage);
+    const original = readProfile({
+      ...applyPlacement(initialProfile(), "4"),
+      name: "Lin",
+      appearance,
+      completed: true,
+    });
+    expect(original.equipped.skin).toBeUndefined();
+    expect(saveProfile(original)).toBe(true);
+    expect(loadProfile().appearance).toEqual(appearance);
+    const practiced = syncProfile(loadProfile(), 35);
+    const bought = buyItem(practiced, "linen", 35);
+    expect(bought.appearance).toEqual(appearance);
+    expect(bought.coins).toBe(original.coins + 35 - 60);
+    const backup = readProfile(
+      JSON.parse(JSON.stringify(bought)) as unknown,
+      35,
+    );
+    expect(backup.appearance).toEqual(appearance);
+    expect(backup.name).toBe("Lin");
+    expect(syncProfile(backup, 35).coins).toBe(bought.coins);
+    vi.stubGlobal("localStorage", {
+      getItem: storage.getItem,
+      setItem: (): never => {
+        throw new Error("quota");
+      },
+    });
+    expect(saveProfile(backup)).toBe(false);
+    expect(loadProfile().appearance).toEqual(appearance);
+    expect(loadProfile().coins).toBe(bought.coins);
+    vi.stubGlobal("localStorage", storage);
+    expect(saveProfile(loadProfile())).toBe(true);
+  });
+
+  it("switches base defaults while retaining chosen features, identity and inventory", () => {
+    const initial = {
+      ...applyPlacement(initialProfile(), "2"),
+      name: "Lin",
+      nationality: "MX",
+      gender: "unspecified" as const,
+    };
+    const female = changeBase(initial, "female");
+    expect(female.appearance).toEqual(defaultAppearance("female"));
+    expect(female.base).toBe("female");
+    expect(female.coins).toBe(initial.coins);
+    expect(female.name).toBe(initial.name);
+    expect(female.gender).toBe("unspecified");
+    const chosen = changeAppearance(
+      changeAppearance(
+        changeAppearance(initial, "hair", "crop"),
+        "face",
+        "round",
+      ),
+      "eyeColor",
+      "#667c8b",
+    );
+    const changed = changeBase(chosen, "female");
+    expect(changed.appearance).toMatchObject({
+      hair: "crop",
+      face: "round",
+      eyeColor: "#667c8b",
+      brows: "arched",
+      nose: "soft",
+      mouth: "gentle",
+      body: "soft",
+    });
+    expect(changed.owned).toEqual(initial.owned);
+    expect(changed.equipped).toEqual(initial.equipped);
+    expect(changeBase(changed, "female")).toBe(changed);
+    expect(changeAppearance(changed, "hair", "not-a-style")).toBe(changed);
+    expect(changeAppearance(changed, "unknown" as "hair", "bob")).toBe(changed);
+  });
+
+  it("keeps wardrobe swatches and free creator skin choices in sync without spending coins", () => {
+    const original = applyPlacement(initialProfile(), "0");
+    const dark = equipItem(original, "deep");
+    expect(dark.appearance.skinTone).toBe("#89583f");
+    expect(dark.equipped.skin).toBe("deep");
+    const light = changeAppearance(dark, "skinTone", "#F4CFB0");
+    expect(light.appearance.skinTone).toBe("#f4cfb0");
+    expect(light.equipped.skin).toBe("light");
+    const bronze = changeAppearance(light, "skinTone", "#b57b55");
+    expect(bronze.appearance.skinTone).toBe("#b57b55");
+    expect(bronze.equipped.skin).toBeUndefined();
+    expect(unequipItem(dark, "skin").appearance.skinTone).toBe("#e9b68e");
+    expect(unequipItem(dark, "skin").equipped.skin).toBeUndefined();
+    const withoutOwnedSwatch = {
+      ...original,
+      owned: original.owned.filter((id) => id !== "deep"),
+    };
+    const acquired = buyItem(withoutOwnedSwatch, "deep", 0);
+    expect(acquired.appearance.skinTone).toBe("#89583f");
+    expect(acquired.equipped.skin).toBe("deep");
+    for (const result of [dark, light, bronze, acquired])
+      expect(result.coins).toBe(original.coins);
+    const canonical = readProfile({
+      ...dark,
+      appearance: { ...dark.appearance, skinTone: "#c88b66" },
+    });
+    expect(canonical.equipped.skin).toBe("olive");
+    expect(canonical.appearance.skinTone).toBe("#c88b66");
   });
 
   it("keeps the chosen shirt color through persistence, rewards and outfit changes", () => {
