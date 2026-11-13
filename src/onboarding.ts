@@ -133,53 +133,23 @@ export class FirstVisit {
     return '<div class="welcome-brand"><span class="brand-mark" aria-hidden="true">字</span><span>Hanzi Wallet</span></div>';
   }
   private page(content: string, step?: number): void {
-    this.dialog.innerHTML = `${this.brand()}<div class="welcome-content">${content}</div>${step ? `<div class="welcome-steps" aria-hidden="true">${[1, 2, 3].map((n) => `<i class="${n <= step ? "active" : ""}"></i>`).join("")}</div>` : ""}<span class="welcome-signature" aria-hidden="true">一笔一世界 · Un trazo, un mundo.</span>`;
+    this.dialog.innerHTML = `${this.brand()}<div class="welcome-content">${content}</div>${step ? `<div class="welcome-steps" aria-hidden="true">${[1, 2, 3].map((n) => `<i class="${n <= step ? "active" : ""}"></i>`).join("")}</div>` : ""}<span class="welcome-signature" lang="en" aria-hidden="true">一笔一世界 · One stroke, a world.</span>`;
     this.dialog
       .querySelector<HTMLElement>("h1")
       ?.focus({ preventScroll: true });
   }
   private loading(): void {
     this.page(
-      `<div class="welcome-preparation"><div class="welcome-lanterns" aria-hidden="true">${[0, 1, 2].map((n) => `<div class="welcome-lantern" style="--i:${n}"><i></i><span>福</span><b></b></div>`).join("")}</div><div class="welcome-emblem" aria-hidden="true">字</div><h1 tabindex="-1">${words("Tu viaje está a punto de empezar.", "Your journey is about to begin.", "你的旅程，即将开始。", "Votre voyage va commencer.", "Sua jornada está prestes a começar.")}</h1><p class="welcome-description">${words("Un pequeño momento para preparar algo especial.", "A little moment to prepare something special.", "稍等片刻，美好即将开启。", "Un instant pour préparer quelque chose de spécial.", "Um instante para preparar algo especial.")}</p><div class="welcome-load-track" role="progressbar" aria-label="${words("Preparando tu espacio", "Preparing your space", "正在准备你的空间", "Préparation de votre espace", "Preparando seu espaço")}" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${this.completed}"><i style="width:${this.completed * 25}%"></i></div><p class="welcome-load-status" role="status">${this.resourceLabel()}</p></div>`,
+      `<div class="welcome-preparation" lang="en"><div class="welcome-lanterns" aria-hidden="true">${[0, 1, 2].map((n) => `<div class="welcome-lantern" style="--i:${n}"><i></i><span>福</span><b></b></div>`).join("")}</div><div class="welcome-emblem" aria-hidden="true">字</div><h1 tabindex="-1">Your journey is about to begin.</h1><p class="welcome-description">A little moment to prepare something special.</p><div class="welcome-load-track" role="progressbar" aria-label="Preparing your space" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${this.completed}"><i style="width:${this.completed * 25}%"></i></div><p class="welcome-load-status" role="status">${this.resourceLabel()}</p></div>`,
     );
   }
   private resourceLabel(): string {
     return [
-      words(
-        "Preparando tu espacio…",
-        "Preparing your space…",
-        "正在准备你的空间…",
-        "Préparation de votre espace…",
-        "Preparando seu espaço…",
-      ),
-      words(
-        "Guardando tus primeros trazos…",
-        "Gathering your first strokes…",
-        "准备第一笔…",
-        "Préparation de vos premiers traits…",
-        "Reunindo seus primeiros traços…",
-      ),
-      words(
-        "Dando voz a tus palabras…",
-        "Giving your words a voice…",
-        "让汉字有声有色…",
-        "Donnons une voix à vos mots…",
-        "Dando voz às suas palavras…",
-      ),
-      words(
-        "Un último toque de magia…",
-        "One last touch of magic…",
-        "再添一丝惊喜…",
-        "Une dernière touche de magie…",
-        "Um último toque de magia…",
-      ),
-      words(
-        "Todo listo. Este momento es tuyo.",
-        "All ready. This moment is yours.",
-        "准备好了，属于你的时刻。",
-        "Tout est prêt. À vous de jouer.",
-        "Tudo pronto. Este momento é seu.",
-      ),
+      "Preparing your space…",
+      "Gathering your first strokes…",
+      "Giving your words a voice…",
+      "One last touch of magic…",
+      "All ready. This moment is yours.",
     ][this.completed]!;
   }
   resourceReady(): void {
@@ -201,12 +171,6 @@ export class FirstVisit {
     await Promise.all(
       [
         "ink-landscape.webp",
-        "avatar-male.png",
-        "avatar-female.png",
-        "avatar-male-hanfu.png",
-        "avatar-female-hanfu.png",
-        "avatar-male-imperial.png",
-        "avatar-female-imperial.png",
         "dragon.png",
       ].map(async (path) => {
         const image = new Image();
@@ -248,7 +212,7 @@ export class FirstVisit {
       } catch {
         await new Promise<void>((resolve) => {
           this.page(
-            `<div class="welcome-step-icon" aria-hidden="true">☁</div><h1 tabindex="-1">${words("Nos falta un pequeño detalle.", "One little thing is still missing.", "还差一点点。", "Il reste un petit détail.", "Falta só um pequeno detalhe.")}</h1><p class="welcome-description">${words("No pudimos preparar todo. Comprueba tu conexión y volvemos a intentarlo.", "We couldn't prepare everything. Check your connection and try again.", "准备还未完成。请检查网络后重试。", "La préparation est incomplète. Vérifiez votre connexion et réessayez.", "Não conseguimos preparar tudo. Confira sua conexão e tente novamente.")}</p><button class="welcome-primary" data-retry>${words("Volver a intentar", "Try again", "重试", "Réessayer", "Tentar novamente")}${arrow}</button>`,
+            `<div class="welcome-step-icon" aria-hidden="true">☁</div><h1 tabindex="-1">One little thing is still missing.</h1><p class="welcome-description">We couldn't prepare everything. Check your connection and try again.</p><button class="welcome-primary" data-retry>Try again${arrow}</button>`,
           );
           this.dialog.querySelector<HTMLButtonElement>(
             "[data-retry]",
@@ -306,7 +270,7 @@ export class FirstVisit {
       .join("");
     this.dialog.classList.add("welcome-painted");
     this.page(
-      `<div class="welcome-greeting">${handwritten("hola", "hello-es", "es", 0.25)}${handwritten("hello", "hello-en", "en", 0.65)}<svg class="welcome-hanzi" viewBox="0 0 2084 1024" role="img" aria-label="你好 · nǐ hǎo">${ink}</svg>${handwritten("bonjour", "hello-fr", "fr", 1)}${handwritten("olá", "hello-pt", "pt", 1.5)}<span class="welcome-pinyin">nǐ hǎo</span></div><p class="welcome-greeting-caption">${words("Un nuevo mundo empieza con un hola.", "A new world begins with hello.", "新世界，从一句你好开始。", "Un nouveau monde commence par bonjour.", "Um novo mundo começa com um olá.")}</p><button class="welcome-next greeting-next" aria-label="${words("Continuar", "Continue", "继续", "Continuer", "Continuar")}">${arrow}</button><div class="welcome-dragon-fire" aria-hidden="true"><img src="${new URL("art/dragon.png", this.base).href}" alt=""/><i></i></div>`,
+      `<div class="welcome-greeting">${handwritten("hola", "hello-es", "es", 0.25)}${handwritten("hello", "hello-en", "en", 0.65)}<svg class="welcome-hanzi" viewBox="0 0 2400 1024" role="img" aria-label="你好！ · nǐ hǎo!">${ink}<path class="welcome-ink-stroke welcome-exclamation" d="M2230 230 Q2250 420 2220 580" pathLength="1" style="--wait:${strokeNumber * 0.18}s"/><path class="welcome-ink-stroke welcome-exclamation-dot" d="M2216 737 L2218 744" pathLength="1" style="--wait:${strokeNumber * 0.18 + 0.2}s"/></svg>${handwritten("bonjour", "hello-fr", "fr", 1)}${handwritten("olá", "hello-pt", "pt", 1.5)}<span class="welcome-pinyin">nǐ hǎo</span></div><p class="welcome-greeting-caption" lang="en">A new world begins with hello.</p><button class="welcome-next greeting-next" aria-label="Continue">${arrow}</button><div class="welcome-dragon-fire" aria-hidden="true"><img src="${new URL("art/dragon.png", this.base).href}" alt=""/><i></i></div>`,
     );
     return new Promise((resolve) => {
       this.dialog.querySelector<HTMLButtonElement>(".welcome-next")!.onclick =

@@ -18,6 +18,7 @@ import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
 import { mountProfile, exportProfile, importProfile } from "./profile";
+import { getLearningXP, loadProfile } from "./core/profile";
 import { FirstVisit } from "./onboarding";
 import { learnText } from "./learning-content";
 import { InkCanvas } from "./ink";
@@ -545,6 +546,21 @@ function renderWallet(): void {
             "Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.",
           );
 }
+function updateIdentityHeading(): void {
+  const heading = document.getElementById("page-eyebrow");
+  if (!heading || view !== "learn") return;
+  const name = loadProfile(getLearningXP()).name;
+  const greetings = {
+    es: "Hola, {name}.",
+    en: "Hello, {name}.",
+    "zh-CN": "你好，{name}。",
+    fr: "Bonjour, {name}.",
+    pt: "Olá, {name}.",
+  };
+  heading.textContent = name
+    ? greetings[getLocale()].replace("{name}", name)
+    : learnText("eyebrow");
+}
 function switchView(next: View): void {
   view = next;
   for (const v of ["learn", "studio", "wallet", "review"])
@@ -585,6 +601,7 @@ function switchView(next: View): void {
   ["page-eyebrow", "page-title", "page-subtitle", "breadcrumb-view"].forEach(
     (id, i) => (el(id).textContent = values[i]!),
   );
+  updateIdentityHeading();
   el(`${next}-view`).classList.remove("view-enter");
   requestAnimationFrame(() => el(`${next}-view`).classList.add("view-enter"));
   if (next === "learn") learning.render();
@@ -700,6 +717,7 @@ async function playPronunciation(item: VocabularyEntry): Promise<void> {
   }
 }
 function listen(): void {
+  window.addEventListener("hanzi-wallet:identity", updateIdentityHeading);
   document.addEventListener("click", (e) => {
     const target = e.target;
     if (!(target instanceof Element)) return;

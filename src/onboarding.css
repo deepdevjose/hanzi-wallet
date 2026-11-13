@@ -349,6 +349,12 @@
   animation: welcome-write 0.36s ease-out forwards;
   animation-delay: var(--wait);
 }
+.welcome-exclamation {
+  stroke-width: 90;
+}
+.welcome-exclamation-dot {
+  stroke-width: 100;
+}
 .welcome-hello {
   position: absolute;
   color: #7c7470;

@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { LOCALES } from "../src/i18n";
 import {
   ITEMS,
+  DEFAULT_SHIRT_COLOR,
+  SHIRT_COLORS,
   MAX_LEVEL,
   applyPlacement,
   buyItem,
@@ -126,6 +128,7 @@ describe("avatar progression and one-time rewards", () => {
       250,
     );
     expect(profile.base).toBe("female");
+    expect(profile.shirtColor).toBe(DEFAULT_SHIRT_COLOR);
     expect(profile.name).toBe("Mei");
     expect(profile.coins).toBe(87);
     expect(profile.owned).toContain("dragon");
@@ -139,6 +142,67 @@ describe("avatar progression and one-time rewards", () => {
     expect(profile.placement).toBeNull();
     expect(syncProfile(profile, 250).coins).toBe(87);
     expect(readProfile(null, 200).accountedXP).toBe(200);
+  });
+
+  it("keeps the chosen shirt color through persistence, rewards and outfit changes", () => {
+    const entries = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string): string | null => entries.get(key) ?? null,
+      setItem: (key: string, value: string): void => {
+        entries.set(key, value);
+      },
+    });
+    const color = SHIRT_COLORS.find((entry) => entry.id === "seal")!.color;
+    const original = {
+      ...applyPlacement(initialProfile(), "0"),
+      name: "Mei",
+      shirtColor: color,
+      completed: true,
+    };
+    expect(saveProfile(original)).toBe(true);
+    const restored = loadProfile();
+    expect(restored).toMatchObject({
+      name: "Mei",
+      shirtColor: color,
+      completed: true,
+      coins: 80,
+    });
+    const practiced = syncProfile(restored, 35);
+    const bought = buyItem(practiced, "linen", 35);
+    const wearingStarter = equipItem(bought, "everyday");
+    expect(wearingStarter).toMatchObject({
+      shirtColor: color,
+      coins: 55,
+      accountedXP: 35,
+      equipped: { outfit: "everyday" },
+    });
+    expect(saveProfile(wearingStarter)).toBe(true);
+    expect(loadProfile().shirtColor).toBe(color);
+    expect(syncProfile(loadProfile(), 35).coins).toBe(55);
+  });
+
+  it("accepts palette colors while rejecting invalid or injected shirt colors", () => {
+    for (const entry of SHIRT_COLORS) {
+      expect(readProfile({ shirtColor: entry.color }).shirtColor).toBe(
+        entry.color,
+      );
+      expect(
+        readProfile({ shirtColor: entry.color.toUpperCase() }).shirtColor,
+      ).toBe(entry.color);
+    }
+    for (const value of [
+      null,
+      4,
+      {},
+      [],
+      "#fff",
+      "#123456",
+      "red;fill:url(https://example.com)",
+    ])
+      expect(readProfile({ shirtColor: value }).shirtColor).toBe(
+        DEFAULT_SHIRT_COLOR,
+      );
+    expect(readProfile({}).shirtColor).toBe(DEFAULT_SHIRT_COLOR);
   });
 
   it("validates corrupt identity, coins, equipped slots and placement data", () => {

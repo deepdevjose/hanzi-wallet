@@ -4,6 +4,98 @@ import type { Locale } from "../i18n";
 // Keep the original key so an existing wallet never loses its avatar or purchases.
 export const PROFILE_KEY = "hanzi-wallet-avatar-v1";
 export const MAX_LEVEL = 90;
+export const DEFAULT_SHIRT_COLOR = "#7d9690";
+export const SHIRT_COLORS = [
+  {
+    id: "ivory",
+    color: "#eee5d3",
+    names: {
+      es: "Marfil",
+      en: "Ivory",
+      "zh-CN": "象牙白",
+      fr: "Ivoire",
+      pt: "Marfim",
+    },
+  },
+  {
+    id: "jade",
+    color: DEFAULT_SHIRT_COLOR,
+    names: { es: "Jade", en: "Jade", "zh-CN": "青玉", fr: "Jade", pt: "Jade" },
+  },
+  {
+    id: "slate",
+    color: "#75818c",
+    names: {
+      es: "Pizarra",
+      en: "Slate",
+      "zh-CN": "石板灰",
+      fr: "Ardoise",
+      pt: "Ardósia",
+    },
+  },
+  {
+    id: "seal",
+    color: "#b47668",
+    names: {
+      es: "Rojo de sello",
+      en: "Seal red",
+      "zh-CN": "印泥红",
+      fr: "Rouge de sceau",
+      pt: "Vermelho de selo",
+    },
+  },
+  {
+    id: "blue",
+    color: "#8296ab",
+    names: {
+      es: "Azul porcelana",
+      en: "Porcelain blue",
+      "zh-CN": "瓷蓝",
+      fr: "Bleu porcelaine",
+      pt: "Azul porcelana",
+    },
+  },
+  {
+    id: "ochre",
+    color: "#c3a16b",
+    names: { es: "Ocre", en: "Ochre", "zh-CN": "赭黄", fr: "Ocre", pt: "Ocre" },
+  },
+  {
+    id: "rose",
+    color: "#bb8e96",
+    names: {
+      es: "Rosa ciruelo",
+      en: "Plum pink",
+      "zh-CN": "梅粉",
+      fr: "Rose de prunier",
+      pt: "Rosa de ameixeira",
+    },
+  },
+  {
+    id: "ink",
+    color: "#4a5156",
+    names: {
+      es: "Tinta",
+      en: "Ink",
+      "zh-CN": "墨色",
+      fr: "Encre",
+      pt: "Tinta",
+    },
+  },
+] as const satisfies readonly {
+  id: string;
+  color: string;
+  names: Readonly<Record<Locale, string>>;
+}[];
+export type ShirtColor = (typeof SHIRT_COLORS)[number]["color"];
+
+function readShirtColor(value: unknown): ShirtColor {
+  const normalized = typeof value === "string" ? value.toLowerCase() : "";
+  return (
+    SHIRT_COLORS.find((entry) => entry.color === normalized)?.color ??
+    DEFAULT_SHIRT_COLOR
+  );
+}
 export type PlacementBand = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7-9";
 export const PLACEMENT_LEVELS: Readonly<Record<PlacementBand, number>> = {
   "0": 0,
@@ -72,12 +164,12 @@ export const ITEMS: readonly Item[] = [
     "outfit",
     0,
     0,
-    "#a7b0b3",
-    "Primer viaje",
-    "First journey",
-    "初次旅程",
-    "Premier voyage",
-    "Primeira viagem",
+    DEFAULT_SHIRT_COLOR,
+    "Camiseta inicial",
+    "Starter T-shirt",
+    "初始短袖",
+    "T-shirt de départ",
+    "Camiseta inicial",
   ),
   item(
     "canvas",
@@ -559,6 +651,7 @@ const DEFAULT_EQUIPPED: Readonly<Partial<Record<Slot, string>>> = {
 export interface Profile {
   readonly name: string;
   readonly base: "male" | "female";
+  readonly shirtColor: string;
   readonly nationality: string;
   readonly age: number | null;
   readonly gender: "male" | "female" | "unspecified";
@@ -578,6 +671,7 @@ export function initialProfile(xp = 0): Profile {
   return {
     name: "",
     base: "male",
+    shirtColor: DEFAULT_SHIRT_COLOR,
     nationality: "",
     age: null,
     gender: "unspecified",
@@ -637,6 +731,7 @@ export function readProfile(input: unknown, xp = 0): Profile {
     name: typeof input.name === "string" ? input.name.trim().slice(0, 40) : "",
     base:
       input.base === "female" || input.base === "scholar" ? "female" : "male",
+    shirtColor: readShirtColor(input.shirtColor),
     nationality:
       typeof input.nationality === "string" &&
       /^[A-Z]{2}$/.test(input.nationality)

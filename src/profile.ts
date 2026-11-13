@@ -17,6 +17,8 @@ import {
   equipItem,
   unequipItem,
   itemName,
+  SHIRT_COLORS,
+  type Profile,
   type Slot,
 } from "./core/profile";
 export { ITEMS } from "./core/profile";
@@ -95,6 +97,27 @@ const words = {
   ],
   male: ["Hombre", "Man", "男性", "Homme", "Homem"],
   female: ["Mujer", "Woman", "女性", "Femme", "Mulher"],
+  shirt: [
+    "Tu camiseta, tu color.",
+    "Your T-shirt, your color.",
+    "你的T恤，你的颜色。",
+    "Votre T-shirt, votre couleur.",
+    "Sua camiseta, sua cor.",
+  ],
+  shirtHint: [
+    "Colores incluidos. Elige uno para llevar tu camiseta básica.",
+    "Colors included. Choose one to wear your starter T-shirt.",
+    "颜色免费，选择一种换上基础T恤。",
+    "Couleurs incluses. Choisissez-en une pour porter votre T-shirt de départ.",
+    "Cores incluídas. Escolha uma para usar sua camiseta básica.",
+  ],
+  shirtSelected: [
+    "Tu camiseta ya tiene un nuevo color.",
+    "Your T-shirt has a new color.",
+    "你的T恤换上了新颜色。",
+    "Votre T-shirt a une nouvelle couleur.",
+    "Sua camiseta está de cor nova.",
+  ],
   identity: [
     "Un poco de ti",
     "A little about you",
@@ -377,6 +400,17 @@ export function mountProfile(): void {
   let previousFocus: HTMLElement | null = null;
   let statusText = "";
   let storageFailed = false;
+  let composingName = false;
+  const identity = (value: Profile) => ({
+    name: value.name,
+    nationality: value.nationality,
+    age: value.age,
+    gender: value.gender,
+    base: value.base,
+    shirtColor: value.shirtColor,
+    completed: value.completed,
+  });
+  let identitySignature = JSON.stringify(identity(profile));
   const trigger = button("profile-trigger", "", () => open(false));
   trigger.setAttribute("aria-haspopup", "dialog");
   document.querySelector(".top-actions")?.append(trigger);
@@ -397,27 +431,87 @@ export function mountProfile(): void {
     chevron.innerHTML = icon("next");
     trigger.replaceChildren(portrait, label, chevron);
   };
-  const persist = (): void => {
+  // Autofill and some IMEs can update a field without a final input/change event.
+  // Capture the live form before any save or view replacement, not just on input.
+  const captureIdentity = (trimName = false): void => {
+    if (!dialog.open) return;
+    const name = dialog.querySelector<HTMLInputElement>('[name="nickname"]');
+    if (!name) return;
+    const nationality =
+      dialog.querySelector<HTMLSelectElement>('[name="country"]');
+    const age = dialog.querySelector<HTMLInputElement>('[name="age"]');
+    const gender = dialog.querySelector<HTMLSelectElement>('[name="gender"]');
+    const ageValue = age?.value ? Number(age.value) : null;
+    profile = {
+      ...profile,
+      name: (trimName ? name.value.trim() : name.value).slice(0, 40),
+      nationality: nationality?.value ?? profile.nationality,
+      age: age
+        ? ageValue !== null &&
+          Number.isInteger(ageValue) &&
+          ageValue >= 1 &&
+          ageValue <= 120
+          ? ageValue
+          : null
+        : profile.age,
+      gender: gender
+        ? gender.value === "female" || gender.value === "male"
+          ? gender.value
+          : "unspecified"
+        : profile.gender,
+    };
+  };
+  const persist = (capture = true): void => {
+    if (capture) captureIdentity();
     storageFailed = !saveProfile(profile);
     refreshTrigger();
+    const notice = dialog.querySelector(".profile-save-note");
+    if (notice) {
+      notice.textContent = copy(storageFailed ? "storeError" : "local");
+      if (storageFailed) notice.setAttribute("role", "alert");
+      else notice.removeAttribute("role");
+    }
+    const detail = identity(profile);
+    const signature = JSON.stringify(detail);
+    if (signature !== identitySignature) {
+      identitySignature = signature;
+      window.dispatchEvent(
+        new CustomEvent("hanzi-wallet:identity", { detail }),
+      );
+    }
   };
   const close = (): void => {
-    if (!setup) dialog.close();
+    if (!setup) {
+      captureIdentity(true);
+      persist(false);
+      dialog.close();
+    }
   };
   const finish = (): void => {
+    captureIdentity(true);
     profile = { ...profile, completed: true };
-    persist();
+    persist(false);
     setup = false;
     dialog.close();
     const done = resolveSetup;
     resolveSetup = null;
     done?.();
   };
-  const render = (): void => {
+  const render = (preserveDraft = true): void => {
+    if (preserveDraft) {
+      captureIdentity();
+      if (JSON.stringify(identity(profile)) !== identitySignature)
+        persist(false);
+    }
     const scroll =
       dialog.querySelector<HTMLElement>(".profile-content")?.scrollTop ?? 0;
     const focused = (document.activeElement as HTMLElement | null)?.dataset
       .focus;
+    const name = dialog.querySelector<HTMLInputElement>('[name="nickname"]');
+    const selection =
+      focused === "name" && name
+        ? ([name.selectionStart, name.selectionEnd] as const)
+        : null;
     dialog.replaceChildren();
     dialog.classList.toggle("profile-setup", setup);
     const heading = node("header", "profile-heading");
@@ -487,7 +581,7 @@ export function mountProfile(): void {
     }
     const layout = node("div", "profile-layout");
     const stage = node("aside", "profile-stage");
-    stage.append(createAvatar(profile));
+    stage.append(createAvatar(profile, { interactive: true }));
     const titleName = node(
       "h3",
       "profile-stage-name",
@@ -570,6 +664,10 @@ export function mountProfile(): void {
       dialog
         .querySelector<HTMLElement>(`[data-focus="${focused}"]`)
         ?.focus({ preventScroll: true });
+    if (selection)
+      dialog
+        .querySelector<HTMLInputElement>('[name="nickname"]')
+        ?.setSelectionRange(...selection);
   };
   const renderCharacter = (content: HTMLElement): void => {
     content.append(node("p", "profile-intro", copy("intro")));
@@ -585,12 +683,22 @@ export function mountProfile(): void {
     nameInput.placeholder = copy("nameHint");
     nameInput.value = profile.name;
     nameInput.dataset.focus = "name";
+    nameInput.addEventListener("compositionstart", () => {
+      composingName = true;
+    });
+    nameInput.addEventListener("compositionend", () => {
+      composingName = false;
+      persist();
+      refreshStageIdentity();
+    });
     nameInput.oninput = () => {
       profile = { ...profile, name: nameInput.value.slice(0, 40) };
+      if (!composingName) persist();
+      refreshStageIdentity();
+    };
+    nameInput.onchange = () => {
       persist();
-      const title = stageName();
-      if (title)
-        title.textContent = `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`;
+      refreshStageIdentity();
     };
     nameLabel.append(nameInput);
     content.append(nameLabel);
@@ -612,6 +720,7 @@ export function mountProfile(): void {
         },
       );
       choose.dataset.focus = `base-${base}`;
+      choose.dataset.base = base;
       choose.setAttribute("aria-pressed", String(profile.base === base));
       const baseArt = createAvatar({ ...profile, base }, { portrait: true });
       baseArt.setAttribute("aria-hidden", "true");
@@ -622,6 +731,60 @@ export function mountProfile(): void {
       bases.append(choose);
     }
     content.append(bases);
+    const colorsHeading = node("h3", "profile-field-heading", copy("shirt"));
+    colorsHeading.id = "profile-shirt-label";
+    content.append(
+      colorsHeading,
+      node("p", "profile-muted profile-shirt-hint", copy("shirtHint")),
+    );
+    const colors = node("div", "profile-shirt-colors");
+    colors.setAttribute("role", "group");
+    colors.setAttribute("aria-labelledby", colorsHeading.id);
+    for (const color of SHIRT_COLORS) {
+      const swatch = button(
+        "profile-shirt-swatch" +
+          (profile.shirtColor === color.color ? " selected" : ""),
+        "",
+        () => {
+          captureIdentity();
+          profile = {
+            ...profile,
+            shirtColor: color.color,
+            equipped: { ...profile.equipped, outfit: "everyday" },
+          };
+          statusText = copy("shirtSelected");
+          persist(false);
+          refreshAvatars();
+          for (const control of colors.querySelectorAll<HTMLButtonElement>(
+            "[data-color]",
+          )) {
+            const selected = control.dataset.color === profile.shirtColor;
+            control.classList.toggle("selected", selected);
+            control.setAttribute("aria-pressed", String(selected));
+            control.querySelector<HTMLElement>(
+              ".profile-swatch-check",
+            )!.innerHTML = selected ? icon("check") : "";
+          }
+          const live = dialog.querySelector(".profile-live");
+          if (live) live.textContent = statusText;
+        },
+      );
+      swatch.dataset.color = color.color;
+      swatch.dataset.focus = `color-${color.id}`;
+      swatch.style.setProperty("--shirt-swatch", color.color);
+      swatch.setAttribute("aria-label", color.names[getLocale()]);
+      swatch.setAttribute(
+        "aria-pressed",
+        String(profile.shirtColor === color.color),
+      );
+      swatch.title = color.names[getLocale()];
+      const check = node("span", "profile-swatch-check");
+      check.setAttribute("aria-hidden", "true");
+      if (profile.shirtColor === color.color) check.innerHTML = icon("check");
+      swatch.append(check);
+      colors.append(swatch);
+    }
+    content.append(colors);
     const optionalHeading = node("div", "profile-optional-heading");
     optionalHeading.append(
       node("h3", "profile-field-heading", copy("identity")),
@@ -652,9 +815,7 @@ export function mountProfile(): void {
     country.onchange = () => {
       profile = { ...profile, nationality: country.value };
       persist();
-      const title = stageName();
-      if (title)
-        title.textContent = `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`;
+      refreshStageIdentity();
     };
     countryLabel.append(country);
     fields.append(countryLabel);
@@ -689,6 +850,7 @@ export function mountProfile(): void {
       gender.append(option);
     }
     gender.value = profile.gender;
+    gender.name = "gender";
     gender.onchange = () => {
       profile = {
         ...profile,
@@ -717,6 +879,47 @@ export function mountProfile(): void {
   };
   const stageName = (): HTMLElement | null =>
     dialog.querySelector(".profile-stage-name");
+  const refreshStageIdentity = (): void => {
+    const title = stageName();
+    if (title)
+      title.textContent = `${profile.nationality ? flag(profile.nationality) + " " : ""}${profile.name || copy("character")}`;
+    const progress = levelProgress(profile, xp);
+    const level = dialog.querySelector(".profile-level");
+    if (level) level.textContent = `${copy("level")} ${progress.level}`;
+    const track = dialog.querySelector(".profile-xp-track");
+    track?.setAttribute(
+      "aria-valuenow",
+      String(Math.round(progress.ratio * 100)),
+    );
+    const fill = track?.querySelector<HTMLElement>("i");
+    if (fill) fill.style.width = `${progress.ratio * 100}%`;
+    const caption = dialog.querySelector(".profile-xp-caption");
+    if (caption)
+      caption.textContent =
+        progress.needed > 0
+          ? `${Math.max(0, progress.needed - progress.current)} XP ${copy("next")}`
+          : copy("max");
+    const balance = dialog.querySelector(".profile-balance strong");
+    if (balance)
+      balance.textContent = profile.coins.toLocaleString(getLocale());
+  };
+  const refreshAvatars = (): void => {
+    dialog
+      .querySelector(".profile-stage > .avatar-scene")
+      ?.replaceWith(createAvatar(profile, { interactive: true }));
+    for (const base of dialog.querySelectorAll<HTMLButtonElement>(
+      ".profile-base[data-base]",
+    )) {
+      const body = base.dataset.base === "female" ? "female" : "male";
+      const portrait = createAvatar(
+        { ...profile, base: body },
+        { portrait: true },
+      );
+      portrait.setAttribute("aria-hidden", "true");
+      base.querySelector(".avatar-portrait")?.replaceWith(portrait);
+    }
+    refreshStageIdentity();
+  };
   const renderProducts = (content: HTMLElement): void => {
     content.append(
       node(
@@ -923,7 +1126,8 @@ export function mountProfile(): void {
       open(true);
     });
   dialog.addEventListener("cancel", (event) => {
-    if (setup) event.preventDefault();
+    event.preventDefault();
+    if (!setup) close();
   });
   dialog.addEventListener("click", (event) => {
     if (event.target !== dialog || setup) return;
@@ -940,10 +1144,25 @@ export function mountProfile(): void {
     previousFocus?.focus({ preventScroll: true });
   });
   const sync = (): void => {
+    const before = JSON.stringify(identity(profile));
+    const hasForm = dialog.open && !!dialog.querySelector('[name="nickname"]');
+    const editing =
+      composingName ||
+      setup ||
+      !!document.activeElement?.closest(
+        ".profile-name-label,.profile-fields,.profile-bases,.profile-shirt-colors",
+      );
+    captureIdentity();
+    const draft = identity(profile);
+    const preserveDraft =
+      hasForm && (editing || JSON.stringify(draft) !== before);
     xp = getLearningXP();
     profile = syncProfile(loadProfile(xp), xp);
-    persist();
-    if (dialog.open) render();
+    if (preserveDraft) profile = { ...profile, ...draft };
+    persist(false);
+    // Keep the actual input node (and IME/cursor state) while the learner edits.
+    if (dialog.open && !preserveDraft) render(false);
+    else if (dialog.open) refreshStageIdentity();
   };
   window.addEventListener("storage", (event) => {
     if (event.key === LEARNING_KEY || event.key === PROFILE_KEY) sync();
@@ -954,6 +1173,12 @@ export function mountProfile(): void {
   window.addEventListener("hanzi-wallet:locale", () => {
     refreshTrigger();
     if (dialog.open) render();
+  });
+  window.addEventListener("pagehide", () => {
+    if (dialog.open) {
+      captureIdentity(true);
+      saveProfile(profile);
+    }
   });
   refreshTrigger();
 }
