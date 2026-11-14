@@ -1,5 +1,7 @@
 # Hanzi Wallet: de práctica de caracteres a plataforma de aprendizaje
 
+> Antecedente de investigación. El [plan de desarrollo por etapas](development/README.md) incorpora la investigación ampliada del usuario, viabilidad, contratos, backlog y flujo de GitHub. Usarlo para el trabajo nuevo.
+
 Estado: investigación y propuesta de producto. La corrección de colección inicial y reconocimiento por colocación sí está implementada en 1.5.1; los módulos nuevos descritos aquí todavía no están implementados.
 
 ## 1. Dirección del producto
