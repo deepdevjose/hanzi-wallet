@@ -8,6 +8,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build && node scripts/build_offline.mjs",
     "typecheck": "tsc --noEmit",
+    "audit:learning": "node scripts/audit_learning_content.mjs",
     "test": "vitest run",
     "preview": "vite preview --host 0.0.0.0",
     "train": "python3 scripts/train_model.py",

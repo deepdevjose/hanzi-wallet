@@ -1,6 +1,8 @@
 # Contratos técnicos propuestos
 
-Estado: diseño a revisar en HW-03; no son tipos ya implementados.
+Estado: diseño del sistema completo. El subconjunto inicial de HW-03 ya existe en `src/core/course.ts`: lección, palabras, enunciados, audio, selección, ordenación, escritura y contrato de evidencia. No están implementados aún el almacenamiento de sesiones/evidencias, el runtime visual, el planificador nuevo ni el backend.
+
+`inspectCourseLesson` comprueba contenido TypeScript local y distingue errores de autoría de bloqueos editoriales; no es un parser de JSON externo ni verifica los archivos/licencias contra un servidor. `gradeCourseExercise` corrige selección/ordenación sin escribir datos ni conceder premios. La escritura devuelve `unassessed` hasta integrarse con la evaluación real. El fixture de Presentarse sigue en borrador y no se importa en la interfaz publicada.
 
 ## Contenido y runtime
 
