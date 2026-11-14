@@ -1192,7 +1192,7 @@
   {
     "selector": ".write-stage #ink",
     "prop": "cursor",
-    "value": "crosshair"
+    "value": "url(\"./cursors/ink.svg\") 16 16, crosshair"
   },
   {
     "selector": ".ghost",

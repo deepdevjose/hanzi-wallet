@@ -525,6 +525,67 @@
 .profile-country {
   grid-column: 1/-1;
 }
+.profile-country-control {
+  position: relative;
+}
+.profile-country-search {
+  padding-right: 42px;
+}
+.profile-country-toggle {
+  position: absolute;
+  inset: 4px 4px 4px auto;
+  width: 33px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--profile-subtle);
+}
+.profile-country-toggle:hover {
+  background: var(--profile-inset);
+}
+.profile-country-toggle .icon {
+  width: 14px;
+  height: 14px;
+  transform: rotate(90deg);
+}
+.profile-country-results {
+  max-height: 180px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border: 1px solid var(--profile-border);
+  border-radius: 10px;
+  background: var(--profile-paper);
+}
+.profile-country-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 450;
+  text-align: left;
+}
+.profile-country-option.active {
+  background: var(--profile-inset);
+}
+.profile-country-option[aria-selected="true"]::after {
+  content: "✓";
+  margin-left: auto;
+  color: #7d9690;
+}
+.profile-country-empty {
+  padding: 12px 10px;
+  color: var(--profile-subtle);
+  font-size: 12px;
+  line-height: 1.5;
+}
 .profile-collection-note {
   display: flex;
   align-items: center;
