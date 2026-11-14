@@ -338,6 +338,53 @@ describe("avatar progression and one-time rewards", () => {
     expect(syncProfile(loadProfile(), 35).coins).toBe(55);
   });
 
+  it("persists a new shop purchase without duplicating coins or changing an existing wardrobe and custom body", () => {
+    const entries = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string): string | null => entries.get(key) ?? null,
+      setItem: (key: string, value: string): void => {
+        entries.set(key, value);
+      },
+    });
+    const starter = applyPlacement(initialProfile(), "0");
+    const original = readProfile({
+      ...starter,
+      name: "Mei",
+      shirtColor: SHIRT_COLORS.find((entry) => entry.id === "seal")!.color,
+      appearance: {
+        ...starter.appearance,
+        body: "slender",
+        height: "tall",
+        hair: "flowing",
+      },
+      owned: [...starter.owned, "linen", "hat"],
+      equipped: { ...starter.equipped, outfit: "linen", head: "hat" },
+      completed: true,
+    });
+    expect(buyItem(original, "cloud-tee", 0)).toBe(original);
+    const bought = buyItem(original, "cloud-tee", 25);
+    expect(bought.coins).toBe(original.coins - 45);
+    expect(bought.owned).toEqual([...original.owned, "cloud-tee"]);
+    expect(bought.equipped).toEqual({
+      ...original.equipped,
+      outfit: "cloud-tee",
+    });
+    expect(bought.appearance).toEqual(original.appearance);
+    expect(bought.shirtColor).toBe(original.shirtColor);
+    expect(buyItem(bought, "night-brocade", 25)).toBe(bought);
+    expect(saveProfile(bought)).toBe(true);
+    const restored = loadProfile();
+    expect(restored).toEqual(bought);
+    expect(buyItem(restored, "cloud-tee", 25)).toBe(restored);
+    expect(restored.owned.filter((id) => id === "cloud-tee")).toHaveLength(1);
+    const returned = equipItem(equipItem(restored, "linen"), "cloud-tee");
+    expect(returned.coins).toBe(bought.coins);
+    expect(returned.appearance).toEqual(original.appearance);
+    expect(saveProfile(returned)).toBe(true);
+    expect(loadProfile().equipped.outfit).toBe("cloud-tee");
+    expect(loadProfile().owned).toEqual(bought.owned);
+  });
+
   it("accepts palette colors while rejecting invalid or injected shirt colors", () => {
     for (const entry of SHIRT_COLORS) {
       expect(readProfile({ shirtColor: entry.color }).shirtColor).toBe(
