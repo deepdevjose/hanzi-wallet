@@ -1,5 +1,17 @@
 # Hanzi Wallet — checkpoints locales
 
+## Transición del dragón — 1.5.4
+
+- Rama `fix/onboarding-dragon-transition`, basada en la rama de planificación pendiente de revisión. La estética de la app, la pintura, el dragón original y los datos de usuario se conservan.
+- Eliminados el hueco circular blanco, el haz desenfocado y el flash de brillo. La hoja completa —pintura y caligrafía— se consume por un borde irregular con carbonizado y brasa discretos, revelando la página real de idioma.
+- Dragón con proporción natural 3:1, vuelo suave, nubes ornamentales y llama SVG corta anclada a su boca. Su escala, fuego y origen del quemado comparten coordenadas de viewport y se recalculan al cambiar tamaño/orientación.
+- Secuencia de 1,95 s en una capa separada: el dragón no desaparece al desvanecerse el texto. Las letras quedan terminadas durante la transición, sin reiniciar su escritura. Se conserva el desplazamiento de la hoja en pantallas bajas; el siguiente paso empieza arriba y recibe el foco al terminar.
+- La página siguiente queda inactiva durante la escena. Movimiento reducido omite el efecto; cambiar esa preferencia durante la animación también la termina. Si no hay soporte de recorte, se abre directamente el siguiente paso. RAF, capas y listener de resize se limpian al acabar.
+- **62 pruebas aprobadas**, TypeScript, formato y build correctos. Verificado el bundle `index-CQh0kSrL.js` y la caché `hanzi-wallet-87b0aedbd7a9`, con los mismos 25 recursos locales y sin dependencias ni imágenes adicionales.
+- QA Chromium en 1920×1080, 390×844, 320×568 y 844×390: encuadre, recorte del papel, caligrafía terminada, ausencia de desbordamiento horizontal, bloqueo temporal y recuperación del foco. Cambio de tamaño durante el vuelo actualizó el escenario a 844×390.
+- Comprobado teclado, esquema oscuro/movimiento reducido, Volver desde experiencia a idioma y primer inicio completo sin red. Una petición nueva falló; tras completar avatar y recargar se conservó «Lin», marcador `complete` y no reapareció la bienvenida. Se restauró la red.
+- Capturas revisadas en `output/playwright/dragon-{desktop,mobile,small,landscape}-burn.png`; además `dragon-reduced-language.png`. Son tamaños emulados; Safari, dispositivos físicos y rendimiento en móviles reales no se verificaron.
+
 ## Planificación de la plataforma — 14 de noviembre de 2026
 
 - Plan canónico nuevo: [docs/development/README.md](development/README.md), con viabilidad investigada, contratos propuestos, siete etapas/milestones y veinte tickets con dependencias y aceptación. La investigación del usuario está preservada sin configuración privada en [docs/research/MANDARIN_RESEARCH.md](research/MANDARIN_RESEARCH.md).

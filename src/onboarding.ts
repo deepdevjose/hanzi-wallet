@@ -1,4 +1,5 @@
 import "./onboarding.css";
+import { burnWelcomePaper } from "./welcome-transition";
 import {
   getLocale,
   isLocale,
@@ -223,8 +224,7 @@ export class FirstVisit {
     }
     const pending = loadProfile(getLearningXP()).placement;
     if (!pending?.awarded) {
-      await this.greeting(templates);
-      await this.language(changeLanguage);
+      await this.greeting(templates, changeLanguage);
     }
     const band = pending?.awarded
       ? pending.band
@@ -246,7 +246,10 @@ export class FirstVisit {
       .querySelector<HTMLElement>("#learn-main")
       ?.focus({ preventScroll: true });
   }
-  private greeting(templates: readonly CharacterTemplate[]): Promise<void> {
+  private greeting(
+    templates: readonly CharacterTemplate[],
+    changeLanguage: (locale: Locale) => void,
+  ): Promise<void> {
     let strokeNumber = 0;
     const ink = ["你", "好"]
       .map((char, column) => {
@@ -267,15 +270,50 @@ export class FirstVisit {
       .join("");
     this.dialog.classList.add("welcome-painted");
     this.page(
-      `<div class="welcome-greeting">${handwritten("hola", "hello-es", "es", 0.25)}${handwritten("hello", "hello-en", "en", 0.65)}<svg class="welcome-hanzi" viewBox="0 0 2400 1024" role="img" aria-label="你好！ · nǐ hǎo!">${ink}<path class="welcome-ink-stroke welcome-exclamation" d="M2230 230 Q2250 420 2220 580" pathLength="1" style="--wait:${strokeNumber * 0.18}s"/><path class="welcome-ink-stroke welcome-exclamation-dot" d="M2216 737 L2218 744" pathLength="1" style="--wait:${strokeNumber * 0.18 + 0.2}s"/></svg>${handwritten("bonjour", "hello-fr", "fr", 1)}${handwritten("olá", "hello-pt", "pt", 1.5)}<span class="welcome-pinyin">nǐ hǎo</span></div><p class="welcome-greeting-caption" lang="en">A new world begins with hello.</p><button class="welcome-next greeting-next" aria-label="Continue">${arrow}</button><div class="welcome-dragon-fire" aria-hidden="true"><img src="${new URL("art/dragon.png", this.base).href}" alt=""/><i></i></div>`,
+      `<div class="welcome-greeting">${handwritten("hola", "hello-es", "es", 0.25)}${handwritten("hello", "hello-en", "en", 0.65)}<svg class="welcome-hanzi" viewBox="0 0 2400 1024" role="img" aria-label="你好！ · nǐ hǎo!">${ink}<path class="welcome-ink-stroke welcome-exclamation" d="M2230 230 Q2250 420 2220 580" pathLength="1" style="--wait:${strokeNumber * 0.18}s"/><path class="welcome-ink-stroke welcome-exclamation-dot" d="M2216 737 L2218 744" pathLength="1" style="--wait:${strokeNumber * 0.18 + 0.2}s"/></svg>${handwritten("bonjour", "hello-fr", "fr", 1)}${handwritten("olá", "hello-pt", "pt", 1.5)}<span class="welcome-pinyin">nǐ hǎo</span></div><p class="welcome-greeting-caption" lang="en">A new world begins with hello.</p><button class="welcome-next greeting-next" aria-label="Continue">${arrow}</button>`,
     );
     return new Promise((resolve) => {
       this.dialog.querySelector<HTMLButtonElement>(".welcome-next")!.onclick =
         async (event) => {
           (event.currentTarget as HTMLButtonElement).disabled = true;
-          this.dialog.classList.add("welcome-burning");
-          await delay(this.reduced ? 0 : 1100);
-          this.dialog.classList.remove("welcome-painted", "welcome-burning");
+          const content =
+            this.dialog.querySelector<HTMLElement>(".welcome-content")!;
+          const scroll = this.dialog.scrollTop;
+          const paper = document.createElement("div");
+          paper.className = "welcome-paper";
+          paper.setAttribute("aria-hidden", "true");
+          paper.inert = true;
+          paper.append(content);
+          this.dialog.classList.remove("welcome-painted");
+          // Render the real next step underneath, so the paper reveals content.
+          const languageDone = this.language(changeLanguage);
+          this.dialog.scrollTop = 0;
+          const nextContent =
+            this.dialog.querySelector<HTMLElement>(".welcome-content")!;
+          const reduced = matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          if (!reduced) {
+            nextContent.inert = true;
+            this.dialog.classList.add("welcome-transitioning");
+            this.dialog.append(paper);
+            paper.scrollTop = scroll;
+            try {
+              await burnWelcomePaper(
+                this.dialog,
+                paper,
+                new URL("art/dragon.png", this.base).href,
+              );
+            } finally {
+              paper.remove();
+              nextContent.inert = false;
+              this.dialog.classList.remove("welcome-transitioning");
+            }
+          }
+          nextContent
+            .querySelector<HTMLElement>("h1")
+            ?.focus({ preventScroll: true });
+          await languageDone;
           resolve();
         };
     });
