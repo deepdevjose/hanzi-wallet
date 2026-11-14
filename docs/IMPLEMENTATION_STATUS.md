@@ -1,8 +1,19 @@
 # Hanzi Wallet — checkpoints locales
 
-Solicitud actual: mantener visible el puntero al escribir un hanzi con el ratón. Se conserva el trabajo previo de colocación y la propuesta de plataforma de aprendizaje. **No publicar ni subir a GitHub.**
+Solicitud actual: buscar el país escribiendo en el selector del perfil y del primer inicio. Se conserva el trabajo previo de escritura, colocación y la propuesta de plataforma de aprendizaje. **No publicar ni subir a GitHub.**
 
-## Estado actual — 1.5.2
+## Estado actual — 1.5.3
+
+- El selector de país permite escribir y filtra los 249 países/regiones existentes. Admite nombres localizados, nombres en inglés, búsquedas sin tildes y códigos ISO como `MX` o `CN`.
+- Conserva la selección ISO y los datos del perfil. Una búsqueda inválida no reemplaza el país guardado; «Sin seleccionar» permite quitarlo explícitamente.
+- Lista y estados en los cinco idiomas, navegación con flechas y Enter, cierre con Escape sin cerrar el perfil y semántica de combobox/listbox. El diseño usa los colores y controles existentes.
+- Resultados acotados y desplazables; en móvil se desplazan a la vista. Al salir con el ratón se confirma el valor antes de guardar y se contrae la lista después de soltar, evitando mover el botón de continuar durante el clic.
+- Verificado en Chromium a 1440×1000 y 390×844: México sin tildes, códigos, lista vacía, Escape, Tab, selección explícita vacía, guardado y recarga, coincidencia exacta al salir y clic prolongado. Eventos de foco/progreso conservan el nodo, consulta y cursor de edición.
+- Cambio a francés conserva `MX` y muestra «Mexique»; «United States» encuentra «États-Unis». Sin red, recarga y búsqueda conservadas; una petición nueva sin caché falló como se esperaba.
+- **27 pruebas aprobadas** de perfil e idiomas/audio, TypeScript, formato y compilación de producción aprobados. Bundle comprobado `index-D155ncsb.js`; caché `hanzi-wallet-99d375e59600`, 25 recursos locales.
+- Captura revisada: `output/playwright/country-search-mobile.png`. Prueba móvil emulada; no se verificaron Safari ni dispositivos físicos. No se añadieron dependencias ni se modificó el contenido de aprendizaje.
+
+## Entrega anterior — 1.5.2
 
 - Sustituido el cursor `crosshair` del sistema por una mira SVG nativa de 32×32, oscura con contorno blanco y centro transparente. Punto activo 16×16 y `crosshair` de respaldo.
 - El cursor es un recurso local incorporado al CSS de producción; no necesita red ni añade una capa sobre la tinta. No se cambió el manejo de ratón, lápiz o pantalla táctil.
