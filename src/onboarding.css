@@ -873,6 +873,50 @@
     transform: scaleY(1.1);
   }
 }
+@media (max-height: 600px) and (min-width: 601px) {
+  :is(.welcome-painted, .welcome-paper) .welcome-content {
+    padding: 70px 24px 35px;
+  }
+  :is(.welcome-painted, .welcome-paper) .welcome-greeting {
+    width: min(400px, 58vw);
+    height: 180px;
+    margin-top: 0;
+  }
+  :is(.welcome-painted, .welcome-paper) .welcome-hanzi {
+    top: 35px;
+    left: 23%;
+    width: 54%;
+  }
+  :is(.welcome-painted, .welcome-paper) .welcome-hello {
+    width: 70px;
+    height: 45px;
+  }
+  :is(.welcome-painted, .welcome-paper) .hello-es {
+    top: 8px;
+  }
+  :is(.welcome-painted, .welcome-paper) .hello-en {
+    top: 0;
+  }
+  :is(.welcome-painted, .welcome-paper) .hello-fr {
+    bottom: 14px;
+    width: 95px;
+  }
+  :is(.welcome-painted, .welcome-paper) .hello-pt {
+    bottom: 12px;
+    width: 55px;
+  }
+  :is(.welcome-painted, .welcome-paper) .welcome-pinyin {
+    bottom: 0;
+  }
+  :is(.welcome-painted, .welcome-paper) .welcome-greeting-caption {
+    margin: 8px 0 12px;
+    font-size: 11px;
+  }
+  :is(.welcome-painted, .welcome-paper) .greeting-next {
+    width: 42px;
+    height: 42px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .welcome-burn-stage {
     display: none;
