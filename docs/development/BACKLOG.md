@@ -2,30 +2,33 @@
 
 Cada HW es una issue propuesta. Todas comienzan en Backlog; no implican funciones terminadas. Prioridad P0 = primera entrega, P1 = expansión local, P2 = servicios conectados. Tamaño relativo: S acotado, M varias piezas, L requiere dividir al iniciar. No son estimaciones de horas.
 
-| ID    | Título de issue                                       | Milestone | Prioridad | Tamaño | Depende de          |
-| ----- | ----------------------------------------------------- | --------- | --------- | ------ | ------------------- |
-| HW-01 | Registrar base visual, inventario y migraciones       | M0        | P0        | S      | —                   |
-| HW-02 | Producir y revisar contenido de Presentarse           | M0        | P0        | M      | HW-01               |
-| HW-03 | Definir catálogo y contratos de ejercicios/evidencias | M1        | P0        | M      | HW-01               |
-| HW-04 | Guardar y reanudar sesiones sin pérdida               | M1        | P0        | M      | HW-03               |
-| HW-05 | Ejecutar la primera misión de principio a fin         | M1        | P0        | M      | HW-02, HW-03, HW-04 |
-| HW-06 | Integrar lectura, audio y escritura contextual        | M1        | P0        | M      | HW-05               |
-| HW-07 | Conectar avance, premios y Continuar misión           | M1        | P0        | M      | HW-04, HW-06        |
-| HW-08 | Validar y entregar primera misión local               | M1        | P0        | M      | HW-02, HW-07        |
-| HW-09 | Repasar por habilidad y evaluar planificador          | M2        | P1        | M      | HW-08               |
-| HW-10 | Enseñar tonos perceptivos, trazos y componentes       | M2        | P1        | L      | HW-02, HW-08        |
-| HW-11 | Añadir misión Pedir una bebida y piloto               | M2        | P1        | M      | HW-09, HW-10        |
-| HW-12 | Grabar voz y comparar con audio modelo                | M3        | P1        | M      | HW-08               |
-| HW-13 | Prototipar y validar guía tonal orientativa           | M3        | P1        | L      | HW-10, HW-12        |
-| HW-14 | Publicar lecturas graduadas y paquetes offline        | M4        | P1        | L      | HW-11               |
-| HW-15 | Ampliar diagnóstico por habilidades                   | M4        | P1        | M      | HW-09, HW-14        |
-| HW-16 | Evaluar Zhipu y decidir backend/coste                 | M5        | P2        | M      | HW-11               |
-| HW-17 | Ofrecer coach conversacional opcional                 | M5        | P2        | L      | HW-16               |
-| HW-18 | Diseñar cuentas opcionales y sincronización           | M6        | P2        | L      | HW-14, HW-16        |
-| HW-19 | Implementar retos cooperativos verificables           | M6        | P2        | L      | HW-18               |
-| HW-20 | Preparar moderación antes de chat y torneos           | M6        | P2        | L      | HW-18, HW-19        |
+| ID    | Título de issue                                       | Milestone    | Prioridad | Tamaño | Depende de                 |
+| ----- | ----------------------------------------------------- | ------------ | --------- | ------ | -------------------------- |
+| HW-01 | Registrar base visual, inventario y migraciones       | M0           | P0        | S      | —                          |
+| HW-02 | Producir y revisar contenido de Presentarse           | M0           | P0        | M      | HW-01                      |
+| HW-03 | Definir catálogo y contratos de ejercicios/evidencias | M1           | P0        | M      | HW-01                      |
+| HW-04 | Guardar y reanudar sesiones sin pérdida               | M1           | P0        | M      | HW-03                      |
+| HW-05 | Ejecutar la primera misión de principio a fin         | M1           | P0        | M      | HW-02, HW-03, HW-04        |
+| HW-06 | Integrar lectura, audio y escritura contextual        | M1           | P0        | M      | HW-05                      |
+| HW-07 | Conectar avance, premios y Continuar misión           | M1           | P0        | M      | HW-04, HW-06               |
+| HW-08 | Validar y entregar primera misión local               | M1           | P0        | M      | HW-02, HW-07               |
+| HW-09 | Repasar por habilidad y evaluar planificador          | M2           | P1        | M      | HW-08                      |
+| HW-10 | Enseñar tonos perceptivos, trazos y componentes       | M2           | P1        | L      | HW-02, HW-08               |
+| HW-11 | Añadir misión Pedir una bebida y piloto               | M2           | P1        | M      | HW-09, HW-10               |
+| HW-12 | Grabar voz y comparar con audio modelo                | M3           | P1        | M      | HW-08                      |
+| HW-13 | Prototipar y validar guía tonal orientativa           | M3           | P1        | L      | HW-10, HW-12               |
+| HW-14 | Publicar lecturas graduadas y paquetes offline        | M4           | P1        | L      | HW-11                      |
+| HW-15 | Ampliar diagnóstico por habilidades                   | M4           | P1        | M      | HW-09, HW-14               |
+| HW-16 | Evaluar Zhipu y decidir backend/coste                 | M5           | P2        | M      | HW-11                      |
+| HW-17 | Ofrecer coach conversacional opcional                 | M5           | P2        | L      | HW-16                      |
+| HW-18 | Diseñar cuentas opcionales y sincronización           | M6           | P2        | L      | HW-14, HW-16               |
+| HW-19 | Implementar retos cooperativos verificables           | M6           | P2        | L      | HW-18                      |
+| HW-20 | Preparar moderación antes de chat y torneos           | M6           | P2        | L      | HW-18, HW-19               |
+| HW-21 | Preparar alojamiento futuro en Cloudflare             | Infra futura | P2        | M      | HW-08; HW-16 solo para API |
 
 ## Cuerpo de cada issue
+
+HW-21 es una solicitud posterior del usuario: se planifica ahora y se ejecuta más adelante. Los IDs anteriores se conservan. Ver [CLOUDFLARE.md](CLOUDFLARE.md).
 
 Copiar el objetivo, aceptación y validación de la sección correspondiente. Añadir enlace a dependencias reales cuando tengan número de issue. Para tickets L, abrir subtareas antes de programar; cada subtarea debe poder revisarse en una PR.
 
@@ -108,3 +111,7 @@ Aceptación: objetivos cooperativos por nivel/habilidad, intentos verificables y
 ### HW-20 · Comunidad
 
 Dividir herramientas de bloqueo/denuncia, operación y piloto cerrado. Aceptación: responsable de moderación, reglas, controles de privacidad, retención y respuesta a abuso; después chat/torneos limitados. Validación: pruebas de permisos, denuncia y bloqueo entre cuentas. No abrir chat público sin operación definida.
+
+### HW-21 · Cloudflare, más adelante
+
+Objetivo: alojar la plataforma en Cloudflare después de validar la primera misión local. Aceptación: decisión de alojamiento y presupuesto, preview separado, rutas/base correctas, MIME/caché apropiados para HTML/SW/modelos/audio, recarga offline y actualización de PWA, dominio/HTTPS, rollback y procedimiento probado de exportación/importación entre orígenes. Mantener datos locales; ningún secreto en el cliente. Validación: enlaces directos, usuario nuevo y existente, dos versiones sucesivas, pérdida de red y restauración. DNS, producción, servicios de pago y retirada del alojamiento anterior se concretarán para revisión antes de ejecutarlos. Si luego hay IA, añadir Worker/API con límites según HW-16/HW-17. Sin despliegue ni cambios de cuenta en esta etapa.

@@ -34,4 +34,6 @@ HW-05 puede usar fixtures editoriales durante desarrollo, pero la aceptación de
 
 ## Alcance que puede esperar
 
+**Infraestructura futura · Cloudflare (HW-21):** preparar preview, dominio, caché/PWA y traslado del progreso después de la primera misión local. No bloquea M0/M1 ni está desplegado. El detalle está en [CLOUDFLARE.md](CLOUDFLARE.md). Los endpoints de IA solo se añaden cuando M5 los necesite.
+
 Modelos de voz grandes, nota tonal, editor de cursos, expansión masiva a 3.500 caracteres, cuentas obligatorias, chat y torneos no bloquean la primera misión. Se mantienen como entregas definidas del roadmap; no se simulan con interfaces sin funcionalidad.
