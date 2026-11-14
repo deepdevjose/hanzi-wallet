@@ -1,8 +1,17 @@
 # Hanzi Wallet — checkpoints locales
 
-Solicitud actual: corregir la colección del primer inicio y el reconocimiento por colocación; investigar una plataforma de aprendizaje con lectura, escritura, escucha, pronunciación, tonos, trazos y componentes. **No publicar ni subir a GitHub.**
+Solicitud actual: mantener visible el puntero al escribir un hanzi con el ratón. Se conserva el trabajo previo de colocación y la propuesta de plataforma de aprendizaje. **No publicar ni subir a GitHub.**
 
-## Estado actual — 1.5.1
+## Estado actual — 1.5.2
+
+- Sustituido el cursor `crosshair` del sistema por una mira SVG nativa de 32×32, oscura con contorno blanco y centro transparente. Punto activo 16×16 y `crosshair` de respaldo.
+- El cursor es un recurso local incorporado al CSS de producción; no necesita red ni añade una capa sobre la tinta. No se cambió el manejo de ratón, lápiz o pantalla táctil.
+- Comprobado en Chromium: el recurso se decodifica a 32×32; el cursor configurado se conserva antes y durante el arrastre en claro y oscuro. Dos gestos de ratón generaron dos trazos; Deshacer dejó uno y Borrar dejó cero.
+- Comprobado sin red en modo guiado: cursor SVG incorporado al CSS disponible y lienzo con eventos de puntero activos.
+- Nueve pruebas de idiomas/audio/conservación del CSS aprobadas, TypeScript y compilación de producción aprobados. Solo se actualizó la expectativa del cursor en el fixture de interacción existente.
+- Caché de esta revisión: `hanzi-wallet-e182e910b7dd`. El resto de las evidencias siguientes corresponde a la entrega base 1.5.1.
+
+## Entrega base — 1.5.1
 
 - Base de esta revisión: `d354648` (creador de personajes 1.5.0).
 - Corrección de inicio y colocación: `d2e6dfd`.
@@ -23,7 +32,7 @@ Solicitud actual: corregir la colección del primer inicio y el reconocimiento p
 - Los perfiles con `placement.awarded=false` no reciben reconocimiento ni colección avanzada.
 - Cambiados el contador y filtro de «Consolidados» a «Conocidos», incluyendo los reconocidos por colocación y los consolidados mediante repasos. Las etiquetas nuevas están en cinco idiomas; la estética y el CSS principal se conservan.
 
-## Verificado
+## Verificación de la base 1.5.1
 
 - **62 pruebas aprobadas**, siete archivos; ocho pruebas nuevas cubren inicio vacío, bandas inclusivas, catálogo acotado, conservación de práctica, marcadores en respaldos, eliminaciones, repaso voluntario y mezcla sin pérdida de evidencia.
 - TypeScript, formato y compilación final aprobados. Bundle final `index-QFBdWzNb.js`; caché `hanzi-wallet-e05275064a72`, 25 recursos locales.
