@@ -21,6 +21,18 @@ The two bases are independent from the learner's optional gender field. Both beg
 
 The selected colour is stored with the profile, independently of the equipped outfit, so returning to the starter T-shirt restores the learner's choice. Existing ownership, balances, placement and progress stay in the original profile storage key.
 
+## Character creator
+
+The creator exposes twelve appearance dimensions in `src/core/appearance.ts`: face, eyes, brows, nose, mouth, cheeks, hairstyle, hair colour, eye colour, skin tone, body shape and height. The core catalogue contains validated options and translated labels for the five supported languages. All personal features are free; wardrobe progression remains separate.
+
+Masculine and feminine bases have distinct default face geometry, brows, nose, mouth, hair and silhouette. They are starting points rather than restrictions: every appearance option remains available for either base, independently of the optional gender field. Changing the base retains customised features while updating features that still match the previous base defaults.
+
+The editor groups controls into identity, face, hair and body. Face and hair editing use a closer view of the same SVG character; full-body previews remain available for proportions and clothing. Preview cameras must not alter the actual character geometry.
+
+`Profile.appearance` is persisted under the original profile key. Older profiles receive validated defaults for their selected base and retain their previously equipped skin tone. Skin choices in the wardrobe update the same canonical appearance field, so there is one visible tone across editor, portrait and shop.
+
+Body variants and height must retain connected neck, hands and feet. Apply clothing changes through the shared proportions and attachment points; do not offset independently rendered overlays. Keep every hairstyle compatible with existing hats and ornaments, and preserve all face choices when a wardrobe expression changes the character's mood.
+
 ## Character motion
 
 Main character previews have a calm idle motion and blinking eyes, with a friendly wave on interaction. The body and its equipped pieces move together. Shop thumbnails keep their product details easy to inspect and use restrained motion on interaction. `prefers-reduced-motion` provides a still, fully usable version; essential actions and state must remain accessible without animation.

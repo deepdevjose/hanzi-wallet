@@ -1,11 +1,11 @@
 import "./avatar.css";
 import type { Profile, Item, Slot } from "./core/profile";
-import { ITEMS, DEFAULT_SHIRT_COLOR } from "./core/profile";
+import { ITEMS, DEFAULT_SHIRT_COLOR, changeAppearance } from "./core/profile";
 import { getLocale } from "./i18n";
+import { defaultAppearance, type Appearance } from "./core/appearance";
 
 const NS = "http://www.w3.org/2000/svg";
 const INK = "#39413d";
-const HAIR = "#303b39";
 const PAPER = "#f4f0e6";
 const selected = (profile: Profile, slot: Slot): Item | undefined =>
   ITEMS.find((item) => item.id === profile.equipped[slot]);
@@ -74,46 +74,179 @@ function headwear(id: string): string {
   return "";
 }
 
-function hair(female: boolean): { back: string; front: string } {
-  if (female)
+interface BodyRig {
+  readonly shoulder: number;
+  readonly waist: number;
+  readonly hip: number;
+  readonly leg: number;
+  readonly neck: number;
+  readonly torsoScale: number;
+  readonly legScale: number;
+  readonly headShift: number;
+  readonly upperEnd: number;
+}
+function bodyRig(appearance: Appearance): BodyRig {
+  const shape = {
+    balanced: { shoulder: 22, waist: 25, hip: 28, leg: 22, neck: 10 },
+    slender: { shoulder: 18, waist: 17, hip: 22, leg: 17, neck: 8 },
+    soft: { shoulder: 20, waist: 20, hip: 33, leg: 26, neck: 9 },
+    broad: { shoulder: 31, waist: 29, hip: 33, leg: 27, neck: 12 },
+  }[appearance.body];
+  const proportions = {
+    short: { torsoScale: 0.86, legScale: 0.82 },
+    average: { torsoScale: 1, legScale: 1 },
+    tall: { torsoScale: 1.06, legScale: 1.1 },
+  }[appearance.height];
+  // Feet stay grounded. Height changes the torso/leg proportions independently,
+  // while the head and every attachment retain their own undistorted geometry.
+  const headShift =
+    286 - (134 + 74 * proportions.torsoScale + 78 * proportions.legScale);
+  return {
+    ...shape,
+    ...proportions,
+    headShift,
+    upperEnd: 134 + headShift + 74 * proportions.torsoScale,
+  };
+}
+function faceGeometry(face: Appearance["face"]): {
+  shape: string;
+  half: number;
+} {
+  return {
+    soft: {
+      half: 39,
+      shape:
+        "M61 77Q61 55 81 47Q100 40 119 47Q139 55 139 77L137 100Q135 120 117 128Q100 136 83 128Q65 120 63 100Z",
+    },
+    round: {
+      half: 43,
+      shape:
+        "M57 78Q58 53 80 47Q100 41 120 47Q142 53 143 78L142 101Q140 128 117 136Q100 142 83 136Q60 128 58 101Z",
+    },
+    oval: {
+      half: 34,
+      shape:
+        "M66 76Q66 54 82 47Q100 39 118 47Q134 54 134 76L132 102Q128 124 115 133Q100 143 85 133Q72 124 68 102Z",
+    },
+    defined: {
+      half: 39,
+      shape:
+        "M61 76Q61 54 81 46Q100 39 120 46Q139 54 139 76L137 99L128 120L114 132Q100 137 86 132L72 120L63 99Z",
+    },
+  }[face];
+}
+
+function hair(
+  appearance: Appearance,
+  headwearId: string,
+): { back: string; front: string } {
+  const tone = appearance.hairColor;
+  const highlight =
+    'stroke="#ffffff" stroke-opacity=".18" stroke-width="2" stroke-linecap="round"';
+  const swept = `${path("M58 77Q51 46 75 35Q99 23 125 36Q148 47 142 78L133 82L132 61Q108 64 96 46Q82 64 65 63L66 83Z", tone)}<path d="M72 43Q80 37 90 37M111 38Q126 40 132 50" ${highlight}/>`;
+  if (appearance.hair === "buns")
     return {
-      back: `<path d="M62 70Q51 111 66 139L81 146L83 137Q71 121 76 96L80 76Z" fill="${HAIR}"/><path d="M138 70Q149 111 134 139L119 146L117 137Q129 121 124 96L120 76Z" fill="${HAIR}"/><circle cx="55" cy="64" r="15" fill="${HAIR}"/><circle cx="145" cy="64" r="15" fill="${HAIR}"/><path d="M42 61Q51 53 61 59M139 58Q150 51 158 63" stroke="#637469" stroke-width="2" stroke-linecap="round"/>`,
-      front: `${path("M58 77Q51 46 75 35Q99 23 125 36Q148 47 142 78L133 82L132 61Q108 64 96 46Q82 64 65 63L66 83Z", HAIR)}<path d="M72 43Q80 37 90 37M111 38Q126 40 132 50" stroke="#5b6d63" stroke-width="2" stroke-linecap="round"/>`,
+      back: `<path d="M62 70Q51 111 66 139L81 146L83 137Q71 121 76 96L80 76Z" fill="${tone}"/><path d="M138 70Q149 111 134 139L119 146L117 137Q129 121 124 96L120 76Z" fill="${tone}"/><circle cx="53" cy="63" r="16" fill="${tone}" ${stroke}/><circle cx="147" cy="63" r="16" fill="${tone}" ${stroke}/><path d="M41 60Q51 51 62 58M138 57Q150 50 159 62" ${highlight}/>`,
+      front: swept,
+    };
+  if (appearance.hair === "bob")
+    return {
+      back: `<path d="M63 65Q49 91 57 127L77 139L82 130Q70 113 77 84Z" fill="${tone}" ${stroke}/><path d="M137 65Q151 91 143 127L123 139L118 130Q130 113 123 84Z" fill="${tone}" ${stroke}/><path d="M60 104L65 127M140 104L135 127" ${highlight}/>`,
+      front: `${path("M58 79Q51 47 74 37Q101 22 127 38Q147 49 142 79L134 84L132 65L117 64L110 53L107 66H91L87 55L82 65L66 65L66 84Z", tone)}<path d="M69 47Q91 30 117 40" ${highlight}/>`,
+    };
+  if (appearance.hair === "flowing")
+    return {
+      back: `<path d="M63 65Q45 91 48 137Q50 166 69 188L84 178Q69 138 76 86Z" fill="${tone}" ${stroke}/><path d="M137 65Q155 91 152 137Q150 166 131 188L116 178Q131 138 124 86Z" fill="${tone}" ${stroke}/><path d="M57 100Q53 144 70 174M143 100Q147 144 130 174" ${highlight}/>`,
+      front: `${path("M58 78Q52 45 76 35Q100 23 125 36Q148 47 142 79L134 87L130 63Q111 64 103 43Q94 61 70 66L65 87Z", tone)}<path d="M72 44Q85 36 95 36M115 39Q128 42 135 54" ${highlight}/>`,
+    };
+  if (appearance.hair === "topknot")
+    return {
+      back:
+        headwearId === "hat"
+          ? ""
+          : `<ellipse cx="100" cy="28" rx="15" ry="13" fill="${tone}" ${stroke}/><path d="M91 22Q100 17 109 23" ${highlight}/><path d="M87 37H113" stroke="#9b8b66" stroke-width="3" stroke-linecap="round"/>`,
+      front: `${path("M59 79Q52 45 76 38Q100 30 125 39Q147 48 141 80L134 82L131 60Q111 63 100 50Q89 63 69 61L66 82Z", tone)}<path d="M69 49Q84 38 94 40M106 40Q122 40 133 51" ${highlight}/>`,
+    };
+  if (appearance.hair === "crop")
+    return {
+      back: "",
+      front: `${path("M59 81Q53 56 64 45Q77 31 100 32Q125 32 138 47Q147 60 141 82L134 80L131 62Q114 55 101 59Q83 55 68 62L66 81Z", tone)}<path d="M69 47Q80 39 94 40M104 40Q121 39 131 49" ${highlight}/>`,
     };
   return {
     back: "",
-    front: `${path("M57 80Q48 62 59 49Q60 35 76 35Q83 20 97 31Q107 18 119 34Q140 30 143 50Q154 66 142 83L133 80L132 64Q115 66 110 51Q105 62 95 65L88 51Q82 62 67 66L66 82Z", HAIR)}<path d="M66 47Q73 40 81 42M111 38Q124 37 132 47" stroke="#5e7066" stroke-width="2" stroke-linecap="round"/>`,
+    front: `${path("M57 80Q48 62 59 49Q60 35 76 35Q83 20 97 31Q107 18 119 34Q140 30 143 50Q154 66 142 83L133 80L132 64Q115 66 110 51Q105 62 95 65L88 51Q82 62 67 66L66 82Z", tone)}<path d="M66 47Q73 40 81 42M111 38Q124 37 132 47" ${highlight}/>`,
   };
 }
 
-function faceFeatures(
-  expression: string,
-  female: boolean,
-  deep: boolean,
-): string {
-  const blush = deep ? "#bc8074" : "#cf9485";
-  const brows =
-    expression === "curious"
-      ? '<path d="M72 78Q80 69 88 74M111 76Q120 80 127 75"/>'
-      : female
-        ? '<path d="M73 76Q80 71 88 75M112 75Q120 71 127 76"/>'
-        : '<path d="M72 75Q80 69 89 74M111 74Q120 69 128 75"/>';
+let featureId = 0;
+function faceFeatures(appearance: Appearance, expression: string): string {
+  const id = ++featureId;
+  const offset =
+    appearance.face === "oval" ? 18 : appearance.face === "round" ? 21 : 19;
+  const left = 100 - offset,
+    right = 100 + offset;
+  const tone = appearance.hairColor;
+  const darkSkin =
+    appearance.skinTone === "#89583f" || appearance.skinTone === "#b57b55";
+  const blush = darkSkin ? "#d18f83" : "#cf8b80";
+  const brows: Record<Appearance["brows"], string> = {
+    soft: `<path d="M${left - 8} 76Q${left} 72 ${left + 8} 76M${right - 8} 76Q${right} 72 ${right + 8} 76" fill="none" stroke="${tone}" stroke-width="2.3" stroke-linecap="round"/>`,
+    straight: `<path d="M${left - 8} 75L${left + 8} 75M${right - 8} 75L${right + 8} 75" fill="none" stroke="${tone}" stroke-width="3.3" stroke-linecap="round"/>`,
+    arched: `<path d="M${left - 9} 77Q${left - 1} 67 ${left + 8} 73M${right - 8} 73Q${right + 1} 67 ${right + 9} 77" fill="none" stroke="${tone}" stroke-width="2.5" stroke-linecap="round"/>`,
+    bold: `<path d="M${left - 10} 76L${left - 2} 69L${left + 9} 72L${left + 9} 77L${left - 1} 74L${left - 9} 80ZM${right + 10} 76L${right + 2} 69L${right - 9} 72L${right - 9} 77L${right + 1} 74L${right + 9} 80Z" fill="${tone}"/>`,
+  };
+  const eye = (cx: number, n: number): string => {
+    const round = appearance.eyes === "round";
+    const monolid = appearance.eyes === "monolid";
+    const shape = round
+      ? `M${cx - 8} 87a8 9 0 1 0 16 0a8 9 0 1 0-16 0`
+      : monolid
+        ? `M${cx - 10} 86Q${cx} 83 ${cx + 10} 86Q${cx + 3} 94 ${cx - 10} 89Z`
+        : `M${cx - 10} 87Q${cx - 1} 77 ${cx + 10} 85Q${cx + 1} 94 ${cx - 10} 87Z`;
+    return `<g data-eye-shape="${appearance.eyes}"><defs><clipPath id="avatar-eye-${id}-${n}"><path d="${shape}"/></clipPath></defs><path d="${shape}" fill="#fbf4e5" stroke="${INK}" stroke-width="1.3"/><g clip-path="url(#avatar-eye-${id}-${n})"><ellipse cx="${cx}" cy="${round ? 88 : 87}" rx="${round ? 5.8 : 4.8}" ry="${round ? 7.2 : 5.5}" fill="${appearance.eyeColor}"/><ellipse cx="${cx}" cy="${round ? 88 : 87}" rx="2.2" ry="3.4" fill="#252b29"/><circle cx="${cx + 1.3}" cy="${round ? 85 : 84.5}" r="1.4" fill="#fffdf3"/></g>${monolid ? `<path d="M${cx - 10} 85Q${cx} 82 ${cx + 10} 85" stroke="${INK}" stroke-width="1.9" stroke-linecap="round"/>` : ""}</g>`;
+  };
   const eyes =
-    expression === "smile"
-      ? '<path d="M74 88Q81 79 88 88M112 88Q119 79 126 88" stroke="#303b39" stroke-width="3.4" stroke-linecap="round"/>'
-      : '<g class="avatar-eye-open" fill="#303b39"><ellipse cx="81" cy="87" rx="4.7" ry="6.1"/><ellipse cx="119" cy="87" rx="4.7" ry="6.1"/><circle cx="82.3" cy="85" r="1.3" fill="#fffaf0"/><circle cx="120.3" cy="85" r="1.3" fill="#fffaf0"/></g><g class="avatar-eye-closed" stroke="#303b39" stroke-width="2.8" stroke-linecap="round"><path d="M76 88Q81 91 86 88M114 88Q119 91 124 88"/></g>';
+    appearance.eyes === "smiling"
+      ? `<g data-eye-shape="smiling"><path d="M${left - 8} 89Q${left} 77 ${left + 8} 89M${right - 8} 89Q${right} 77 ${right + 8} 89" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></g>`
+      : `<g class="avatar-eye-open">${eye(left, 0)}${eye(right, 1)}</g><g class="avatar-eye-closed" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"><path d="M${left - 7} 88Q${left} 92 ${left + 7} 88M${right - 7} 88Q${right} 92 ${right + 7} 88"/></g>`;
+  const halfMouth = { gentle: 9, wide: 15, small: 4.8 }[appearance.mouth];
   const mouth =
-    expression === "smile"
-      ? '<path d="M90 107Q100 112 110 107Q107 121 100 120Q93 119 90 107Z" fill="#aa625b"/><path d="M94 110Q100 113 106 110" stroke="#fff5df" stroke-width="2.2" stroke-linecap="round"/>'
-      : expression === "curious"
-        ? '<ellipse cx="101" cy="111" rx="4" ry="5" fill="#ad6d61"/>'
-        : '<path d="M91 109Q100 117 109 109" stroke="#9b5d53" stroke-width="2.3" stroke-linecap="round"/>';
-  return `<g class="avatar-face"><ellipse cx="71" cy="102" rx="10" ry="5" fill="${blush}" opacity=".53"/><ellipse cx="129" cy="102" rx="10" ry="5" fill="${blush}" opacity=".53"/><g fill="none" stroke="#303b39" stroke-width="${female ? 2.8 : 3.6}" stroke-linecap="round">${brows}</g>${eyes}<path d="M99 94L97 100Q100 102 103 100" stroke="${deep ? "#6d4434" : "#ba8b6a"}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>${mouth}</g>`;
+    expression === "curious"
+      ? `<ellipse cx="101" cy="112" rx="${halfMouth * 0.36}" ry="${appearance.mouth === "small" ? 3.4 : 5.4}" fill="#ad6d61"/>`
+      : expression === "smile"
+        ? `<path d="M${100 - halfMouth} 108Q100 113 ${100 + halfMouth} 108Q${100 + halfMouth * 0.7} 122 100 121Q${100 - halfMouth * 0.7} 122 ${100 - halfMouth} 108Z" fill="#aa625b"/><path d="M${100 - halfMouth * 0.66} 111Q100 114 ${100 + halfMouth * 0.66} 111" stroke="#fff5df" stroke-width="2" stroke-linecap="round"/>`
+        : appearance.mouth === "small"
+          ? '<path d="M95 111Q100 113 105 111" stroke="#a26761" stroke-width="2.5" stroke-linecap="round"/>'
+          : `<path d="M${100 - halfMouth} 109Q100 ${appearance.mouth === "wide" ? 124 : 118} ${100 + halfMouth} 109" stroke="#9b5d53" stroke-width="2.3" stroke-linecap="round"/>${appearance.mouth === "wide" ? '<path d="M83 109L84 106M116 106L117 109" stroke="#bd8872" stroke-width="1.2" stroke-linecap="round"/>' : ""}`;
+  const noseInk = darkSkin ? "#684637" : "#b48465";
+  const noses: Record<Appearance["nose"], string> = {
+    button: `<path d="M97 98Q94 103 100 104Q106 103 103 98" fill="${noseInk}" fill-opacity=".25" stroke="${noseInk}" stroke-width="1.3" stroke-linecap="round"/>`,
+    soft: `<path d="M100 93Q97 98 98 101Q100 104 104 101" stroke="${noseInk}" stroke-width="1.6" stroke-linecap="round" fill="none"/>`,
+    defined: `<path d="M100 91L96 103L104 103M104 103L105 101" stroke="${noseInk}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  };
+  const cheekMarks =
+    appearance.cheeks === "freckles"
+      ? `<g fill="${darkSkin ? "#d4a084" : "#ad765c"}" opacity=".72">${[
+          [71, 101],
+          [77, 99],
+          [81, 104],
+          [73, 107],
+          [119, 104],
+          [123, 99],
+          [129, 101],
+          [127, 107],
+        ]
+          .map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.05"/>`)
+          .join("")}</g>`
+      : `<ellipse cx="72" cy="102" rx="${appearance.cheeks === "rosy" ? 11 : 8}" ry="${appearance.cheeks === "rosy" ? 6 : 4}" fill="${blush}" opacity="${appearance.cheeks === "rosy" ? 0.61 : 0.23}"/><ellipse cx="128" cy="102" rx="${appearance.cheeks === "rosy" ? 11 : 8}" ry="${appearance.cheeks === "rosy" ? 6 : 4}" fill="${blush}" opacity="${appearance.cheeks === "rosy" ? 0.61 : 0.23}"/>`;
+  return `<g class="avatar-face" data-face-shape="${appearance.face}">${cheekMarks}<g data-brow-shape="${appearance.brows}"${expression === "curious" ? ' transform="rotate(-4 100 75)"' : ""}>${brows[appearance.brows]}</g>${eyes}<g data-nose-shape="${appearance.nose}">${noses[appearance.nose]}</g><g data-mouth-shape="${appearance.mouth}">${mouth}</g></g>`;
 }
 
-function shoes(id: string, tone: string): string {
+function shoes(id: string, tone: string, rig: BodyRig): string {
+  const ankle = 100 - rig.leg;
+  const shoeShape = `M${ankle + 1} 268L95 270L97 282Q87 289 ${ankle - 7} 285Q${ankle - 11} 281 ${ankle - 8} 277Z`;
   const shoe = (mirror: boolean): string =>
-    `<g${mirror ? ' transform="translate(200 0) scale(-1 1)"' : ""}>${path("M79 268L95 270L97 282Q87 289 71 285Q67 281 70 277Z", tone)}<path d="M70 282Q82 287 96 281" stroke="${id === "canvas" ? "#aaa996" : "#d6cfb5"}" stroke-width="2" stroke-linecap="round"/>${id === "canvas" ? '<path d="M79 274L88 277M80 278L89 280" stroke="#b4b3a1" stroke-width="1.3" stroke-linecap="round"/>' : id === "cloud-shoes" ? '<path d="M76 278Q78 271 84 276T92 276" stroke="#d6d9c7" stroke-width="1.5" stroke-linecap="round"/>' : id === "embroidered" ? `<g transform="translate(83 277) scale(.5)">${blossom(0, 0)}</g>` : '<path d="M77 272Q83 279 93 274" stroke="#b3b79f" stroke-width="1.5"/>'}</g>`;
+    `<g${mirror ? ' transform="translate(200 0) scale(-1 1)"' : ""}>${path(shoeShape, tone)}<path d="M70 282Q82 287 96 281" stroke="${id === "canvas" ? "#aaa996" : "#d6cfb5"}" stroke-width="2" stroke-linecap="round"/>${id === "canvas" ? '<path d="M79 274L88 277M80 278L89 280" stroke="#b4b3a1" stroke-width="1.3" stroke-linecap="round"/>' : id === "cloud-shoes" ? '<path d="M76 278Q78 271 84 276T92 276" stroke="#d6d9c7" stroke-width="1.5" stroke-linecap="round"/>' : id === "embroidered" ? `<g transform="translate(83 277) scale(.5)">${blossom(0, 0)}</g>` : '<path d="M77 272Q83 279 93 274" stroke="#b3b79f" stroke-width="1.5"/>'}</g>`;
   return `<g class="avatar-shoes">${shoe(false)}${shoe(true)}</g>`;
 }
 
@@ -121,6 +254,7 @@ function outfit(
   profile: Profile,
   item: Item | undefined,
   skin: string,
+  rig: BodyRig,
 ): { torso: string; arms: string; legs: string } {
   const id = item?.id ?? "everyday";
   const regal = ["hanfu", "silk-dress", "imperial", "immortal"].includes(id);
@@ -138,10 +272,12 @@ function outfit(
       : regal
         ? "#8d9d87"
         : "#d9d9c5";
-  const length = id === "immortal" ? 275 : id === "scholar" ? 259 : 267;
-  const shirtBody =
-    "M78 141L89 136Q100 147 111 136L122 141L128 208Q101 215 72 208Z";
-  const robeBody = `M78 141L89 136L100 143L111 136L122 141L127 205L140 ${length}Q100 ${length + 8} 60 ${length}L73 205Z`;
+  const baseLength = id === "immortal" ? 275 : id === "scholar" ? 259 : 267;
+  const length = 208 + ((baseLength - 208) * rig.legScale) / rig.torsoScale;
+  const { shoulder, waist, hip, leg, neck } = rig;
+  const shirtBody = `M${100 - shoulder} 141L${100 - neck - 1} 136Q100 147 ${100 + neck + 1} 136L${100 + shoulder} 141Q${102 + shoulder} 163 ${100 + waist} 181Q${100 + waist + 1} 197 ${100 + hip} 208Q100 215 ${100 - hip} 208Q${99 - waist} 197 ${100 - waist} 181Q${98 - shoulder} 163 ${100 - shoulder} 141Z`;
+  const robeBody = `M${100 - shoulder} 141L${100 - neck - 1} 136L100 143L${100 + neck + 1} 136L${100 + shoulder} 141L${100 + waist} 205L${114 + hip} ${length}Q100 ${length + 8} ${86 - hip} ${length}L${100 - waist} 205Z`;
+  const garmentClip = `avatar-garment-${++featureId}`;
   const torsoShape = robe ? robeBody : shirtBody;
   let detail = "";
   if (id === "everyday")
@@ -169,9 +305,9 @@ function outfit(
         : "M79 140L67 143L51 180L63 190L77 166L86 153Z";
   const arm = `${path(bareHand, skin)}${path(sleeve, tone)}<path d="${robe && !short ? "M51 196L76 199" : short ? "M59 160L74 165" : "M55 179L65 185"}" stroke="${id === "everyday" ? "#39413d" : trim}" stroke-opacity="${id === "everyday" ? ".22" : ".75"}" stroke-width="2" stroke-linecap="round"/><path d="${robe && !short ? "M54 210L58 212" : "M59 194L64 195"}" stroke="#39413d" stroke-opacity=".28" stroke-width="1.1" stroke-linecap="round"/>`;
   return {
-    torso: `<g class="avatar-garment" data-garment="${id}">${path(torsoShape, tone)}${detail}</g>`,
-    arms: `<g class="avatar-arm avatar-arm-left">${arm}</g><g class="avatar-arm avatar-arm-right"><g transform="translate(200 0) scale(-1 1)">${arm}</g></g>`,
-    legs: `<g class="avatar-trousers">${path("M76 200H124L122 272Q113 277 104 272L101 234H99L96 272Q86 278 78 272L73 223Z", "#59625d")}<path d="M100 218V233M83 232L85 266M116 232L114 267" stroke="#839083" stroke-width="1.5" stroke-linecap="round"/></g>`,
+    torso: `<g class="avatar-garment" data-garment="${id}" data-body-shape="${profile.appearance?.body ?? "balanced"}"><defs><clipPath id="${garmentClip}"><path d="${torsoShape}"/></clipPath></defs>${path(torsoShape, tone)}<g clip-path="url(#${garmentClip})">${detail}</g></g>`,
+    arms: `<g class="avatar-arm avatar-arm-left" style="transform-origin:${73 + 22 - shoulder}px 148px"><g transform="translate(${22 - shoulder} 0)">${arm}</g></g><g class="avatar-arm avatar-arm-right" style="transform-origin:${127 - 22 + shoulder}px 148px"><g transform="translate(${shoulder - 22} 0)"><g transform="translate(200 0) scale(-1 1)">${arm}</g></g></g>`,
+    legs: `<g class="avatar-trousers">${path(`M${100 - hip} 200H${100 + hip}Q${103 + hip} 218 ${100 + leg} 239L${100 + leg} 272Q${102 + leg / 2} 278 104 272L102 234H98L96 272Q${98 - leg / 2} 278 ${100 - leg} 272L${100 - leg} 239Q${97 - hip} 218 ${100 - hip} 200Z`, "#59625d")}<path d="M100 218V233M${99 - leg * 0.75} 235L${99 - leg * 0.65} 266M${101 + leg * 0.75} 235L${101 + leg * 0.65} 266" stroke="#839083" stroke-width="1.5" stroke-linecap="round"/></g>`,
   };
 }
 
@@ -201,6 +337,7 @@ export function createAvatar(
     portrait?: boolean;
     plain?: boolean;
     interactive?: boolean;
+    focus?: "face" | "body";
   } = {},
 ): HTMLElement {
   const wrapper = document.createElement("div");
@@ -210,6 +347,8 @@ export function createAvatar(
     (options.portrait ? " avatar-portrait" : "");
   wrapper.dataset.base = profile.base;
   wrapper.dataset.style = "ink-cartoon";
+  wrapper.dataset.avatarFocus = options.focus ?? "body";
+  if (options.focus === "face") wrapper.classList.add("avatar-focus-face");
   const labels = {
     es: "Tu personaje",
     en: "Your character",
@@ -235,9 +374,12 @@ export function createAvatar(
     head = selected(profile, "head"),
     companion = selected(profile, "aura");
   const footwear = selected(profile, "shoes"),
-    skinItem = selected(profile, "skin"),
     expression = selected(profile, "expression");
-  const skin = color(skinItem, "#e7ba94");
+  const appearance = profile.appearance ?? defaultAppearance(profile.base);
+  const skin = appearance.skinTone;
+  const rig = bodyRig(appearance);
+  wrapper.dataset.body = appearance.body;
+  wrapper.dataset.height = appearance.height;
   const bg = background?.id ?? "paper";
   wrapper.style.setProperty(
     "--avatar-paper",
@@ -259,24 +401,33 @@ export function createAvatar(
     }
     wrapper.append(drawing(scenery(bg), "avatar-scenery"));
   }
-  const female = profile.base === "female";
-  const hairArt = hair(female);
-  const clothes = outfit(profile, outfitItem, skin);
-  const faceShape =
-    "M61 76Q61 54 81 47Q100 39 120 47Q139 54 139 77L137 99Q135 119 117 128Q100 138 82 128Q65 119 63 99Z";
-  const headArt = `<g class="avatar-head">${hairArt.back}<ellipse cx="62" cy="91" rx="8" ry="11" fill="${skin}" ${stroke}/><ellipse cx="138" cy="91" rx="8" ry="11" fill="${skin}" ${stroke}/>${path(faceShape, skin)}<path d="M59 89Q64 84 66 94M135 94Q136 85 141 89" stroke="#b28b6d" stroke-width="1.3" stroke-linecap="round"/>${faceFeatures(expression?.id ?? "calm", female, skinItem?.id === "deep")}${hairArt.front}${headwear(head?.id ?? "")}</g>`;
+  const hairArt = hair(appearance, head?.id ?? "");
+  const clothes = outfit(profile, outfitItem, skin, rig);
+  const face = faceGeometry(appearance.face);
+  const earLeft = 99 - face.half,
+    earRight = 101 + face.half;
+  const hairBehind = hairArt.back
+    ? `<g class="avatar-head-height" transform="translate(0 ${rig.headShift})"><g class="avatar-head avatar-hair-behind" data-hair-style="${appearance.hair}">${hairArt.back}</g></g>`
+    : "";
+  const headArt = `<g class="avatar-head-height" transform="translate(0 ${rig.headShift})"><g class="avatar-head" data-hair-style="${appearance.hair}"><ellipse cx="${earLeft}" cy="91" rx="7" ry="10" fill="${skin}" ${stroke}/><ellipse cx="${earRight}" cy="91" rx="7" ry="10" fill="${skin}" ${stroke}/>${path(face.shape, skin)}<path d="M${earLeft - 3} 89Q${earLeft + 2} 85 ${earLeft + 4} 94M${earRight - 3} 94Q${earRight - 2} 85 ${earRight + 3} 89" stroke="#b28b6d" stroke-width="1.3" stroke-linecap="round"/>${faceFeatures(appearance, expression?.id ?? "calm")}${hairArt.front}${headwear(head?.id ?? "")}</g></g>`;
   const figure = document.createElement("div");
   figure.className = "avatar-figure";
-  const portrait = options.portrait ? "43 25 114 114" : "0 0 200 300";
+  const camera = options.portrait
+    ? `36 ${9 + rig.headShift} 128 128`
+    : options.focus === "face"
+      ? `31 ${rig.headShift - 2} 138 151`
+      : "0 -10 200 310";
+  const upper = `translate(0 ${134 + rig.headShift}) scale(1 ${rig.torsoScale}) translate(0 -134)`;
+  const lower = `translate(0 ${rig.upperEnd}) scale(1 ${rig.legScale}) translate(0 -208)`;
   const character = drawing(
-    `<ellipse class="avatar-ground" cx="100" cy="284" rx="42" ry="5" fill="#6f7d6415"/><g class="avatar-breath">${clothes.legs}${shoes(footwear?.id ?? "canvas", color(footwear, "#eee8d8"))}<path d="M90 124V144Q100 152 110 144V124" fill="${skin}" ${stroke}/>${clothes.arms}${clothes.torso}${headArt}</g>`,
+    `<ellipse class="avatar-ground" cx="100" cy="284" rx="${rig.hip + 14}" ry="5" fill="#6f7d6415"/><g class="avatar-breath">${hairBehind}<g class="avatar-lower-body" transform="${lower}">${clothes.legs}${shoes(footwear?.id ?? "canvas", color(footwear, "#eee8d8"), rig)}</g><g class="avatar-upper-body" transform="${upper}"><path d="M${100 - rig.neck} 124V144Q100 152 ${100 + rig.neck} 144V124" fill="${skin}" ${stroke}/>${clothes.arms}${clothes.torso}</g>${headArt}</g>`,
     "avatar-character",
-    portrait,
+    camera,
   );
   figure.append(character);
   wrapper.append(figure);
   if (!options.plain && !options.portrait) {
-    if (companion)
+    if (companion && options.focus !== "face")
       wrapper.append(drawing(aura(companion.id), "avatar-accessory-scene"));
     if (frame)
       wrapper.append(drawing(frameArtwork(frame.id), "avatar-frame-scene"));
@@ -307,17 +458,26 @@ export function createAvatar(
 }
 
 export function createItemArt(item: Item, profile: Profile): HTMLElement {
+  const appearance = profile.appearance ?? defaultAppearance(profile.base);
+  const rig = bodyRig(appearance);
   const preview = createAvatar(
-    { ...profile, equipped: { [item.slot]: item.id } },
+    {
+      ...profile,
+      appearance:
+        item.slot === "skin"
+          ? changeAppearance(profile, "skinTone", item.tone).appearance
+          : appearance,
+      equipped: { [item.slot]: item.id },
+    },
     { mini: true },
   );
   preview.dataset.itemSlot = item.slot;
   const camera: Partial<Record<Slot, string>> = {
-    head: "21 0 158 151",
-    expression: "48 41 104 104",
-    skin: "48 41 104 104",
-    shoes: "59 246 82 54",
-    outfit: "43 112 114 184",
+    head: `21 ${rig.headShift} 158 151`,
+    expression: `40 ${25 + rig.headShift} 120 120`,
+    skin: `40 ${25 + rig.headShift} 120 120`,
+    shoes: "53 246 94 54",
+    outfit: `30 ${119 + rig.headShift} 140 ${178 - rig.headShift}`,
   };
   if (camera[item.slot])
     preview

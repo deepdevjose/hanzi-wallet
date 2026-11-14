@@ -18,9 +18,12 @@ import {
   unequipItem,
   itemName,
   SHIRT_COLORS,
+  changeAppearance,
+  changeBase,
   type Profile,
   type Slot,
 } from "./core/profile";
+import { APPEARANCE_OPTIONS, type AppearanceField } from "./core/appearance";
 export { ITEMS } from "./core/profile";
 
 const words = {
@@ -33,18 +36,18 @@ const words = {
     "Abrir meu perfil",
   ],
   title: [
-    "A tu manera.",
-    "Make it yours.",
-    "你的旅程，你的风格。",
-    "À votre image.",
-    "Do seu jeito.",
+    "Tu personaje, a tu manera.",
+    "Your character, your way.",
+    "你的角色，你的风格。",
+    "Votre personnage, à votre image.",
+    "Seu personagem, do seu jeito.",
   ],
   setup: [
-    "Tu aventura empieza contigo.",
-    "Your journey begins with you.",
-    "旅程从你开始。",
-    "Votre aventure commence avec vous.",
-    "Sua aventura começa com você.",
+    "Diseña tu personaje.",
+    "Design your character.",
+    "设计你的角色。",
+    "Créez votre personnage.",
+    "Crie seu personagem.",
   ],
   intro: [
     "Un personaje que crece con cada nuevo descubrimiento.",
@@ -97,6 +100,89 @@ const words = {
   ],
   male: ["Hombre", "Man", "男性", "Homme", "Homem"],
   female: ["Mujer", "Woman", "女性", "Femme", "Mulher"],
+  creator: [
+    "Crea tu personaje",
+    "Create your character",
+    "创造你的角色",
+    "Créez votre personnage",
+    "Crie seu personagem",
+  ],
+  creatorIntro: [
+    "Cada detalle es tuyo. Personalízalo gratis y cámbialo cuando quieras.",
+    "Every detail is yours. Make it your own for free, and change it anytime.",
+    "每个细节都由你决定。免费定制，随时可改。",
+    "Chaque détail vous appartient. Personnalisez-le gratuitement, à tout moment.",
+    "Cada detalhe é seu. Personalize grátis e mude quando quiser.",
+  ],
+  creatorIdentity: ["Tú", "You", "资料", "Vous", "Você"],
+  creatorFace: ["Rostro", "Face", "面容", "Visage", "Rosto"],
+  creatorHair: ["Cabello", "Hair", "发型", "Cheveux", "Cabelo"],
+  creatorBody: ["Cuerpo", "Body", "体型", "Corps", "Corpo"],
+  faceShape: [
+    "Forma del rostro",
+    "Face shape",
+    "脸型",
+    "Forme du visage",
+    "Formato do rosto",
+  ],
+  eyes: ["Ojos", "Eyes", "眼型", "Yeux", "Olhos"],
+  brows: ["Cejas", "Eyebrows", "眉毛", "Sourcils", "Sobrancelhas"],
+  nose: ["Nariz", "Nose", "鼻子", "Nez", "Nariz"],
+  mouth: ["Boca", "Mouth", "嘴型", "Bouche", "Boca"],
+  hairStyle: ["Peinado", "Hairstyle", "发型", "Coiffure", "Penteado"],
+  hairColor: [
+    "Color de cabello",
+    "Hair color",
+    "发色",
+    "Couleur des cheveux",
+    "Cor do cabelo",
+  ],
+  eyeColor: [
+    "Color de ojos",
+    "Eye color",
+    "瞳色",
+    "Couleur des yeux",
+    "Cor dos olhos",
+  ],
+  skinTone: ["Tono de piel", "Skin tone", "肤色", "Teint", "Tom de pele"],
+  bodyShape: ["Silueta", "Body shape", "体型", "Silhouette", "Silhueta"],
+  height: ["Estatura", "Height", "身高", "Taille", "Altura"],
+  cheeks: ["Mejillas", "Cheeks", "脸颊", "Joues", "Bochechas"],
+  appearanceUpdated: [
+    "Un nuevo detalle, más tú.",
+    "Another detail, more you.",
+    "每个细节，都更像你。",
+    "Un détail de plus, encore plus vous.",
+    "Mais um detalhe, mais você.",
+  ],
+  facePreview: [
+    "Tu rostro",
+    "Your face",
+    "你的面容",
+    "Votre visage",
+    "Seu rosto",
+  ],
+  bodyPreview: [
+    "Tu personaje",
+    "Your character",
+    "你的角色",
+    "Votre personnage",
+    "Seu personagem",
+  ],
+  showFace: [
+    "Ver rostro",
+    "View face",
+    "查看面容",
+    "Voir le visage",
+    "Ver rosto",
+  ],
+  showBody: [
+    "Ver cuerpo",
+    "View body",
+    "查看全身",
+    "Voir le corps",
+    "Ver corpo",
+  ],
   shirt: [
     "Tu camiseta, tu color.",
     "Your T-shirt, your color.",
@@ -381,6 +467,7 @@ const COUNTRY_CODES =
     " ",
   );
 type Tab = "character" | "wardrobe" | "shop" | "achievements";
+type CreatorSection = "identity" | "face" | "hair" | "body";
 let setupOpener: (() => Promise<void>) | null = null;
 
 export function openAvatarSetup(): Promise<void> {
@@ -393,6 +480,8 @@ export function mountProfile(): void {
   let xp = getLearningXP();
   let profile = syncProfile(loadProfile(xp), xp);
   let tab: Tab = "character";
+  let creatorSection: CreatorSection = "identity";
+  let previewOverride: "face" | "body" | null = null;
   let category: Slot | "all" = "all";
   let affordable = false;
   let setup = false;
@@ -408,9 +497,17 @@ export function mountProfile(): void {
     gender: value.gender,
     base: value.base,
     shirtColor: value.shirtColor,
+    appearance: value.appearance,
     completed: value.completed,
   });
   let identitySignature = JSON.stringify(identity(profile));
+  const creatorFocus = (): "face" | "body" => {
+    if (!setup && tab !== "character") return "body";
+    return (
+      previewOverride ??
+      (creatorSection === "face" || creatorSection === "hair" ? "face" : "body")
+    );
+  };
   const trigger = button("profile-trigger", "", () => open(false));
   trigger.setAttribute("aria-haspopup", "dialog");
   document.querySelector(".top-actions")?.append(trigger);
@@ -580,8 +677,27 @@ export function mountProfile(): void {
       dialog.append(tabs);
     }
     const layout = node("div", "profile-layout");
+    layout.classList.toggle("is-creating", setup || tab === "character");
     const stage = node("aside", "profile-stage");
-    stage.append(createAvatar(profile, { interactive: true }));
+    const previewCaption = node(
+      "p",
+      "profile-preview-caption",
+      copy(creatorFocus() === "face" ? "facePreview" : "bodyPreview"),
+    );
+    const previewToggle = button(
+      "profile-preview-toggle",
+      copy(creatorFocus() === "face" ? "showBody" : "showFace"),
+      () => {
+        previewOverride = creatorFocus() === "face" ? "body" : "face";
+        refreshAvatars();
+      },
+    );
+    previewToggle.dataset.previewToggle = "";
+    if (setup || tab === "character") stage.append(previewCaption);
+    stage.append(
+      createAvatar(profile, { interactive: true, focus: creatorFocus() }),
+    );
+    if (setup || tab === "character") stage.append(previewToggle);
     const titleName = node(
       "h3",
       "profile-stage-name",
@@ -670,7 +786,195 @@ export function mountProfile(): void {
         ?.setSelectionRange(...selection);
   };
   const renderCharacter = (content: HTMLElement): void => {
-    content.append(node("p", "profile-intro", copy("intro")));
+    content.classList.add("profile-creator");
+    content.append(
+      node("p", "profile-intro profile-creator-intro", copy("creatorIntro")),
+    );
+    const sections = ["identity", "face", "hair", "body"] as const;
+    const sectionLabels = {
+      identity: "creatorIdentity",
+      face: "creatorFace",
+      hair: "creatorHair",
+      body: "creatorBody",
+    } as const;
+    const sectionIcons = {
+      identity:
+        '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"/>',
+      face: '<path d="M5 8a7 7 0 0 1 14 0v5a7 7 0 0 1-14 0Z"/><path d="M8 11h.1m7.8 0h.1M9 16q3 2 6 0"/>',
+      hair: '<path d="M5 18V9a7 7 0 0 1 14 0v9M5 10q5 0 8-6q1 5 6 6M8 19v3m8-3v3"/>',
+      body: '<circle cx="12" cy="4.5" r="2.3"/><path d="M6 11l3-3h6l3 3m-9-3v6l-2 8m8-14v6l2 8M9 14h6"/>',
+    };
+    const navigation = node("div", "profile-creator-tabs");
+    navigation.setAttribute("role", "tablist");
+    navigation.setAttribute("aria-label", copy("creator"));
+    const chooseSection = (section: CreatorSection): void => {
+      captureIdentity();
+      creatorSection = section;
+      previewOverride = null;
+      render();
+      const pane = dialog.querySelector<HTMLElement>(".profile-content");
+      if (pane) pane.scrollTop = 0;
+      dialog
+        .querySelector<HTMLElement>(`[data-creator-section="${section}"]`)
+        ?.focus({ preventScroll: true });
+    };
+    sections.forEach((section, index) => {
+      const control = button(
+        "profile-creator-tab" + (section === creatorSection ? " active" : ""),
+        "",
+        () => chooseSection(section),
+      );
+      const symbol = node("span", "profile-creator-symbol");
+      symbol.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${sectionIcons[section]}</svg>`;
+      control.append(symbol, node("span", "", copy(sectionLabels[section])));
+      control.dataset.creatorSection = section;
+      control.dataset.focus = `creator-${section}`;
+      control.id = `creator-section-${section}`;
+      control.setAttribute("role", "tab");
+      control.setAttribute("aria-controls", "profile-creator-pane");
+      control.setAttribute("aria-selected", String(section === creatorSection));
+      control.tabIndex = section === creatorSection ? 0 : -1;
+      control.onkeydown = (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+          return;
+        event.preventDefault();
+        const next =
+          event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? sections.length - 1
+              : (index +
+                  (event.key === "ArrowRight" ? 1 : -1) +
+                  sections.length) %
+                sections.length;
+        chooseSection(sections[next]!);
+      };
+      navigation.append(control);
+    });
+    content.append(navigation);
+    const pane = node("div", "profile-creator-pane");
+    pane.id = "profile-creator-pane";
+    pane.setAttribute("role", "tabpanel");
+    pane.setAttribute("aria-labelledby", `creator-section-${creatorSection}`);
+    if (creatorSection === "identity") renderIdentity(pane);
+    else if (creatorSection === "face") {
+      renderAppearanceGroup(pane, "face", "faceShape");
+      renderAppearanceGroup(pane, "skinTone", "skinTone");
+      renderAppearanceGroup(pane, "eyes", "eyes");
+      renderAppearanceGroup(pane, "eyeColor", "eyeColor");
+      renderAppearanceGroup(pane, "brows", "brows");
+      renderAppearanceGroup(pane, "nose", "nose");
+      renderAppearanceGroup(pane, "mouth", "mouth");
+      renderAppearanceGroup(pane, "cheeks", "cheeks");
+    } else if (creatorSection === "hair") {
+      renderAppearanceGroup(pane, "hair", "hairStyle");
+      renderAppearanceGroup(pane, "hairColor", "hairColor");
+    } else {
+      renderAppearanceGroup(pane, "body", "bodyShape");
+      renderAppearanceGroup(pane, "height", "height");
+      renderShirtColors(pane);
+    }
+    content.append(pane);
+  };
+  const renderAppearanceGroup = (
+    content: HTMLElement,
+    field: AppearanceField,
+    title: CopyKey,
+  ): void => {
+    const options = APPEARANCE_OPTIONS[field];
+    const group = node("section", "creator-control-group");
+    const heading = node("h3", "profile-field-heading", copy(title));
+    heading.id = `creator-field-${field}`;
+    group.append(heading);
+    const colors = options.every((option) => option.color !== undefined);
+    const choices = node(
+      "div",
+      colors ? "creator-swatches" : "creator-options",
+    );
+    choices.dataset.field = field;
+    choices.dataset.count = String(options.length);
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-labelledby", heading.id);
+    for (const option of options) {
+      const selected = profile.appearance[field] === option.id;
+      const control = button(
+        (colors ? "profile-shirt-swatch creator-color" : "creator-option") +
+          (selected ? " selected" : ""),
+        "",
+        () => {
+          captureIdentity();
+          profile = changeAppearance(profile, field, option.id);
+          statusText = copy("appearanceUpdated");
+          persist(false);
+          refreshAvatars();
+          for (const current of choices.querySelectorAll<HTMLButtonElement>(
+            "[data-appearance-value]",
+          )) {
+            const checked =
+              current.dataset.appearanceValue === profile.appearance[field];
+            current.classList.toggle("selected", checked);
+            current.setAttribute("aria-pressed", String(checked));
+            const check = current.querySelector(".profile-swatch-check");
+            if (check) check.innerHTML = checked ? icon("check") : "";
+          }
+          const live = dialog.querySelector(".profile-live");
+          if (live) live.textContent = statusText;
+        },
+      );
+      control.dataset.appearanceField = field;
+      control.dataset.appearanceValue = option.id;
+      control.dataset.focus = `appearance-${field}-${option.id}`;
+      control.setAttribute("aria-pressed", String(selected));
+      control.setAttribute("aria-label", option.label[getLocale()]);
+      control.title = option.label[getLocale()];
+      if (colors) {
+        control.style.setProperty("--shirt-swatch", option.color!);
+        const check = node("span", "profile-swatch-check");
+        check.setAttribute("aria-hidden", "true");
+        if (selected) check.innerHTML = icon("check");
+        control.append(check);
+      } else {
+        control.append(
+          appearancePreview(field, option.id),
+          node("span", "creator-option-name", option.label[getLocale()]),
+        );
+        const check = node("span", "creator-option-check");
+        check.innerHTML = icon("check");
+        check.setAttribute("aria-hidden", "true");
+        control.append(check);
+      }
+      choices.append(control);
+    }
+    group.append(choices);
+    content.append(group);
+  };
+  const appearancePreview = (
+    field: AppearanceField,
+    value: string,
+  ): HTMLElement => {
+    const preview = node("span", "creator-option-art");
+    const character = createAvatar(changeAppearance(profile, field, value), {
+      mini: true,
+      plain: true,
+      focus: field === "body" || field === "height" ? "body" : "face",
+    });
+    character.setAttribute("aria-hidden", "true");
+    preview.append(character);
+    return preview;
+  };
+  const refreshCreatorPreviews = (): void => {
+    for (const control of dialog.querySelectorAll<HTMLButtonElement>(
+      ".creator-option[data-appearance-field]",
+    )) {
+      const field = control.dataset.appearanceField as AppearanceField;
+      const value = control.dataset.appearanceValue;
+      if (value)
+        control
+          .querySelector(".creator-option-art")
+          ?.replaceWith(appearancePreview(field, value));
+    }
+  };
+  const renderIdentity = (content: HTMLElement): void => {
     const nameLabel = node(
       "label",
       "profile-field profile-name-label",
@@ -711,7 +1015,8 @@ export function mountProfile(): void {
         "profile-base" + (profile.base === base ? " selected" : ""),
         "",
         () => {
-          profile = { ...profile, base };
+          captureIdentity();
+          profile = changeBase(profile, base);
           persist();
           render();
           dialog
@@ -722,7 +1027,9 @@ export function mountProfile(): void {
       choose.dataset.focus = `base-${base}`;
       choose.dataset.base = base;
       choose.setAttribute("aria-pressed", String(profile.base === base));
-      const baseArt = createAvatar({ ...profile, base }, { portrait: true });
+      const baseArt = createAvatar(changeBase(profile, base), {
+        portrait: true,
+      });
       baseArt.setAttribute("aria-hidden", "true");
       choose.append(baseArt, node("span", "", copy(base)));
       const check = node("span", "profile-base-check");
@@ -731,60 +1038,6 @@ export function mountProfile(): void {
       bases.append(choose);
     }
     content.append(bases);
-    const colorsHeading = node("h3", "profile-field-heading", copy("shirt"));
-    colorsHeading.id = "profile-shirt-label";
-    content.append(
-      colorsHeading,
-      node("p", "profile-muted profile-shirt-hint", copy("shirtHint")),
-    );
-    const colors = node("div", "profile-shirt-colors");
-    colors.setAttribute("role", "group");
-    colors.setAttribute("aria-labelledby", colorsHeading.id);
-    for (const color of SHIRT_COLORS) {
-      const swatch = button(
-        "profile-shirt-swatch" +
-          (profile.shirtColor === color.color ? " selected" : ""),
-        "",
-        () => {
-          captureIdentity();
-          profile = {
-            ...profile,
-            shirtColor: color.color,
-            equipped: { ...profile.equipped, outfit: "everyday" },
-          };
-          statusText = copy("shirtSelected");
-          persist(false);
-          refreshAvatars();
-          for (const control of colors.querySelectorAll<HTMLButtonElement>(
-            "[data-color]",
-          )) {
-            const selected = control.dataset.color === profile.shirtColor;
-            control.classList.toggle("selected", selected);
-            control.setAttribute("aria-pressed", String(selected));
-            control.querySelector<HTMLElement>(
-              ".profile-swatch-check",
-            )!.innerHTML = selected ? icon("check") : "";
-          }
-          const live = dialog.querySelector(".profile-live");
-          if (live) live.textContent = statusText;
-        },
-      );
-      swatch.dataset.color = color.color;
-      swatch.dataset.focus = `color-${color.id}`;
-      swatch.style.setProperty("--shirt-swatch", color.color);
-      swatch.setAttribute("aria-label", color.names[getLocale()]);
-      swatch.setAttribute(
-        "aria-pressed",
-        String(profile.shirtColor === color.color),
-      );
-      swatch.title = color.names[getLocale()];
-      const check = node("span", "profile-swatch-check");
-      check.setAttribute("aria-hidden", "true");
-      if (profile.shirtColor === color.color) check.innerHTML = icon("check");
-      swatch.append(check);
-      colors.append(swatch);
-    }
-    content.append(colors);
     const optionalHeading = node("div", "profile-optional-heading");
     optionalHeading.append(
       node("h3", "profile-field-heading", copy("identity")),
@@ -877,6 +1130,62 @@ export function mountProfile(): void {
     );
     content.append(collection);
   };
+  const renderShirtColors = (content: HTMLElement): void => {
+    const colorsHeading = node("h3", "profile-field-heading", copy("shirt"));
+    colorsHeading.id = "profile-shirt-label";
+    content.append(
+      colorsHeading,
+      node("p", "profile-muted profile-shirt-hint", copy("shirtHint")),
+    );
+    const colors = node("div", "profile-shirt-colors");
+    colors.setAttribute("role", "group");
+    colors.setAttribute("aria-labelledby", colorsHeading.id);
+    for (const color of SHIRT_COLORS) {
+      const swatch = button(
+        "profile-shirt-swatch" +
+          (profile.shirtColor === color.color ? " selected" : ""),
+        "",
+        () => {
+          captureIdentity();
+          profile = {
+            ...profile,
+            shirtColor: color.color,
+            equipped: { ...profile.equipped, outfit: "everyday" },
+          };
+          statusText = copy("shirtSelected");
+          persist(false);
+          refreshAvatars();
+          for (const control of colors.querySelectorAll<HTMLButtonElement>(
+            "[data-color]",
+          )) {
+            const selected = control.dataset.color === profile.shirtColor;
+            control.classList.toggle("selected", selected);
+            control.setAttribute("aria-pressed", String(selected));
+            control.querySelector<HTMLElement>(
+              ".profile-swatch-check",
+            )!.innerHTML = selected ? icon("check") : "";
+          }
+          const live = dialog.querySelector(".profile-live");
+          if (live) live.textContent = statusText;
+        },
+      );
+      swatch.dataset.color = color.color;
+      swatch.dataset.focus = `color-${color.id}`;
+      swatch.style.setProperty("--shirt-swatch", color.color);
+      swatch.setAttribute("aria-label", color.names[getLocale()]);
+      swatch.setAttribute(
+        "aria-pressed",
+        String(profile.shirtColor === color.color),
+      );
+      swatch.title = color.names[getLocale()];
+      const check = node("span", "profile-swatch-check");
+      check.setAttribute("aria-hidden", "true");
+      if (profile.shirtColor === color.color) check.innerHTML = icon("check");
+      swatch.append(check);
+      colors.append(swatch);
+    }
+    content.append(colors);
+  };
   const stageName = (): HTMLElement | null =>
     dialog.querySelector(".profile-stage-name");
   const refreshStageIdentity = (): void => {
@@ -906,19 +1215,31 @@ export function mountProfile(): void {
   const refreshAvatars = (): void => {
     dialog
       .querySelector(".profile-stage > .avatar-scene")
-      ?.replaceWith(createAvatar(profile, { interactive: true }));
+      ?.replaceWith(
+        createAvatar(profile, { interactive: true, focus: creatorFocus() }),
+      );
+    const previewCaption = dialog.querySelector(".profile-preview-caption");
+    if (previewCaption)
+      previewCaption.textContent = copy(
+        creatorFocus() === "face" ? "facePreview" : "bodyPreview",
+      );
+    const previewToggle = dialog.querySelector(".profile-preview-toggle");
+    if (previewToggle)
+      previewToggle.textContent = copy(
+        creatorFocus() === "face" ? "showBody" : "showFace",
+      );
     for (const base of dialog.querySelectorAll<HTMLButtonElement>(
       ".profile-base[data-base]",
     )) {
       const body = base.dataset.base === "female" ? "female" : "male";
-      const portrait = createAvatar(
-        { ...profile, base: body },
-        { portrait: true },
-      );
+      const portrait = createAvatar(changeBase(profile, body), {
+        portrait: true,
+      });
       portrait.setAttribute("aria-hidden", "true");
       base.querySelector(".avatar-portrait")?.replaceWith(portrait);
     }
     refreshStageIdentity();
+    refreshCreatorPreviews();
   };
   const renderProducts = (content: HTMLElement): void => {
     content.append(
@@ -1109,6 +1430,8 @@ export function mountProfile(): void {
     persist();
     setup = isSetup;
     tab = "character";
+    creatorSection = "identity";
+    previewOverride = null;
     statusText = "";
     previousFocus =
       document.activeElement instanceof HTMLElement
@@ -1150,7 +1473,7 @@ export function mountProfile(): void {
       composingName ||
       setup ||
       !!document.activeElement?.closest(
-        ".profile-name-label,.profile-fields,.profile-bases,.profile-shirt-colors",
+        ".profile-name-label,.profile-fields,.profile-bases,.profile-shirt-colors,.profile-creator-tabs,.creator-options,.creator-swatches",
       );
     captureIdentity();
     const draft = identity(profile);
