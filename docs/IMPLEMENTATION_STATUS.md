@@ -1,5 +1,17 @@
 # Hanzi Wallet — checkpoints locales
 
+## Tienda y ajuste de prendas — 1.5.5
+
+- Rama `feat/wardrobe-fit-and-collections`, sobre la transición del dragón pendiente de revisión. La estética general y los datos existentes se conservan.
+- Corregidas las proporciones de mangas/manos para cuerpos delgados; se escalan juntas desde el hombro y mantienen el punto de giro del saludo. Cuellos, bolsillos, costuras, cinturones y bordados usan las medidas del cuerpo. Las camisetas tienen holgura y un bajo más natural, sin cintura exageradamente ceñida.
+- Diez cosméticos nuevos, siete de ropa: camisetas de nubes/bambú, cárdigan de ciruelo, chaleco de té, ruqun de loto, hanfu de grulla, brocado de medianoche, gorro, marco de celosía y jardín con puerta de luna. Catálogo total: 50 artículos, 17 prendas, nombres en cinco idiomas. Precios/niveles en `ART_DIRECTION.md`; ninguna compra ni recompensa anterior cambia.
+- Miniaturas más cercanas para prendas cortas y completas para túnicas, usando el cuerpo actual. Retirada la cabeza translúcida de las tarjetas de ropa. Gorro compatible con moño alto sin modificar el peinado guardado.
+- QA visual de 28 combinaciones de camisetas/camisas/cárdigan/chaleco y 32 combinaciones de túnicas/vestidos en cuatro cuerpos; 16 combinaciones delgadas con ambas bases, alturas baja/alta y brazo en pose de saludo. Cuatro combinaciones adicionales revisan gorro, celosía y puerta de luna con ambos personajes y peinados.
+- Tienda real revisada en Chromium a 1440×1000 y 390×844, claro/oscuro y movimiento reducido. Compra de camiseta de nubes: 55→10 monedas; recarga conserva compra, prenda equipada, lino anterior y cuerpo delgado/alto de «Lin». Sin desbordamiento horizontal en móvil.
+- **63 pruebas aprobadas**, incluida una regresión nueva de compra, recompra idempotente, nivel requerido y conservación de inventario/apariencia. TypeScript, formato y build correctos. Bundle final `index-CNj0Q4qe.js`, caché `hanzi-wallet-00b4e33cdd69`, 25 recursos locales, sin dependencias ni imágenes adicionales.
+- Recarga offline y cambio a lino con teclado conservan 10 monedas, camiseta comprada, nombre y proporciones. Petición nueva sin caché falló; red restaurada. Movimiento reducido devuelve `animation-name: none`.
+- Evidencias ignoradas por Git: `output/playwright/wardrobe-shirts-fit.png`, `wardrobe-robes-fit.png`, `wardrobe-height-wave-fit.png`, `wardrobe-new-accessories.png`, `wardrobe-shop-desktop.png`, `wardrobe-shop-mobile-dark.png`. Matrices dibujadas con los componentes reales en un navegador de prueba; compra/persistencia/offline comprobados en producción local. Móvil emulado; no se probaron Safari ni dispositivos físicos.
+
 ## Transición del dragón — 1.5.4
 
 - Rama `fix/onboarding-dragon-transition`, basada en la rama de planificación pendiente de revisión. La estética de la app, la pintura, el dragón original y los datos de usuario se conservan.
