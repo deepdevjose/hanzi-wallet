@@ -62,6 +62,8 @@ Use case: stylized-concept. Asset type: transparent Chinese dragon illustration 
 
 ## Integration notes
 
+The welcome transition uses the retained long-dragon illustration at its natural 3:1 aspect ratio, with a separate decorative stage, fine ruyi-cloud scrolls and a short SVG flame attached to its mouth. `src/welcome-transition.ts` shares viewport geometry between the mouth, flame and organic paper edge. The painting and completed calligraphy are one clipped sheet; the real language setup is revealed underneath. The edge uses restrained soot and antique-gold embers, without the previous circular wipe, full-screen flame beam or brightness flash. Both flight and reveal finish together in 1.95 seconds. Resizing recomputes geometry, and reduced motion skips the scene entirely. No additional raster assets are required.
+
 - Keep state, names, loading messages and progress in accessible HTML; illustration must not be the only way to understand an action.
 - Use the same SVG parts for full-body previews, portraits and shop artwork. Crop the view to the relevant item rather than altering the character's geometry.
 - Honour reduced motion and the selected light/dark appearance without changing the flat character palette into simulated 3D lighting.
