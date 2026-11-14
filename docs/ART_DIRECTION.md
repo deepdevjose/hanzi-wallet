@@ -39,6 +39,29 @@ Main character previews have a calm idle motion and blinking eyes, with a friend
 
 The SVG source is the canonical character artwork. Adjust its shared proportions and attachment points when extending the wardrobe; do not add separate body renders or manually offset clothing bitmaps.
 
+## Wardrobe fit and expanded catalogue
+
+Shirts have garment ease derived from waist and hip measurements, avoiding an exaggerated pinched waist or bell-shaped hem. Necklines, collars, pockets, seams, belts and embroidery follow the same rig. Sleeves and hands scale together around their shoulder anchor, and their animated pivot follows that anchor. They must stay connected when waving, on every height and body choice.
+
+Clothing thumbnails use the learner's actual appearance. Short garments use a closer torso camera, while robes retain a full-length view. Heads are hidden in product-only outfit previews; the main avatar remains complete. This avoids translucent face fragments at the top of clothing cards.
+
+Version 1.5.5 adds ten native SVG cosmetics, bringing the catalogue to 50 items, including 17 outfits. Existing ownership, prices, level requirements and placement rewards remain unchanged. New items use the existing currency and progression, with names in all five languages:
+
+| Item ID         | Illustration                                       | Level | Coins |
+| --------------- | -------------------------------------------------- | ----- | ----- |
+| `cloud-tee`     | Jade T-shirt with a small auspicious cloud patch   | 1     | 45    |
+| `bamboo-tee`    | Ivory T-shirt with bamboo-leaf embroidery          | 2     | 65    |
+| `plum-cardigan` | Plum cardigan with ivory panel and blossom detail  | 6     | 115   |
+| `cloud-cap`     | Soft traditional cap with jade button              | 9     | 130   |
+| `tea-vest`      | Tea-green vest over ivory short sleeves            | 10    | 175   |
+| `lattice`       | Fine wooden window-lattice corner frame            | 16    | 210   |
+| `moon-gate`     | Moon-gate garden, distant hills and bamboo         | 18    | 240   |
+| `lotus-ruqun`   | Muted pink wrap top and pleated skirt              | 20    | 320   |
+| `crane-hanfu`   | Porcelain-blue robe with stylised crane embroidery | 52    | 820   |
+| `night-brocade` | Midnight brocade with cloud and antique-gold trim  | 76    | 1,350 |
+
+All cosmetics are available to both bases. Caps conceal the topknot when equipped without altering the saved hairstyle. New wardrobe art is original code-native vector work, with no new raster assets or external downloads.
+
 ## Welcome artwork
 
 The welcome uses two retained illustrations created with the built-in ImageGen tool for this project on 13 November 2026. They are original generated illustrations, not extracted reference stickers. No external image API or paid CLI fallback was used. Profile backgrounds are drawn in the same native 2D system as the characters. The detailed dragon belongs to the welcome transition; the shop's dragon companion is drawn in the character system's 2D style.
