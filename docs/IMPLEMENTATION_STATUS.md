@@ -1,5 +1,16 @@
 # Hanzi Wallet — checkpoints locales
 
+## Inicio de la plataforma — HW-01/02/03
+
+- Rama `feat/learning-core-foundations`, sobre la tienda pendiente de revisión. Primer checkpoint del plan; no declara terminados M0/M1 ni HW-01/HW-02 completos.
+- Auditor reproducible: `npm run audit:learning` o `npm run audit:learning -- --json`. Comprueba catálogo, geometrías, traducciones, índice/rangos/checksum de audio y catálogo de cosméticos sin ejecutar la app ni leer perfiles o `.env`. Inventario y brechas en `docs/development/BASELINE_INVENTORY.md`.
+- Guion editorial de Presentarse en `docs/development/missions/INTRODUCING_YOURSELF.md`, con diálogo, pinyin, objetivos, actividades, distractores, transferencia y producción/revisión pendientes. El fixture TypeScript contiene seis palabras, tres enunciados, tres audios pendientes y cuatro ejercicios para probar los contratos; no sustituye el guion completo.
+- `src/core/course.ts`: contratos de contenido y evidencia por habilidad, comprobación de referencias/localización/respuestas y bloqueos editoriales, corrección pura de selección y ordenación. Rechaza opciones indistinguibles y acepta intercambio de fichas con el mismo texto. Escritura queda `unassessed`; no inventa práctica, dominio, XP o monedas.
+- No hay conexión nueva a la UI, almacenamiento de sesiones ni entrega de audio. La estética, el progreso y los bundles ejecutados siguen exactamente en 1.5.5: `index-CNj0Q4qe.js`, `index-Dt_NJ4_O.css`, caché `hanzi-wallet-00b4e33cdd69`, 25 recursos. No se repitió QA visual/offline porque no cambió el producto compilado.
+- **75 pruebas aprobadas**, 12 nuevas del núcleo; typecheck, formato, inventario, enlaces locales y build correctos. El inspector valida contenido TypeScript de autoría local; no es todavía un parser de importaciones externas ni comprueba la existencia de futuros archivos de audio.
+- Cloudflare añadido como **HW-21**, tarea de infraestructura futura después de la primera misión local. Documento `docs/development/CLOUDFLARE.md`: preview, posible Workers Static Assets/API posterior, secretos del servidor, caché/PWA, rollback y exportación/importación entre orígenes. No se desplegó, configuró cuenta/DNS ni consumió API de IA.
+- Siguiente incremento: HW-04, persistencia transaccional de sesiones/evidencias y reanudación; después conectar HW-05/HW-06 a componentes existentes. Audio y revisión editorial siguen pendientes antes de publicar la misión.
+
 ## Tienda y ajuste de prendas — 1.5.5
 
 - Rama `feat/wardrobe-fit-and-collections`, sobre la transición del dragón pendiente de revisión. La estética general y los datos existentes se conservan.
