@@ -18,7 +18,13 @@ import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
 import { mountProfile, exportProfile, importProfile } from "./profile";
-import { getLearningXP, loadProfile } from "./core/profile";
+import { getLearningXP, loadProfile, isPlacementBand } from "./core/profile";
+import {
+  furthestPlacement,
+  initializePlacementWallet,
+  isUntouchedPlacementCard,
+  mergePlacementWallet,
+} from "./core/placement-progress";
 import { FirstVisit } from "./onboarding";
 import { learnText } from "./learning-content";
 import { InkCanvas } from "./ink";
@@ -37,6 +43,7 @@ import type {
   CharacterTemplate,
   NeuralModel,
   Recognition,
+  SavedCharacter,
   Stroke,
   VocabularyEntry,
 } from "./core/types";
@@ -109,7 +116,7 @@ function renderShell(): void {
   root!.innerHTML = `<div class="shell"><aside class="sidebar glass" aria-label="${t("Barra lateral")}"><div class="brand"><div class="brand-mark" aria-hidden="true">字</div><strong class="brand-name">Hanzi<span>Wallet</span></strong></div><div class="side-label">${t("TU ESPACIO")}</div><nav class="side-nav" aria-label="${t("Navegación principal")}">${navButton("learn", learnText("home"), "sparkle")}${navButton("studio", t("Escribir"), "pen")}${navButton("wallet", t("Mi wallet"), "wallet")}${navButton("review", t("Repasar"), "layers")}</nav><div class="goal-card"><div class="goal-header">${t("Tu pequeño hábito")}<span id="goal-number">0 / 5</span></div><div class="goal-track" role="progressbar" aria-label="${t("Meta diaria")}" id="goal-progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><i id="goal-fill"></i></div><p>${t("Unos minutos hoy.")}<br>${t("Un poco más cerca mañana.")}</p></div><div class="sidebar-footer">${icon("shield")}<span>${t("Tu progreso se queda contigo.")}</span></div></aside><main class="main"><header class="topbar"><div class="breadcrumb"><span>Hanzi Wallet</span><span class="breadcrumb-sep">/</span><span id="breadcrumb-view">${t("Writing studio")}</span></div><div class="top-actions"><button class="search-button" id="open-search" aria-label="${t("Buscar caracteres")}">${icon("search")}<span>${t("Buscar un carácter")}</span><kbd>⌘ K</kbd></button><button class="icon-button" id="theme-toggle" aria-label="${t("Cambiar a modo oscuro")}" title="${t("Cambiar tema")}">${icon("moon")}</button><button class="icon-button" id="open-settings" aria-label="${t("Preferencias")}" title="${t("Preferencias")}">${icon("settings")}</button></div></header><div class="page-heading"><div><div class="eyebrow" id="page-eyebrow">${t("UN POCO CADA DÍA")}</div><h1 id="page-title">${t("Dale forma a tu chino.")}</h1><p id="page-subtitle">${t("Un espacio para escribir, descubrir y recordar. A tu ritmo.")}</p></div><span class="date-chip">${icon("sun")}<span id="today-date"></span></span></div>
 <section id="learn-view"></section>
 <section id="studio-view" aria-label="${t("Estudio de escritura")}" hidden><div class="studio-grid"><section class="panel glass"><div class="panel-head"><h2>${t("Writing studio")}</h2><span class="live-label"><i class="live-dot"></i><span id="local-status">${t("En tu dispositivo")}</span></span></div><div class="segment" role="group" aria-label="${t("Modo de escritura")}"><button class="active" data-mode="free" aria-pressed="true">${icon("pen")}${t("Libre")}</button><button data-mode="guide" aria-pressed="false">${icon("grid")}${t("Con guía")}</button><button data-mode="animate" aria-pressed="false">${icon("play")}${t("Ver trazos")}</button></div><div class="stage-wrap"><div class="write-stage" id="write-stage"><svg class="grid-guide" viewBox="0 0 400 400" aria-hidden="true"><line x1="0" y1="200" x2="400" y2="200"/><line x1="200" y1="0" x2="200" y2="400"/><line x1="0" y1="0" x2="400" y2="400"/><line x1="400" y1="0" x2="0" y2="400"/></svg><div class="canvas-placeholder" id="canvas-placeholder"><span class="placeholder-glyph" aria-hidden="true">字</span><p>${t("Tu siguiente hanzi empieza aquí.")}</p></div><svg class="ghost" id="ghost" viewBox="0 0 1 1" aria-hidden="true"></svg><canvas id="ink" aria-label="${t("Lienzo para escribir un carácter chino con mouse, dedo o lápiz")}"></canvas><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div><div class="stage-caption"><span id="stage-instruction">${t("DIBUJA UN SOLO CARÁCTER")}</span><span id="stroke-count" aria-live="polite">${strokeLabel(0)}</span></div></div><div class="canvas-tools"><div class="tool-group"><button class="tool-button" id="undo" disabled title="${t("Deshacer último trazo")}" aria-label="${t("Deshacer último trazo")}">${icon("undo")}<span>${t("Deshacer")}</span></button><button class="tool-button" id="clear" disabled title="${t("Borrar lienzo")}" aria-label="${t("Borrar lienzo")}">${icon("trash")}<span>${t("Borrar")}</span></button><div class="divider"></div><label class="width-control" title="${t("Grosor de la tinta")}"><span class="ink-sample"></span><input id="ink-width" type="range" min="1.5" max="6" step="0.1" value="2.6" aria-label="${t("Grosor de la tinta")}" /></label><button class="tool-button hidden" id="hint" aria-label="${t("Mostrar el siguiente trazo")}">${icon("sparkle")}</button></div><button class="analyze-btn" id="analyze" disabled>${t("Analizar")} ${icon("sparkle")}</button></div><p class="studio-footnote"><span id="ink-status" role="status">${t("Tinta fina. Reconocimiento automático.")}</span><span>${t("Mouse, dedo o lápiz.")}</span></p></section><div class="right-stack"><section class="panel glass character-panel" aria-label="${t("Carácter seleccionado")}"><div class="character-head"><span class="overline">${t("EN TU RADAR")}</span><span class="tag" id="character-category"></span></div><div class="character-display"><div class="character-art" id="character-art" role="img"></div><div class="character-pinyin" id="character-pinyin"></div><div class="character-meaning" id="character-meaning"></div><div class="character-meta"><span id="character-strokes"></span><i></i><span id="character-level">${t("Carácter simplificado")}</span></div></div><button class="button-primary full" id="save-character"></button><div class="character-bottom"><button class="tool-button" id="speak">${icon("volume")}${t("Escuchar")}</button><button class="tool-button" id="show-animation">${icon("play")}${t("Ver trazos")}</button><button class="tool-button" id="next-character" aria-label="${t("Siguiente carácter")}">${icon("next")}</button></div></section><section class="panel glass recognition-panel" aria-label="${t("Resultado del reconocimiento")}"><div class="recognition-head"><h2>${t("Lo que dice tu tinta")}</h2>${icon("sparkle")}</div><div id="recognition-result" aria-live="polite"></div></section></div></div><div class="section-head"><div><h2>${t("Pequeños pasos, nuevos caracteres.")}</h2><p>${t("Seis ideas para tu próxima práctica.")}</p></div><button class="text-button" id="explore">${t("Explorar todos")} ${icon("arrow")}</button></div><div class="character-strip" id="character-strip"></div></section>
-<section id="wallet-view" aria-label="${t("Mi wallet")}" hidden><div class="wallet-stats"><div class="wallet-stat glass"><strong id="stat-saved">0</strong><span>${t("En tu colección")}</span></div><div class="wallet-stat glass"><strong id="stat-mastered">0</strong><span>${t("Consolidados")}</span></div><div class="wallet-stat glass"><strong id="stat-due">0</strong><span>${t("Listos para repasar")}</span></div></div><div class="wallet-filter" role="group" aria-label="${t("Filtrar colección")}"><button class="pill active" data-scope="saved" aria-pressed="true">${t("Mi colección")}</button><button class="pill" data-scope="all" aria-pressed="false">${t("Explorar los {count}", { count: vocabulary.length })}</button><button class="pill" data-scope="due" aria-pressed="false">${t("Por repasar")}</button><button class="pill" data-scope="mastered" aria-pressed="false">${t("Consolidados")}</button></div><div class="wallet-toolbar"><input class="input" id="wallet-search" placeholder="${t("Busca hanzi, pinyin o significado…")}" aria-label="${t("Buscar en la colección")}" type="search" /><select class="input" id="category-filter" aria-label="${t("Filtrar por categoría")}"><option value="">${t("Todas las categorías")}</option></select><button class="icon-button" id="wallet-export" aria-label="${t("Exportar colección")}" title="${t("Exportar colección")}">${icon("download")}</button></div><p class="collection-explainer" id="collection-explainer">${t("Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.")}</p><div class="wallet-grid" id="wallet-grid"></div></section>
+<section id="wallet-view" aria-label="${t("Mi wallet")}" hidden><div class="wallet-stats"><div class="wallet-stat glass"><strong id="stat-saved">0</strong><span>${t("En tu colección")}</span></div><div class="wallet-stat glass"><strong id="stat-mastered">0</strong><span>${t("Conocidos")}</span></div><div class="wallet-stat glass"><strong id="stat-due">0</strong><span>${t("Listos para repasar")}</span></div></div><div class="wallet-filter" role="group" aria-label="${t("Filtrar colección")}"><button class="pill active" data-scope="saved" aria-pressed="true">${t("Mi colección")}</button><button class="pill" data-scope="all" aria-pressed="false">${t("Explorar los {count}", { count: vocabulary.length })}</button><button class="pill" data-scope="due" aria-pressed="false">${t("Por repasar")}</button><button class="pill" data-scope="mastered" aria-pressed="false">${t("Conocidos")}</button></div><div class="wallet-toolbar"><input class="input" id="wallet-search" placeholder="${t("Busca hanzi, pinyin o significado…")}" aria-label="${t("Buscar en la colección")}" type="search" /><select class="input" id="category-filter" aria-label="${t("Filtrar por categoría")}"><option value="">${t("Todas las categorías")}</option></select><button class="icon-button" id="wallet-export" aria-label="${t("Exportar colección")}" title="${t("Exportar colección")}">${icon("download")}</button></div><p class="collection-explainer" id="collection-explainer">${t("Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.")}</p><div class="wallet-grid" id="wallet-grid"></div></section>
 <section id="review-view" aria-label="${t("Repaso espaciado")}" hidden><div class="review-container"><div class="review-top"><div class="segment" role="group" aria-label="${t("Dirección del repaso")}"><button class="active" data-direction="hanzi" aria-pressed="true">${t("Hanzi → significado")}</button><button data-direction="meaning" aria-pressed="false">${t("Significado → hanzi")}</button></div><span id="review-counter"></span></div><div id="review-content"></div><p class="review-note">${t("Recuerda antes de revelar. Los repasos se ajustan a tu respuesta y se guardan en este dispositivo.")}</p></div></section>
 <footer class="page-footer"><span>${icon("shield")}${t("Tu progreso se queda contigo.")}</span><button id="open-about">${t("Acerca de Hanzi Wallet")}</button><span>${t("Un trazo a la vez.")}</span></footer></main></div>
 <nav class="mobile-nav" aria-label="${t("Navegación móvil")}"><button data-view="learn" class="active" aria-current="page">${icon("sparkle")}<span data-learn-nav>${learnText("home")}</span></button><button data-view="studio" aria-current="false">${icon("pen")}${t("Escribir")}</button><button data-view="wallet" aria-current="false">${icon("wallet")}${t("Mi wallet")}</button><button data-view="review" aria-current="false">${icon("layers")}${t("Repasar")}</button></nav><div class="toast" id="toast" role="status"></div>
@@ -207,13 +214,28 @@ function assessmentFeedback(a: Assessment): string {
         "Revisa la dirección: normalmente de arriba abajo y de izquierda a derecha.",
       );
 }
+function placedCharacter(char: string): boolean {
+  return learning?.placementRecognized.has(char) ?? false;
+}
+function knownCard(card: SavedCharacter): boolean {
+  return (
+    card.mastered ||
+    (placedCharacter(card.char) &&
+      learning.isRecognitionComplete(card.char) &&
+      (card.reviews === 0 || card.interval > 0))
+  );
+}
+function dueCard(card: SavedCharacter): boolean {
+  return (
+    card.nextReview <= Date.now() &&
+    !isUntouchedPlacementCard(card, placedCharacter(card.char))
+  );
+}
 function renderStats(): void {
   const cards = Object.values(state.wallet),
-    due = cards.filter((c) => c.nextReview <= Date.now()).length;
+    due = cards.filter(dueCard).length;
   el("stat-saved").textContent = String(cards.length);
-  el("stat-mastered").textContent = String(
-    cards.filter((c) => c.mastered).length,
-  );
+  el("stat-mastered").textContent = String(cards.filter(knownCard).length);
   el("stat-due").textContent = String(due);
   document.querySelectorAll<HTMLElement>("[data-count]").forEach((node) => {
     node.textContent =
@@ -488,7 +510,11 @@ function handleRecognition(result: Recognition): void {
   }
 }
 function miniCard(e: VocabularyEntry): string {
-  return `<button class="mini-card" data-char="${escape(e.char)}" aria-label="${t("Practicar {char}, {pinyin}, {meaning}", { char: escape(e.char), pinyin: escape(e.pinyin), meaning: escape(meaning(e)) })}">${state.wallet[e.char] ? `<i class="tiny-dot ${state.wallet[e.char]!.mastered ? "done" : ""}"></i>` : ""}<span class="glyph" lang="zh-CN">${escape(e.char)}</span><span class="reading">${escape(e.pinyin)}</span><span class="gloss">${escape(meaning(e))}</span></button>`;
+  const placed =
+    state.wallet[e.char] &&
+    isUntouchedPlacementCard(state.wallet[e.char]!, placedCharacter(e.char)) &&
+    learning.isRecognitionComplete(e.char);
+  return `<button class="mini-card" ${placed ? `title="${t("Reconocido por colocación")}"` : ""} data-char="${escape(e.char)}" aria-label="${t("Practicar {char}, {pinyin}, {meaning}", { char: escape(e.char), pinyin: escape(e.pinyin), meaning: escape(meaning(e)) })}">${state.wallet[e.char] ? `<i class="tiny-dot ${knownCard(state.wallet[e.char]!) ? "done" : ""}"></i>` : ""}<span class="glyph" lang="zh-CN">${escape(e.char)}</span><span class="reading">${escape(e.pinyin)}</span><span class="gloss">${escape(meaning(e))}</span>${placed ? `<small class="reading">${t("Reconocido por colocación")}</small>` : ""}</button>`;
 }
 function renderStrip(): void {
   el("character-strip").innerHTML = ["你", "好", "学", "水", "山", "心"]
@@ -515,9 +541,9 @@ function renderWallet(): void {
       (walletScope === "all" ||
         (state.wallet[e.char] &&
           (walletScope === "saved" ||
-            (walletScope === "due" &&
-              state.wallet[e.char]!.nextReview <= Date.now()) ||
-            (walletScope === "mastered" && state.wallet[e.char]!.mastered)))) &&
+            (walletScope === "due" && dueCard(state.wallet[e.char]!)) ||
+            (walletScope === "mastered" &&
+              knownCard(state.wallet[e.char]!))))) &&
       (!category || e.category === category) &&
       searchMatch(e, walletQuery),
   );
@@ -539,9 +565,7 @@ function renderWallet(): void {
           { count: list.length },
         )
       : walletScope === "mastered"
-        ? t(
-            "Un carácter se consolida al alcanzar un intervalo de al menos siete días de repaso.",
-          )
+        ? t("Reconocidos por colocación o consolidados con tus repasos.")
         : t(
             "Guarda lo que quieres aprender. Cada carácter lleva su propio ritmo de repaso.",
           );
@@ -614,7 +638,7 @@ function switchView(next: View): void {
 }
 function startReview(): void {
   reviewQueue = Object.values(state.wallet)
-    .filter((c) => reviewAll || c.nextReview <= Date.now())
+    .filter((c) => reviewAll || dueCard(c))
     .sort((a, b) => a.nextReview - b.nextReview)
     .map((c) => c.char);
   reviewIndex = 0;
@@ -962,7 +986,11 @@ function listen(): void {
       );
       state = {
         ...state,
-        wallet: { ...state.wallet, ...incoming.wallet },
+        placementApplied: furthestPlacement(
+          state.placementApplied,
+          incoming.placementApplied,
+        ),
+        wallet: mergePlacementWallet(state.wallet, incoming.wallet),
         history: [
           ...new Map(
             [...state.history, ...incoming.history].map((r) => [
@@ -976,6 +1004,10 @@ function listen(): void {
         personal: { ...state.personal, ...incoming.personal },
       };
       save();
+      const beforePlacement = loadProfile(getLearningXP()).placement;
+      const beforeBand = beforePlacement?.awarded
+        ? beforePlacement.band
+        : undefined;
       if (
         backup !== null &&
         typeof backup === "object" &&
@@ -992,10 +1024,27 @@ function listen(): void {
       ) {
         importProfile(backup.avatarProfile);
       }
+      const placement = loadProfile(getLearningXP()).placement;
+      const placedBand = placement?.awarded ? placement.band : undefined;
+      if (placedBand) {
+        const initialized = initializePlacementWallet(
+          state,
+          placedBand,
+          new Set(vocabulary.map((entry) => entry.char)),
+        );
+        const initializedNow = initialized !== state;
+        if (initializedNow) {
+          state = initialized;
+          save();
+        }
+        if (initializedNow || placedBand !== beforeBand)
+          learning.setStartingBand(placedBand);
+      }
       learning.render();
       renderCharacter();
       renderWallet();
       renderStrip();
+      renderStats();
       toast(t("Copia importada. Tu colección está al día."));
     } catch (error) {
       toast(
@@ -1059,22 +1108,16 @@ async function init(): Promise<void> {
         preferences: { ...state.preferences, locale: getLocale() },
       };
     else setLocale(state.preferences.locale);
-    // The first-run collection is a transparent starter set, never invented progress.
-    let firstRun = false;
-    try {
-      firstRun =
-        !localStorage.getItem("hanzi-wallet-v3") &&
-        !localStorage.getItem("hanzi-studio-v2");
-    } catch {
-      /* Storage may be blocked; the in-memory app remains usable. */
-    }
-    if (firstRun && !loaded.warning) {
-      const starter = ["你", "好", "我", "学", "水", "山", "心", "永"];
-      state = {
-        ...state,
-        wallet: Object.fromEntries(starter.map((h) => [h, saved(h)])),
-      };
-    }
+    const known = new Set(vocabulary.map((entry) => entry.char));
+    const previousPlacement = loadProfile(getLearningXP()).placement;
+    const previousBand = previousPlacement?.awarded
+      ? previousPlacement.band
+      : undefined;
+    const initialized = previousBand
+      ? initializePlacementWallet(state, previousBand, known)
+      : state;
+    const migratedPlacement = initialized !== state;
+    state = initialized;
     renderShell();
     mountProfile();
     learning = new LearningView(
@@ -1093,6 +1136,8 @@ async function init(): Promise<void> {
         window.dispatchEvent(new Event("hanzi-wallet:progress"));
       },
     );
+    if (migratedPlacement && previousBand && previousBand !== "0")
+      learning.setStartingBand(previousBand);
     ink = new InkCanvas(el<HTMLCanvasElement>("ink"));
     ink.onChange = onInkChange;
     ink.onStart = () => {
@@ -1126,11 +1171,6 @@ async function init(): Promise<void> {
     switchView("learn");
     save();
     if (loaded.warning) toast(loaded.warning);
-    else if (firstRun && !welcome.needed)
-      window.setTimeout(
-        () => toast(t("Tu wallet empieza con 8 caracteres. Hazla tuya.")),
-        700,
-      );
     let model: NeuralModel | null = null;
     try {
       model = await json<NeuralModel>("model/ink-mlp.json");
@@ -1238,7 +1278,14 @@ async function init(): Promise<void> {
         selector.value = locale;
         selector.dispatchEvent(new Event("change"));
       },
-      (band) => learning.setStartingBand(band),
+      (band) => {
+        if (!isPlacementBand(band)) return;
+        state = initializePlacementWallet(state, band, known);
+        save();
+        learning.setStartingBand(band);
+        renderStats();
+        renderStrip();
+      },
     );
   } catch (error) {
     welcome.dismiss();

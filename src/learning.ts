@@ -31,6 +31,11 @@ import {
 } from "./learning-content";
 import hskLevels from "./hsk-levels.json";
 import {
+  placementCharacters,
+  nextStudyBand,
+  isRecognitionComplete as recognitionComplete,
+} from "./core/placement-progress";
+import {
   levelProgress,
   loadProfile,
   setSessionLearningXP,
@@ -72,6 +77,8 @@ export class LearningView {
   private options: VocabularyEntry[] | null = null;
   private response: Response | null = null;
   private busy = false;
+  private recognizedBand = "0";
+  private recognizedCharacters: ReadonlySet<string> = new Set();
 
   constructor(
     private readonly host: HTMLElement,
@@ -105,6 +112,28 @@ export class LearningView {
       if (!this.round && !this.lesson && !this.host.hidden) this.render();
       this.onProgress();
     });
+    window.addEventListener("hanzi-wallet:profile-imported", () => {
+      if (!this.round && !this.lesson && !this.host.hidden) this.render();
+    });
+  }
+
+  get placementRecognized(): ReadonlySet<string> {
+    const placement = loadProfile(this.progress.xp).placement;
+    const band = placement?.awarded ? placement.band : "0";
+    if (band !== this.recognizedBand) {
+      this.recognizedBand = band;
+      this.recognizedCharacters = new Set(
+        placementCharacters(band, this.known),
+      );
+    }
+    return this.recognizedCharacters;
+  }
+
+  isRecognitionComplete(char: string): boolean {
+    return recognitionComplete(
+      this.progress.cards[char],
+      this.placementRecognized.has(char),
+    );
   }
 
   get due(): number {
@@ -181,6 +210,7 @@ export class LearningView {
             ordered,
             now,
             kind === "errors" ? "errors" : "adaptive",
+            this.placementRecognized,
           );
     if (!chars.length) return;
     this.round = {
@@ -385,7 +415,7 @@ export class LearningView {
   }
 
   setStartingBand(band: string): void {
-    const label = band === "0" ? "1" : band === "7-9" ? "7–9" : band;
+    const label = nextStudyBand(band);
     this.level =
       hskLevels.find((level) => level.label === label) ?? hskLevels[0]!;
     this.page = 0;
@@ -432,8 +462,10 @@ export class LearningView {
     const lessons = this.lessons;
     const start = this.page * GROUPS_PER_PAGE;
     const xp = this.progress.xp;
-    const progress = levelProgress(loadProfile(xp), xp);
+    const profile = loadProfile(xp);
+    const progress = levelProgress(profile, xp);
     const level = progress.level;
+    const placement = profile.placement;
     return `<div class="learn-level-picker">
       <div class="learn-level-tabs" role="group" aria-label="${l("path")}">${hskLevels
         .map(
@@ -442,6 +474,7 @@ export class LearningView {
         )
         .join("")}</div>
       <p>${l("coverage", { available: this.level.chars.length, total: this.level.total })}</p>
+      ${placement?.awarded && placement.band !== "0" ? `<p class="learn-placement-notice">${l("placementRecognition", { band: placement.band === "7-9" ? "7–9" : placement.band })}</p>` : ""}
     </div><div class="learn-grid">
       <section class="learn-hero" aria-labelledby="learn-main"><div class="learn-hero-content">
         <span class="learn-hero-label">${icon("sparkle")} HSK ${this.level.label}</span>
@@ -465,8 +498,8 @@ export class LearningView {
       .slice(start, start + GROUPS_PER_PAGE)
       .map((unit) => {
         const chars = this.lessonChars(unit);
-        const seen = chars.filter(
-          (char) => this.progress.cards[char]?.interval,
+        const seen = chars.filter((char) =>
+          this.isRecognitionComplete(char),
         ).length;
         return `<button class="glass learn-unit" data-learn="unit" data-value="${unit.id}"><span class="learn-unit-index">${String(unit.number).padStart(2, "0")}</span><span class="learn-unit-glyph" lang="zh-CN">${unit.glyph}</span><strong>${lessonName(unit)}</strong><small>${seen} / ${l("cards", chars.length)}</small></button>`;
       })

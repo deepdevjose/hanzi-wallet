@@ -107,6 +107,14 @@ export function parseState(
     }
   return {
     version: 3,
+    ...(typeof input.placementApplied === "string" &&
+    /^(0|[1-6]|7-9)$/.test(input.placementApplied)
+      ? {
+          placementApplied: input.placementApplied as NonNullable<
+            AppState["placementApplied"]
+          >,
+        }
+      : {}),
     wallet,
     history,
     personal,

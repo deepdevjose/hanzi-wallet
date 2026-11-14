@@ -188,6 +188,7 @@ export function adaptiveQueue(
   ordered: readonly string[],
   now: number,
   kind: "adaptive" | "errors",
+  recognized: ReadonlySet<string> = new Set(),
 ): string[] {
   const seen = ordered
     .map((char) => progress.cards[char])
@@ -206,15 +207,20 @@ export function adaptiveQueue(
     .sort(dueOrder)
     .slice(0, ROUND_SIZE);
   const fresh = ordered
-    .filter((char) => !progress.cards[char])
+    .filter((char) => !progress.cards[char] && !recognized.has(char))
     .slice(0, Math.min(NEW_LIMIT, ROUND_SIZE - due.length));
   const queue = [...due.map((card) => card.char), ...fresh];
-  return queue.length
-    ? queue
-    : seen
-        .sort(dueOrder)
-        .slice(0, ROUND_SIZE)
-        .map((card) => card.char);
+  if (queue.length) return queue;
+  const unpracticed = ordered.filter(
+    (char) => recognized.has(char) && !progress.cards[char],
+  );
+  if (unpracticed.length) return unpracticed.slice(0, ROUND_SIZE);
+  if (seen.length)
+    return seen
+      .sort(dueOrder)
+      .slice(0, ROUND_SIZE)
+      .map((card) => card.char);
+  return [];
 }
 
 export function shuffle<T>(

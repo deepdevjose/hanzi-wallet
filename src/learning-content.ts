@@ -131,6 +131,13 @@ const copy = {
     "{available} caractères disponibles sur les {total} nouveaux de ce niveau",
     "{available} de {total} caracteres novos deste nível disponíveis",
   ],
+  placementRecognition: [
+    "HSK {band} reconocido por colocación. Continúa tu ruta o repasa lo que ya conoces.",
+    "HSK {band} recognised through placement. Continue your path or review what you already know.",
+    "入门测试已认定 HSK {band} 的汉字认读基础。继续学习，或复习已认识的汉字。",
+    "HSK {band} reconnu au test de niveau. Poursuivez votre parcours ou révisez vos acquis.",
+    "HSK {band} reconhecido pela avaliação inicial. Continue sua jornada ou revise o que já conhece.",
+  ],
   syllabus: [
     "Temario oficial HSK 3.0",
     "Official HSK 3.0 syllabus",
@@ -361,14 +368,14 @@ export function localized(text: Copy, locale: Locale = getLocale()): string {
 }
 export function learnText(
   key: keyof typeof copy,
-  params: number | Readonly<Record<string, number>> = {},
+  params: number | Readonly<Record<string, string | number>> = {},
 ): string {
   const values = typeof params === "number" ? { n: params } : params;
   return localized(copy[key]).replace(
     /\{(\w+)\}/g,
     (token: string, name: string) =>
       Object.hasOwn(values, name)
-        ? String((values as Readonly<Record<string, number>>)[name])
+        ? String((values as Readonly<Record<string, string | number>>)[name])
         : token,
   );
 }

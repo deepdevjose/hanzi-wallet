@@ -1,3 +1,5 @@
+import type { PlacementBand } from "./profile";
+
 export interface Point {
   readonly x: number;
   readonly y: number;
@@ -66,6 +68,7 @@ export interface Preferences {
 }
 export interface AppState {
   readonly version: 3;
+  readonly placementApplied?: PlacementBand;
   readonly wallet: Readonly<Record<string, SavedCharacter>>;
   readonly history: readonly PracticeRecord[];
   readonly preferences: Preferences;

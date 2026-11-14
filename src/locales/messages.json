@@ -1664,5 +1664,26 @@
     "zh-CN": "工作",
     "fr": "Travail",
     "pt": "Trabalho"
+  },
+  "Conocidos": {
+    "es": "Conocidos",
+    "en": "Known",
+    "zh-CN": "已认识",
+    "fr": "Connus",
+    "pt": "Conhecidos"
+  },
+  "Reconocido por colocación": {
+    "es": "Reconocido por colocación",
+    "en": "Recognized through placement",
+    "zh-CN": "通过分级评估认定",
+    "fr": "Reconnu au test de niveau",
+    "pt": "Reconhecido na avaliação"
+  },
+  "Reconocidos por colocación o consolidados con tus repasos.": {
+    "es": "Reconocidos por colocación o consolidados con tus repasos.",
+    "en": "Recognized through placement or consolidated through your reviews.",
+    "zh-CN": "通过分级评估认定，或经复习巩固。",
+    "fr": "Reconnus au test de niveau ou consolidés par vos révisions.",
+    "pt": "Reconhecidos na avaliação ou consolidados nas suas revisões."
   }
 }
