@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "24.9.1",
+    "fake-indexeddb": "6.2.7",
     "hanzi-writer-data": "2.0.1",
     "prettier": "3.6.2",
     "typescript": "5.9.3",

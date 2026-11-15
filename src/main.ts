@@ -17,6 +17,13 @@ import {
 import { NativePronunciation } from "./pronunciation";
 import { icon, type IconName } from "./icons";
 import { LearningView } from "./learning";
+import { withCourseStore } from "./core/course-store";
+import {
+  BACKUP_MAX_BYTES,
+  CourseDataError,
+  isRecord,
+  parseCourseBackup,
+} from "./core/course-session";
 import { mountProfile, exportProfile, importProfile } from "./profile";
 import { getLearningXP, loadProfile, isPlacementBand } from "./core/profile";
 import {
@@ -709,29 +716,48 @@ function renderSearch(q: string): void {
         .join("")
     : `<div class="empty-state">${t("Prueba con otro hanzi, pinyin o significado.")}</div>`;
 }
-function exportProgress(): void {
-  const blob = new Blob(
-    [
-      JSON.stringify(
-        {
-          ...state,
-          avatarProfile: exportProfile(),
-          learningProgress: learning.exportProgress(),
-          exportedAt: new Date().toISOString(),
-        },
-        null,
-        2,
-      ),
-    ],
-    { type: "application/json" },
-  );
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `hanzi-wallet-${dayKey(Date.now())}.json`;
-  a.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 2000);
-  toast(t("Tu copia está lista. Guárdala en un lugar seguro."));
+let backupBusy = false;
+async function exportProgress(): Promise<void> {
+  if (backupBusy) return;
+  backupBusy = true;
+  try {
+    const courseProgress = await withCourseStore(
+      new Set(vocabulary.map((entry) => entry.char)),
+      (store) => store.exportProgress(),
+    );
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          {
+            ...state,
+            avatarProfile: exportProfile(),
+            learningProgress: learning.exportProgress(),
+            courseProgress,
+            exportedAt: new Date().toISOString(),
+          },
+          null,
+          2,
+        ),
+      ],
+      { type: "application/json" },
+    );
+    if (blob.size > BACKUP_MAX_BYTES) {
+      toast(t("La copia puede pesar como máximo 20 MB."));
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hanzi-wallet-${dayKey(Date.now())}.json`;
+    a.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast(t("Tu copia está lista. Guárdala en un lugar seguro."));
+  } catch {
+    // Downloading only the legacy fields would silently lose lesson progress.
+    toast(t("No se pudo preparar una copia completa. Vuelve a intentarlo."));
+  } finally {
+    backupBusy = false;
+  }
 }
 async function playPronunciation(item: VocabularyEntry): Promise<void> {
   try {
@@ -976,15 +1002,40 @@ function listen(): void {
     const input = el<HTMLInputElement>("import-file"),
       file = input.files?.[0];
     if (!file) return;
+    if (backupBusy) {
+      input.value = "";
+      return;
+    }
+    backupBusy = true;
+    let courseApplied = false;
+    let legacyApplied = false;
+    let failureMessage = t(
+      "La copia no es válida. Revisa el archivo y vuelve a intentarlo.",
+    );
     try {
-      if (file.size > 5_000_000)
-        throw new Error(t("La copia debe pesar menos de 5 MB."));
+      if (file.size > BACKUP_MAX_BYTES) {
+        toast(t("La copia puede pesar como máximo 20 MB."));
+        return;
+      }
       const backup: unknown = JSON.parse(await file.text());
-      const incoming = parseState(
-        backup,
-        new Set(vocabulary.map((e) => e.char)),
+      const known = new Set(vocabulary.map((entry) => entry.char));
+      // Both schemas are checked before either storage system is changed.
+      const incoming = parseState(backup, known);
+      const courseProgress =
+        isRecord(backup) && Object.hasOwn(backup, "courseProgress")
+          ? parseCourseBackup(backup.courseProgress, known)
+          : undefined;
+      if (courseProgress !== undefined) {
+        await withCourseStore(known, (store) =>
+          store.importProgress(courseProgress),
+        );
+        courseApplied = true;
+      }
+      // A legacy backup intentionally never opens or clears course storage.
+      failureMessage = t(
+        "No se pudo guardar la copia. Conserva el archivo y vuelve a intentarlo.",
       );
-      state = {
+      const merged: AppState = {
         ...state,
         placementApplied: furthestPlacement(
           state.placementApplied,
@@ -1003,26 +1054,20 @@ function listen(): void {
           .slice(-3000),
         personal: { ...state.personal, ...incoming.personal },
       };
-      save();
+      persist(merged);
+      state = merged;
+      legacyApplied = true;
       const beforePlacement = loadProfile(getLearningXP()).placement;
       const beforeBand = beforePlacement?.awarded
         ? beforePlacement.band
         : undefined;
-      if (
-        backup !== null &&
-        typeof backup === "object" &&
-        !Array.isArray(backup) &&
-        "learningProgress" in backup
-      ) {
-        learning.importProgress(backup.learningProgress);
+      let fullySaved = true;
+      if (isRecord(backup) && Object.hasOwn(backup, "learningProgress")) {
+        fullySaved =
+          learning.importProgress(backup.learningProgress) && fullySaved;
       }
-      if (
-        backup !== null &&
-        typeof backup === "object" &&
-        !Array.isArray(backup) &&
-        "avatarProfile" in backup
-      ) {
-        importProfile(backup.avatarProfile);
+      if (isRecord(backup) && Object.hasOwn(backup, "avatarProfile")) {
+        fullySaved = importProfile(backup.avatarProfile) && fullySaved;
       }
       const placement = loadProfile(getLearningXP()).placement;
       const placedBand = placement?.awarded ? placement.band : undefined;
@@ -1034,23 +1079,60 @@ function listen(): void {
         );
         const initializedNow = initialized !== state;
         if (initializedNow) {
+          persist(initialized);
           state = initialized;
-          save();
         }
         if (initializedNow || placedBand !== beforeBand)
-          learning.setStartingBand(placedBand);
+          fullySaved = learning.setStartingBand(placedBand) && fullySaved;
       }
       learning.render();
       renderCharacter();
       renderWallet();
       renderStrip();
       renderStats();
-      toast(t("Copia importada. Tu colección está al día."));
-    } catch (error) {
       toast(
-        error instanceof Error ? error.message : t("La copia no es válida."),
+        t(
+          fullySaved
+            ? "Copia importada. Tu colección está al día."
+            : "Parte de la copia se aplicó, pero no se pudo guardar todo. Conserva el archivo y vuelve a intentarlo.",
+        ),
       );
+    } catch (error) {
+      if (legacyApplied) {
+        // Earlier writes remain applied even if a later legacy key failed.
+        learning.render();
+        renderCharacter();
+        renderWallet();
+        renderStrip();
+        renderStats();
+      }
+      if (courseApplied || legacyApplied) {
+        toast(
+          t(
+            "Parte de la copia se aplicó, pero no se pudo guardar todo. Conserva el archivo y vuelve a intentarlo.",
+          ),
+        );
+      } else if (
+        error instanceof CourseDataError &&
+        (error.code === "conflict" || error.code === "deleted")
+      ) {
+        toast(
+          t(
+            "Las copias tienen cambios diferentes. Conserva ambas copias antes de volver a intentarlo.",
+          ),
+        );
+      } else if (
+        error instanceof CourseDataError &&
+        (error.code === "quota" || error.code === "unavailable")
+      ) {
+        toast(
+          t(
+            "No se pudo guardar el progreso de las lecciones. Conserva la copia y vuelve a intentarlo.",
+          ),
+        );
+      } else toast(failureMessage);
     } finally {
+      backupBusy = false;
       input.value = "";
     }
   };

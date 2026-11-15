@@ -399,10 +399,13 @@ export class LearningView {
     return this.canPersist ? this.read() : this.progress;
   }
 
-  importProgress(value: unknown): void {
+  importProgress(value: unknown): boolean {
     this.progress = mergeLearning(this.exportProgress(), value, this.known);
+    let persisted = false;
     try {
       localStorage.setItem(LEARNING_KEY, JSON.stringify(this.progress));
+      this.canPersist = true;
+      persisted = true;
     } catch {
       this.canPersist = false;
       this.notify(l("storageError"));
@@ -412,19 +415,23 @@ export class LearningView {
     setSessionLearningXP(this.canPersist ? null : this.progress.xp);
     this.onProgress();
     this.render();
+    return persisted;
   }
 
-  setStartingBand(band: string): void {
+  setStartingBand(band: string): boolean {
     const label = nextStudyBand(band);
     this.level =
       hskLevels.find((level) => level.label === label) ?? hskLevels[0]!;
     this.page = 0;
+    let persisted = false;
     try {
       localStorage.setItem(LEVEL_KEY, this.level.label);
+      persisted = true;
     } catch {
       this.canPersist = false;
     }
     this.render();
+    return persisted;
   }
 
   updateLocale(): void {

@@ -1708,8 +1708,9 @@ export function mountProfile(): void {
 export function exportProfile(): unknown {
   return syncProfile(loadProfile(getLearningXP()), getLearningXP());
 }
-export function importProfile(input: unknown): void {
+export function importProfile(input: unknown): boolean {
   const xp = getLearningXP();
-  saveProfile(syncProfile(readProfile(input, xp), xp));
+  const persisted = saveProfile(syncProfile(readProfile(input, xp), xp));
   window.dispatchEvent(new Event("hanzi-wallet:profile-imported"));
+  return persisted;
 }
