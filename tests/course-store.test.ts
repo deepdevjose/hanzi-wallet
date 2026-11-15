@@ -124,6 +124,39 @@ describe("transactional course storage", () => {
     const reopened = await open();
     expect((await reopened.getSession(first.id))?.lesson).toEqual(lesson);
   });
+  it("reopens aids with no selected answer and rejects submitting that empty draft", async () => {
+    let store = await open();
+    await store.startSession("unanswered", lesson, 10);
+    const draft: CourseDraft = {
+      response: { type: "choice", optionId: null },
+      hintsUsed: 1,
+      supports: { pinyin: false, translation: true, transcript: false },
+    };
+    const saved = await store.saveDraft("unanswered", 0, draft, 20);
+    store.close();
+    store = await open();
+    expect(await store.getSession("unanswered")).toEqual(saved);
+    const before = await store.exportProgress();
+    await expect(
+      store.submitAttempt("unanswered", 1, "not-an-answer", draft, 30),
+    ).rejects.toMatchObject({ code: "invalid" });
+    expect(await store.exportProgress()).toEqual(before);
+    const answered = await store.submitAttempt(
+      "unanswered",
+      1,
+      "real-answer",
+      {
+        ...draft,
+        response: { type: "choice", optionId: "name-li" },
+      },
+      40,
+    );
+    expect(answered.attempt.evidence).toMatchObject({
+      attemptIndex: 1,
+      hintsUsed: 1,
+      supports: draft.supports,
+    });
+  });
 
   it("retries a committed attempt ID without duplicating evidence or moving the step", async () => {
     const store = await open();

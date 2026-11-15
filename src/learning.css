@@ -472,3 +472,7 @@
 .learn-path > .learn-local {
   flex-wrap: wrap;
 }
+
+.learn-preview-entry {
+  margin-bottom: 16px;
+}
