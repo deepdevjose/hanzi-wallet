@@ -65,6 +65,41 @@ describe("durable course session model", () => {
     });
     expect(backup.sessions[0]?.lineage.slice(0, 2)).toEqual(saved.lineage);
   });
+  it("preserves consulted aids before a choice has been selected", () => {
+    const pending: CourseDraft = {
+      response: { type: "choice", optionId: null },
+      hintsUsed: 2,
+      supports: { pinyin: true, translation: true, transcript: false },
+    };
+    const session = saveCourseDraft(start(), 0, pending, 120);
+    const backup = restore({ ...emptyCourseBackup(), sessions: [session] });
+    expect(backup.sessions[0]?.draft).toEqual(pending);
+    expect(backup.sessions[0]?.attemptCounts).toEqual([0, 0, 0, 0]);
+    expect(backup.attempts).toEqual([]);
+    expect(() =>
+      prepareCourseAttempt(session, 1, "empty-attempt", pending, 130),
+    ).toThrow(/response.optionId/);
+    expect(session.draft).toEqual(pending);
+  });
+  it("roundtrips an empty retry draft alongside the previous attempt feedback", () => {
+    const answered = attempted();
+    const pending: CourseDraft = {
+      response: { type: "choice", optionId: null },
+      hintsUsed: 2,
+      supports: draft.supports,
+    };
+    const session = saveCourseDraft(answered.sessions[0]!, 1, pending, 220);
+    const backup = restore({ ...answered, sessions: [session] });
+    expect(backup.sessions[0]).toMatchObject({
+      feedbackId: "attempt-one",
+      draft: pending,
+      attemptCounts: [1, 0, 0, 0],
+    });
+    expect(backup.attempts).toEqual(answered.attempts);
+    expect(() =>
+      prepareCourseAttempt(session, 2, "empty-retry", pending, 230),
+    ).toThrow(/response.optionId/);
+  });
   it("requires an actual submission before advancing and preserves feedback after completion", () => {
     expect(() => advanceCourseSession(start(), 0)).toThrow(/Submit/);
     let session = start();
@@ -246,6 +281,20 @@ describe("course backup validation and merging", () => {
           ],
         }),
       ).toThrow();
+  });
+  it("rejects an imported submitted attempt with an empty choice", () => {
+    const backup = attempted();
+    expect(() =>
+      restore({
+        ...backup,
+        attempts: [
+          {
+            ...backup.attempts[0]!,
+            response: { type: "choice", optionId: null },
+          },
+        ],
+      }),
+    ).toThrow(/response.optionId/);
   });
   it("rejects skipped steps, missing attempts and tombstones that also contain active data", () => {
     const backup = attempted();

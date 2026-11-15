@@ -25,8 +25,12 @@ export interface CourseSupports {
 export type CourseSubmission =
   | CourseResponse
   | { readonly type: "writing"; readonly strokes: readonly Stroke[] };
+/** Empty selections can be saved with consulted aids, but never submitted. */
+export type CourseDraftResponse =
+  | CourseSubmission
+  | { readonly type: "choice"; readonly optionId: null };
 export interface CourseDraft {
-  readonly response: CourseSubmission;
+  readonly response: CourseDraftResponse;
   readonly hintsUsed: number;
   readonly supports: CourseSupports;
 }
@@ -121,10 +125,22 @@ function supports(v: unknown): CourseSupports {
 function response(
   v: unknown,
   exercise: CourseExercise,
+  partial: true,
+): CourseDraftResponse;
+function response(
+  v: unknown,
+  exercise: CourseExercise,
+  partial: false,
+): CourseSubmission;
+function response(
+  v: unknown,
+  exercise: CourseExercise,
   partial: boolean,
-): CourseSubmission {
+): CourseDraftResponse {
   if (!isRecord(v) || v.type !== exercise.type) return invalid("response.type");
   if (exercise.type === "choice") {
+    if (partial && v.optionId === null)
+      return { type: "choice", optionId: null };
     const optionId = id(v.optionId, "response.optionId");
     if (!exercise.options.some((option) => option.id === optionId))
       return invalid("response.optionId");
