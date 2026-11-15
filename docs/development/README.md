@@ -1,6 +1,6 @@
 # Plan de desarrollo de Hanzi Wallet
 
-Fecha: 14 de noviembre de 2026. Estado: plan para revisión; los módulos nuevos no están implementados. Base local: 1.5.3.
+Fecha: 14 de noviembre de 2026. Estado: ejecución incremental; núcleo y persistencia iniciales implementados. Base visual: 1.5.5; primera misión aún sin publicar.
 
 ## Contrato del producto
 
@@ -20,6 +20,7 @@ El objetivo es que una persona comprenda y utilice mandarín en situaciones nuev
 | [GitHub y revisión](GITHUB_WORKFLOW.md)                         | Configuración del Project, ramas, PR y releases                 |
 | [Inventario reproducible](BASELINE_INVENTORY.md)                | Recursos activos y brechas de HW-01                             |
 | [Primera misión](missions/INTRODUCING_YOURSELF.md)              | Guion editorial de HW-02, todavía pendiente de revisión/audio   |
+| [Sesiones y respaldo](SESSION_PERSISTENCE.md)                   | HW-04, guardado, reanudación, importación y límites             |
 | [Cloudflare futuro](CLOUDFLARE.md)                              | HW-21, alojamiento pospuesto y traslado del progreso local      |
 | [Estado implementado](../IMPLEMENTATION_STATUS.md)              | Evidencias de lo que sí existe                                  |
 
@@ -37,6 +38,6 @@ No iniciaremos simultáneamente todos los módulos. Empezamos con HW-01 a HW-08 
 
 HW-01 tiene auditor e inventario reproducible; su aceptación visual/migraciones sigue abierta. HW-02 dispone de guion y de un fixture editorial, sin audio ni revisión final. HW-03 tiene contratos TypeScript, comprobación de referencias/traducciones y corrección pura de selección/ordenación en `src/core/course.ts`, con pruebas en `tests/course.test.ts`.
 
-Este núcleo aún no está conectado a la interfaz: no cambia la estética, la ruta actual, el almacenamiento ni las recompensas. La escritura queda sin evaluar hasta conectar el estudio real. El fixture `src/course/introducing-yourself.ts` implementa un subconjunto del guion para probar contratos; no sustituye la misión completa ni acredita aceptación de M1.
+El núcleo de ejercicios aún no tiene recorrido visual: no cambia la estética, la ruta actual ni las recompensas. HW-04 añade almacenamiento separado y respaldo compatible; no migra las claves anteriores. La escritura queda sin evaluar hasta conectar el estudio real. El fixture `src/course/introducing-yourself.ts` implementa un subconjunto del guion para probar contratos; no sustituye la misión completa ni acredita aceptación de M1.
 
-Siguiente PR: HW-04, sesiones/evidencias durables y reanudación; después HW-05/HW-06, recorrido visual y actividades. Mantener la misión en preview hasta producir/revisar el audio y superar HW-08. Cloudflare permanece en backlog para más adelante.
+HW-04 ya guarda sesiones/evidencias en IndexedDB, fija el contenido, protege concurrencia y conserva eliminaciones e importaciones. Ver [protocolo y límites](SESSION_PERSISTENCE.md). Siguiente incremento: HW-05/HW-06, recorrido visual y actividades reutilizando los componentes actuales. Mantener la misión en preview hasta producir/revisar el audio y superar HW-08. Cloudflare permanece en backlog para más adelante.

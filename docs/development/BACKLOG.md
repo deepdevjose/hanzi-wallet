@@ -1,6 +1,6 @@
 # Backlog para convertir en issues
 
-Cada HW es una issue propuesta. Todas comienzan en Backlog; no implican funciones terminadas. Prioridad P0 = primera entrega, P1 = expansión local, P2 = servicios conectados. Tamaño relativo: S acotado, M varias piezas, L requiere dividir al iniciar. No son estimaciones de horas.
+Cada HW conserva el alcance de una issue. El estado implementado y sus evidencias viven en [IMPLEMENTATION_STATUS.md](../IMPLEMENTATION_STATUS.md); su presencia aquí no implica que esté terminado. Prioridad P0 = primera entrega, P1 = expansión local, P2 = servicios conectados. Tamaño relativo: S acotado, M varias piezas, L requiere dividir al iniciar. No son estimaciones de horas.
 
 | ID    | Título de issue                                       | Milestone    | Prioridad | Tamaño | Depende de                 |
 | ----- | ----------------------------------------------------- | ------------ | --------- | ------ | -------------------------- |
@@ -46,7 +46,7 @@ Objetivo: ejecutar contenido sin acoplarlo a una pantalla. Aceptación: unión d
 
 ### HW-04 · Guardado durable
 
-Objetivo: continuar desde el paso abandonado. Aceptación: sesión fijada a versión, persistencia transaccional, migración conservadora, protocolo de integración de premios, exportación/importación compatible y fallo de cuota recuperable. Validación: recarga en cada paso, caída entre operaciones, copia antigua y nueva, importación duplicada y eliminación manual.
+Objetivo: continuar desde el paso abandonado. Aceptación: sesión fijada a versión, persistencia transaccional, migración conservadora, protocolo de integración de premios, exportación/importación compatible y fallo de cuota recuperable. Validación: recarga en cada paso, caída entre operaciones, copia antigua y nueva, importación duplicada y eliminación manual. Implementación del núcleo y contrato de premios: [SESSION_PERSISTENCE.md](SESSION_PERSISTENCE.md). La reanudación en pantallas reales de misión se acepta con HW-05/HW-08; todavía no se entregan premios nuevos.
 
 ### HW-05 · Runtime de misión
 

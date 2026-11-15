@@ -1336,12 +1336,54 @@
     "fr": "La copie n'est pas valide.",
     "pt": "A cópia não é válida."
   },
-  "La copia debe pesar menos de 5 MB.": {
-    "es": "La copia debe pesar menos de 5 MB.",
-    "en": "The backup must be smaller than 5 MB.",
-    "zh-CN": "备份文件必须小于 5 MB。",
-    "fr": "La copie doit faire moins de 5 Mo.",
-    "pt": "A cópia deve ter menos de 5 MB."
+  "La copia puede pesar como máximo 20 MB.": {
+    "es": "La copia puede pesar como máximo 20 MB.",
+    "en": "The backup can be at most 20 MB.",
+    "zh-CN": "备份文件不能超过 20 MB。",
+    "fr": "La copie ne peut pas dépasser 20 Mo.",
+    "pt": "A cópia pode ter no máximo 20 MB."
+  },
+  "No se pudo preparar una copia completa. Vuelve a intentarlo.": {
+    "es": "No se pudo preparar una copia completa. Vuelve a intentarlo.",
+    "en": "Couldn't prepare a complete backup. Please try again.",
+    "zh-CN": "未能准备完整备份，请重试。",
+    "fr": "Impossible de préparer une copie complète. Réessaie.",
+    "pt": "Não foi possível preparar uma cópia completa. Tente novamente."
+  },
+  "La copia no es válida. Revisa el archivo y vuelve a intentarlo.": {
+    "es": "La copia no es válida. Revisa el archivo y vuelve a intentarlo.",
+    "en": "The backup is invalid. Check the file and try again.",
+    "zh-CN": "备份无效，请检查文件后重试。",
+    "fr": "La copie n'est pas valide. Vérifie le fichier et réessaie.",
+    "pt": "A cópia não é válida. Verifique o arquivo e tente novamente."
+  },
+  "No se pudo guardar la copia. Conserva el archivo y vuelve a intentarlo.": {
+    "es": "No se pudo guardar la copia. Conserva el archivo y vuelve a intentarlo.",
+    "en": "Couldn't save the backup. Keep the file and try again.",
+    "zh-CN": "未能保存备份，请保留文件并重试。",
+    "fr": "Impossible d'enregistrer la copie. Conserve le fichier et réessaie.",
+    "pt": "Não foi possível salvar a cópia. Guarde o arquivo e tente novamente."
+  },
+  "Parte de la copia se aplicó, pero no se pudo guardar todo. Conserva el archivo y vuelve a intentarlo.": {
+    "es": "Parte de la copia se aplicó, pero no se pudo guardar todo. Conserva el archivo y vuelve a intentarlo.",
+    "en": "Part of the backup was applied, but not everything could be saved. Keep the file and try again.",
+    "zh-CN": "部分备份已应用，但未能全部保存。请保留文件并重试。",
+    "fr": "Une partie de la copie a été appliquée, mais tout n'a pas pu être enregistré. Conserve le fichier et réessaie.",
+    "pt": "Parte da cópia foi aplicada, mas nem tudo pôde ser salvo. Guarde o arquivo e tente novamente."
+  },
+  "Las copias tienen cambios diferentes. Conserva ambas copias antes de volver a intentarlo.": {
+    "es": "Las copias tienen cambios diferentes. Conserva ambas copias antes de volver a intentarlo.",
+    "en": "The backups contain different changes. Keep both backups before trying again.",
+    "zh-CN": "两份备份包含不同的更改，请保留两份备份后再重试。",
+    "fr": "Les copies contiennent des modifications différentes. Conserve les deux copies avant de réessayer.",
+    "pt": "As cópias contêm alterações diferentes. Guarde ambas antes de tentar novamente."
+  },
+  "No se pudo guardar el progreso de las lecciones. Conserva la copia y vuelve a intentarlo.": {
+    "es": "No se pudo guardar el progreso de las lecciones. Conserva la copia y vuelve a intentarlo.",
+    "en": "Couldn't save lesson progress. Keep the backup and try again.",
+    "zh-CN": "未能保存课程进度，请保留备份并重试。",
+    "fr": "Impossible d'enregistrer les progrès des leçons. Conserve la copie et réessaie.",
+    "pt": "Não foi possível salvar o progresso das lições. Guarde a cópia e tente novamente."
   },
   "No se pudo guardar. Exporta una copia de tu progreso.": {
     "es": "No se pudo guardar. Exporta una copia de tu progreso.",

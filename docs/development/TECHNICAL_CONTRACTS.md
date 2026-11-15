@@ -1,6 +1,6 @@
 # Contratos técnicos propuestos
 
-Estado: diseño del sistema completo. El subconjunto inicial de HW-03 ya existe en `src/core/course.ts`: lección, palabras, enunciados, audio, selección, ordenación, escritura y contrato de evidencia. No están implementados aún el almacenamiento de sesiones/evidencias, el runtime visual, el planificador nuevo ni el backend.
+Estado: diseño del sistema completo. El subconjunto inicial de HW-03 ya existe en `src/core/course.ts`: lección, palabras, enunciados, audio, selección, ordenación, escritura y contrato de evidencia. HW-04 implementa sesiones/evidencias en IndexedDB, snapshots fijados, reanudación por revisión y respaldo compatible; ver [SESSION_PERSISTENCE.md](SESSION_PERSISTENCE.md). Todavía no existen el runtime visual, el ledger/adaptador de premios, el planificador nuevo ni el backend.
 
 `inspectCourseLesson` comprueba contenido TypeScript local y distingue errores de autoría de bloqueos editoriales; no es un parser de JSON externo ni verifica los archivos/licencias contra un servidor. `gradeCourseExercise` corrige selección/ordenación sin escribir datos ni conceder premios. La escritura devuelve `unassessed` hasta integrarse con la evaluación real. El fixture de Presentarse sigue en borrador y no se importa en la interfaz publicada.
 
@@ -46,7 +46,7 @@ Gramática y vocabulario son contenidos/objetivos transversales; pueden enlazars
 
 ## Persistencia y premios
 
-IndexedDB propuesto para sesiones, evidencias y libro de premios nuevos. Transacción única: insertar evidencia por ID, registrar finalización y otorgar premio con clave única `learner + objective + rewardRuleVersion`. Evitar una transacción lógica partida entre localStorage e IndexedDB.
+IndexedDB implementado para sesiones, intentos/evidencias y marcas de eliminación. El libro de premios sigue propuesto. Objetivo de HW-07: una transacción única para insertar evidencia por ID, registrar finalización elegible y otorgar premio con clave única `learner + objective + rewardRuleVersion`. Evitar una transacción lógica partida entre localStorage e IndexedDB.
 
 El perfil/avatar actual sigue existiendo. Un adaptador aplica al saldo antiguo únicamente deltas no aplicados con marcadores recuperables; su protocolo debe diseñarse y probarse en HW-04/HW-07 antes de conectar monedas. Si no puede garantizarse recuperación, mantener recompensas de la misión desactivadas hasta resolverlo.
 
