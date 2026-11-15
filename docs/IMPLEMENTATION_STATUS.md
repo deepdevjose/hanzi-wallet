@@ -1,6 +1,14 @@
 # Hanzi Wallet — checkpoints locales
 
-Solicitud actual: buscar el país escribiendo en el selector del perfil y del primer inicio. Se conserva el trabajo previo de escritura, colocación y la propuesta de plataforma de aprendizaje. **No publicar ni subir a GitHub.**
+## Planificación de la plataforma — 14 de noviembre de 2026
+
+- Plan canónico nuevo: [docs/development/README.md](development/README.md), con viabilidad investigada, contratos propuestos, siete etapas/milestones y veinte tickets con dependencias y aceptación. La investigación del usuario está preservada sin configuración privada en [docs/research/MANDARIN_RESEARCH.md](research/MANDARIN_RESEARCH.md).
+- `AGENTS.md` exige conservar estética/progreso y trabajar mediante ramas/PR, con revisión y merge a cargo del usuario. Añadida plantilla de PR. No hay nuevas funcionalidades de curso implementadas en esta entrega.
+- Correcciones locales previas separadas en `fix/profile-country-and-handwriting-cursor`; planificación en `docs/learning-platform-roadmap`. No se hizo push a `main` ni merge. La PR del plan depende de la rama de correcciones; integrar y retargetear según la guía de GitHub.
+- Acceso al repositorio confirmado; Projects bloqueado por falta de permisos `read:project`/`project` en la credencial actual. Configuración manual lista en `development/GITHUB_WORKFLOW.md`. No se creó Project ni issues ni se modificaron protecciones.
+- Verificación: 62 pruebas aprobadas, typecheck/build correctos, mismo bundle y caché de 1.5.3; enlaces locales del paquete documental comprobados. No se hicieron llamadas a la API de IA ni se leyó `.env`; su exclusión de Git fue confirmada. Originales locales y tres archivos de datos sin rastrear permanecen fuera de los commits.
+
+Registro de la entrega 1.5.3: búsqueda de país en el perfil y primer inicio. Esa entrega se hizo inicialmente solo con checkpoints locales. La instrucción posterior del usuario habilita ramas y PR en GitHub, conservando la revisión y el merge a su cargo.
 
 ## Estado actual — 1.5.3
 
