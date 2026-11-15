@@ -7,6 +7,16 @@ import { defaultAppearance, type Appearance } from "./core/appearance";
 const NS = "http://www.w3.org/2000/svg";
 const INK = "#39413d";
 const PAPER = "#f4f0e6";
+const ROBE_OUTFITS = new Set([
+  "scholar",
+  "hanfu",
+  "silk-dress",
+  "imperial",
+  "immortal",
+  "lotus-ruqun",
+  "crane-hanfu",
+  "night-brocade",
+]);
 const selected = (profile: Profile, slot: Slot): Item | undefined =>
   ITEMS.find((item) => item.id === profile.equipped[slot]);
 const color = (item: Item | undefined, fallback: string): string =>
@@ -37,6 +47,8 @@ const blossom = (x: number, y: number, scale = 1): string =>
   `<g transform="translate(${x} ${y}) scale(${scale})" fill="#b87f78"><ellipse cy="-4" rx="3" ry="4"/><ellipse cx="4" cy="-1" rx="4" ry="3"/><ellipse cx="2" cy="4" rx="3" ry="4"/><ellipse cx="-3" cy="4" rx="3" ry="4"/><ellipse cx="-5" cy="-1" rx="4" ry="3"/><circle r="2" fill="#e4cd9d"/></g>`;
 
 function scenery(id: string): string {
+  if (id === "moon-gate")
+    return `<g opacity=".75"><circle cx="100" cy="147" r="76" fill="#e0e4d5" stroke="#9b9e89" stroke-width="5"/><circle cx="100" cy="147" r="70" fill="#eff0e4" stroke="#c1b89e" stroke-width="1.2"/><path d="M31 181L64 129L91 162L128 112L173 184V216H31Z" fill="#bac9ba"/><path d="M30 214Q100 197 171 216M12 269H188M0 286H200" stroke="#b6b59f" stroke-width="2"/><path d="M20 254L22 70M178 259L175 93M17 140H26M173 158H181" stroke="#93a287" stroke-width="2.5"/><path d="M22 110q-19-26-18-9q7 12 18 9M23 172q26-28 24-11q-10 15-24 11M176 139q-26-23-24-6q11 12 24 6" fill="#a9b59a"/></g>${cloud(143, 57, 0.55)}`;
   if (id === "bamboo")
     return `<g fill="#9aaa8e" stroke="#8d9f86" stroke-width="2" opacity=".65"><path d="M13 300L21 21M31 300L35 71M180 300L177 14"/><path d="M19 69Q-4 49 4 34Q23 45 19 69M20 111Q42 84 49 91Q45 110 20 111M34 173Q54 149 61 156Q56 174 34 173M178 77Q157 48 151 57Q153 77 178 77M178 128Q198 106 199 114Q196 130 178 128" stroke-width=".5"/><path d="M16 77H24M14 141H23M12 210H21M31 192H39M173 88H182M174 162H183M176 237H185" stroke="#748a70"/></g>`;
   if (id === "plum")
@@ -63,6 +75,8 @@ function scenery(id: string): string {
 }
 
 function headwear(id: string): string {
+  if (id === "cloud-cap")
+    return `<g class="avatar-headwear">${path("M61 60Q60 26 83 24Q100 17 117 24Q140 26 139 60Q100 70 61 60Z", "#687b75")}<path d="M64 57Q100 66 136 57M100 23V55" stroke="#9caf9d" stroke-width="1.5"/><path d="M68 51Q100 58 132 51" stroke="#536962" stroke-width="5"/><ellipse cx="100" cy="53" rx="5" ry="4" fill="#b7b893" stroke="#556f64" stroke-width="1"/></g>`;
   if (id === "hat")
     return `<g class="avatar-headwear">${path("M27 56Q61 39 100 13Q139 39 173 56Q101 76 27 56Z", "#cbb77e")}<path d="M100 15L51 59M100 15L75 63M100 15V66M100 15L125 63M100 15L149 59M32 55Q100 65 168 55" stroke="#a08c5c" stroke-width="1.15" stroke-linecap="round"/><path d="M41 59Q100 76 159 59" stroke="#8d7953" stroke-width="2" fill="none"/></g>`;
   if (id === "ribbon")
@@ -162,7 +176,7 @@ function hair(
   if (appearance.hair === "topknot")
     return {
       back:
-        headwearId === "hat"
+        headwearId === "hat" || headwearId === "cloud-cap"
           ? ""
           : `<ellipse cx="100" cy="28" rx="15" ry="13" fill="${tone}" ${stroke}/><path d="M91 22Q100 17 109 23" ${highlight}/><path d="M87 37H113" stroke="#9b8b66" stroke-width="3" stroke-linecap="round"/>`,
       front: `${path("M59 79Q52 45 76 38Q100 30 125 39Q147 48 141 80L134 82L131 60Q111 63 100 50Q89 63 69 61L66 82Z", tone)}<path d="M69 49Q84 38 94 40M106 40Q122 40 133 51" ${highlight}/>`,
@@ -257,42 +271,74 @@ function outfit(
   rig: BodyRig,
 ): { torso: string; arms: string; legs: string } {
   const id = item?.id ?? "everyday";
-  const regal = ["hanfu", "silk-dress", "imperial", "immortal"].includes(id);
-  const robe = regal || id === "scholar";
-  const short = id === "everyday" || id === "silk-dress";
+  const robe = ROBE_OUTFITS.has(id);
+  const tee = ["everyday", "cloud-tee", "bamboo-tee"].includes(id);
+  const short = tee || ["silk-dress", "lotus-ruqun", "tea-vest"].includes(id);
   const tone =
     id === "everyday"
       ? /^#[a-f\d]{6}$/i.test(profile.shirtColor)
         ? profile.shirtColor
         : DEFAULT_SHIRT_COLOR
       : color(item, "#8b9b8d");
-  const trim =
-    id === "imperial" || id === "immortal"
-      ? "#c6aa72"
-      : regal
-        ? "#8d9d87"
+  const trim = ["imperial", "immortal", "night-brocade"].includes(id)
+    ? "#c6aa72"
+    : id === "lotus-ruqun"
+      ? "#e1d3bb"
+      : robe
+        ? "#b7c2ad"
         : "#d9d9c5";
+  const { shoulder, waist, hip, leg, neck } = rig;
+  // Garment ease avoids a pinched waist/bell hem. Collars and decoration use
+  // these same measurements, rather than getting cropped on narrower bodies.
+  const hem = hip + 1;
+  const side = Math.max(waist + 2, hem - 4);
+  const collar = neck + 1;
+  const motifX = 100 + side * 0.48;
   const baseLength = id === "immortal" ? 275 : id === "scholar" ? 259 : 267;
   const length = 208 + ((baseLength - 208) * rig.legScale) / rig.torsoScale;
-  const { shoulder, waist, hip, leg, neck } = rig;
-  const shirtBody = `M${100 - shoulder} 141L${100 - neck - 1} 136Q100 147 ${100 + neck + 1} 136L${100 + shoulder} 141Q${102 + shoulder} 163 ${100 + waist} 181Q${100 + waist + 1} 197 ${100 + hip} 208Q100 215 ${100 - hip} 208Q${99 - waist} 197 ${100 - waist} 181Q${98 - shoulder} 163 ${100 - shoulder} 141Z`;
-  const robeBody = `M${100 - shoulder} 141L${100 - neck - 1} 136L100 143L${100 + neck + 1} 136L${100 + shoulder} 141L${100 + waist} 205L${114 + hip} ${length}Q100 ${length + 8} ${86 - hip} ${length}L${100 - waist} 205Z`;
-  const garmentClip = `avatar-garment-${++featureId}`;
+  const shirtBody = `M${100 - shoulder} 141L${100 - collar} 136Q100 147 ${100 + collar} 136L${100 + shoulder} 141Q${102 + shoulder} 163 ${100 + side} 181Q${100 + side} 198 ${100 + hem} 208Q100 213 ${100 - hem} 208Q${100 - side} 198 ${100 - side} 181Q${98 - shoulder} 163 ${100 - shoulder} 141Z`;
+  const robeBody = `M${100 - shoulder} 141L${100 - collar} 136L100 143L${100 + collar} 136L${100 + shoulder} 141L${100 + waist} 205L${114 + hip} ${length}Q100 ${length + 8} ${86 - hip} ${length}L${100 - waist} 205Z`;
   const torsoShape = robe ? robeBody : shirtBody;
+  const hemSeam = `<path d="M${103 - hem} 203Q100 208 ${97 + hem} 203" stroke="${INK}" stroke-opacity=".18" stroke-width="1.2"/>`;
+  const crewNeck = `<path d="M${100 - collar} 139Q100 153 ${100 + collar} 139" stroke="${INK}" stroke-opacity=".24" stroke-width="1.6"/>`;
   let detail = "";
-  if (id === "everyday")
-    detail =
-      '<path d="M88 138Q100 153 112 138M75 202Q100 208 125 202" stroke="#39413d" stroke-opacity=".22" stroke-width="1.6"/>';
-  else if (id === "blue-shirt")
-    detail =
-      '<path d="M89 136L100 149L111 136M100 149V208M85 140L89 155L100 149L111 155L115 140" stroke="#d4dbd2" stroke-width="1.7"/><g fill="#dbe1d8"><circle cx="102" cy="168" r="1.3"/><circle cx="102" cy="184" r="1.3"/><circle cx="102" cy="200" r="1.3"/></g>';
-  else if (id === "linen")
-    detail =
-      '<path d="M89 137L100 151L111 137M100 151V174M81 200Q100 204 119 200" stroke="#9e967e" stroke-width="1.6" stroke-linecap="round"/><path d="M109 158H116V171H109" stroke="#b2a88a" stroke-width="1.3"/>';
-  else if (robe)
-    detail = `<path d="M88 138L111 169L115 139M94 149L78 175M109 166L101 207" stroke="${trim}" stroke-width="5" stroke-linejoin="round"/><path d="M74 199Q100 204 127 199L128 209Q100 214 72 209Z" fill="${trim}"/><path d="M92 209L84 ${length - 4}M108 210L117 ${length - 4}" stroke="#39413d" stroke-opacity=".16" stroke-width="1.5"/><path d="M79 ${length - 9}Q86 ${length - 17} 93 ${length - 9}T108 ${length - 9}T123 ${length - 9}" stroke="${trim}" stroke-width="2" fill="none"/>${id === "imperial" ? '<path d="M93 174Q111 163 117 177Q120 188 109 190Q100 187 108 181Q114 180 109 176M109 188L103 195M116 177L122 173" stroke="#d7bd84" stroke-width="2" stroke-linecap="round"/>' : id === "silk-dress" ? blossom(115, 183, 0.65) : id === "immortal" ? '<path d="M81 224Q100 214 119 224M78 239Q100 228 122 239" stroke="#f0ead5" stroke-width="2"/>' : '<path d="M113 177q-5 5 0 9q5-4 0-9" stroke="#c9c6aa" stroke-width="1.5"/>'}`;
-  else
-    detail = `<path d="M88 137L88 148H112V137M100 148V209M76 200H124" stroke="${id === "red" ? "#dac092" : "#bec8b8"}" stroke-width="1.7"/><g stroke="${id === "red" ? "#dac092" : "#bec8b8"}" stroke-width="2" stroke-linecap="round"><path d="M94 160H106M94 176H106M94 192H106"/></g>${id === "red" ? blossom(116, 187, 0.6) : ""}`;
+  if (tee) {
+    detail = crewNeck + hemSeam;
+    if (id === "cloud-tee")
+      detail += `<g transform="translate(${motifX} 165) scale(.23)">${cloud(0, 0)}</g>`;
+    if (id === "bamboo-tee")
+      detail += `<g transform="translate(${motifX} 163)" stroke="#748c74" stroke-width="1.1" stroke-linecap="round"><path d="M-2 14L0-8M3 13L5-3M-2 4H0M-1-2H1M4 6H6"/><path d="M0-1Q-10-10-8-2Q-4 1 0-1M1 7Q11 0 10 5Q6 9 1 7M5-1Q12-6 11-1L5 2" fill="#96a38b" stroke-width=".5"/></g>`;
+  } else if (id === "blue-shirt") {
+    detail = `<path d="M${100 - collar} 137L100 150L${100 + collar} 137M100 150V207M${98 - collar} 141L${99 - neck} 155L100 150L${101 + neck} 155L${102 + collar} 141" stroke="#d4dbd2" stroke-width="1.6"/>${[167, 183, 199].map((y) => `<circle cx="102" cy="${y}" r="1.2" fill="#dbe1d8"/>`).join("")}${hemSeam}`;
+  } else if (id === "linen") {
+    detail = `<path d="M${100 - collar} 138L100 150L${100 + collar} 138M100 150V175" stroke="#9e967e" stroke-width="1.5" stroke-linecap="round"/><path d="M${motifX - 3} 159h6v11q-3 3-6 0Z" stroke="#b2a88a" stroke-width="1.1"/>${hemSeam}`;
+  } else if (id === "plum-cardigan" || id === "tea-vest") {
+    detail = `<path d="M${100 - collar} 136L100 159L${100 + collar} 136L${100 + side * 0.4} 207H${100 - side * 0.4}Z" fill="#eee5d3"/>`;
+    detail +=
+      id === "tea-vest"
+        ? `<path d="M${100 - collar} 138L100 159L${100 + collar} 138M100 159V208" stroke="#d2c5a9" stroke-width="2"/>${[171, 185, 199].map((y) => `<path d="M96 ${y}h8" stroke="#d2c5a9" stroke-width="1.7" stroke-linecap="round"/>`).join("")}`
+        : `<path d="M${100 - collar} 137L${100 - side * 0.4} 207M${100 + collar} 137L${100 + side * 0.4} 207" stroke="#d8c0b8" stroke-width="2"/>${blossom(motifX, 178, 0.43)}<path d="M${motifX} 181q-4 7-1 11" stroke="#8a9b87" stroke-width="1"/>`;
+    detail += hemSeam;
+  } else if (robe) {
+    const belt = waist - 1;
+    detail = `<path d="M${100 - collar} 138L${100 + waist * 0.43} 168L${100 + collar} 139M${100 - neck * 0.5} 149L${100 - waist * 0.8} 175M${100 + waist * 0.43} 168L101 202" stroke="${trim}" stroke-width="4" stroke-linejoin="round"/><path d="M${100 - belt} 199Q100 203 ${100 + belt} 199L${100 + belt} 208Q100 212 ${100 - belt} 208Z" fill="${trim}"/><path d="M${100 - waist * 0.34} 210L${100 - hip * 0.6} ${length - 4}M${100 + waist * 0.34} 210L${100 + hip * 0.6} ${length - 4}" stroke="${INK}" stroke-opacity=".16" stroke-width="1.3"/><path d="M${100 - hip} ${length - 9}Q${100 - hip / 2} ${length - 17} 100 ${length - 9}T${100 + hip} ${length - 9}" stroke="${trim}" stroke-width="1.7"/>`;
+    if (id === "imperial")
+      detail += `<g transform="translate(${motifX - 14} 0)"><path d="M93 174Q111 163 117 177Q120 188 109 190Q100 187 108 181Q114 180 109 176M109 188L103 195M116 177L122 173" stroke="#d7bd84" stroke-width="1.7" stroke-linecap="round"/></g>`;
+    else if (id === "silk-dress") detail += blossom(motifX, 183, 0.55);
+    else if (id === "lotus-ruqun")
+      detail += `<path d="M${100 - waist} 209H${100 + waist}L${114 + hip} ${length}Q100 ${length + 8} ${86 - hip} ${length}Z" fill="#c5afb0"/><path d="M100 210V${length}M${100 - waist * 0.55} 212L${100 - hip} ${length - 2}M${100 + waist * 0.55} 212L${100 + hip} ${length - 2}" stroke="#a78c91" stroke-width="1.2"/>${blossom(motifX, 182, 0.48)}<path d="M${100 + belt - 2} 205q10 8 2 22" stroke="${trim}" stroke-width="2"/>`;
+    else if (id === "crane-hanfu")
+      detail += `<g transform="translate(${motifX - 1} 178)" stroke="#f1e9d7" stroke-linecap="round"><path d="M0 6q-12-16-19-7q10 0 17 10q8 2 13-6" stroke-width="2.8"/><path d="M0 7q6-3 5-10q0-5 5-4" stroke-width="1.7"/><path d="M-1 10l-3 9m5-9l2 9" stroke="#c8ac7b" stroke-width="1"/><circle cx="9" cy="-7" r="1.5" fill="#b98278" stroke="none"/></g>`;
+    else if (id === "night-brocade")
+      detail += `<g transform="translate(${motifX} 179) scale(.21)">${cloud(0, 0)}</g><g stroke="${trim}" stroke-width="1" opacity=".65">${[225, 243].map((y) => `<path d="M${100 - hip * 0.7} ${y}q8-8 16 0t16 0"/>`).join("")}</g>`;
+    else if (id === "immortal")
+      detail += `<path d="M${100 - hip * 0.65} 224Q100 214 ${100 + hip * 0.65} 224M${100 - hip * 0.8} 239Q100 228 ${100 + hip * 0.8} 239" stroke="#f0ead5" stroke-width="2"/>`;
+    else
+      detail += `<path d="M${motifX} 177q-5 5 0 9q5-4 0-9" stroke="#c9c6aa" stroke-width="1.5"/>`;
+  } else {
+    const edging = id === "red" ? "#dac092" : "#bec8b8";
+    detail = `<path d="M${100 - collar} 137V148H${100 + collar}V137M100 148V208" stroke="${edging}" stroke-width="1.7"/><g stroke="${edging}" stroke-width="1.8" stroke-linecap="round">${[160, 176, 192].map((y) => `<path d="M95 ${y}h10"/>`).join("")}</g>${hemSeam}${id === "red" ? blossom(motifX, 187, 0.5) : ""}`;
+  }
   const bareHand =
     robe && !short
       ? "M55 190L50 205Q48 216 57 218Q66 217 68 207L72 195Z"
@@ -303,10 +349,15 @@ function outfit(
       : short
         ? "M79 140L67 143L55 159Q63 170 75 170L86 153Z"
         : "M79 140L67 143L51 180L63 190L77 166L86 153Z";
-  const arm = `${path(bareHand, skin)}${path(sleeve, tone)}<path d="${robe && !short ? "M51 196L76 199" : short ? "M59 160L74 165" : "M55 179L65 185"}" stroke="${id === "everyday" ? "#39413d" : trim}" stroke-opacity="${id === "everyday" ? ".22" : ".75"}" stroke-width="2" stroke-linecap="round"/><path d="${robe && !short ? "M54 210L58 212" : "M59 194L64 195"}" stroke="#39413d" stroke-opacity=".28" stroke-width="1.1" stroke-linecap="round"/>`;
+  const armScale = Math.max(0.78, Math.min(1.12, (waist + neck) / 35));
+  const sleeveTone = id === "tea-vest" ? "#eee5d3" : tone;
+  const arm = `${path(bareHand, skin)}${path(sleeve, sleeveTone)}<path d="${robe && !short ? "M51 196L76 199" : short ? "M59 160L74 165" : "M55 179L65 185"}" stroke="${tee ? INK : trim}" stroke-opacity="${tee ? ".22" : ".75"}" stroke-width="1.5" stroke-linecap="round"/><path d="${robe && !short ? "M54 210L58 212" : "M59 194L64 195"}" stroke="${INK}" stroke-opacity=".28" stroke-width="1.1" stroke-linecap="round"/>`;
+  const leftAnchor = 100 - shoulder;
+  const pivot = leftAnchor - 5 * armScale;
+  const garmentClip = `avatar-garment-${++featureId}`;
   return {
     torso: `<g class="avatar-garment" data-garment="${id}" data-body-shape="${profile.appearance?.body ?? "balanced"}"><defs><clipPath id="${garmentClip}"><path d="${torsoShape}"/></clipPath></defs>${path(torsoShape, tone)}<g clip-path="url(#${garmentClip})">${detail}</g></g>`,
-    arms: `<g class="avatar-arm avatar-arm-left" style="transform-origin:${73 + 22 - shoulder}px 148px"><g transform="translate(${22 - shoulder} 0)">${arm}</g></g><g class="avatar-arm avatar-arm-right" style="transform-origin:${127 - 22 + shoulder}px 148px"><g transform="translate(${shoulder - 22} 0)"><g transform="translate(200 0) scale(-1 1)">${arm}</g></g></g>`,
+    arms: `<g class="avatar-arm avatar-arm-left" style="transform-origin:${pivot}px 148px"><g transform="translate(${leftAnchor} 0) scale(${armScale} 1) translate(-78 0)">${arm}</g></g><g class="avatar-arm avatar-arm-right" style="transform-origin:${200 - pivot}px 148px"><g transform="translate(200 0) scale(-1 1)"><g transform="translate(${leftAnchor} 0) scale(${armScale} 1) translate(-78 0)">${arm}</g></g></g>`,
     legs: `<g class="avatar-trousers">${path(`M${100 - hip} 200H${100 + hip}Q${103 + hip} 218 ${100 + leg} 239L${100 + leg} 272Q${102 + leg / 2} 278 104 272L102 234H98L96 272Q${98 - leg / 2} 278 ${100 - leg} 272L${100 - leg} 239Q${97 - hip} 218 ${100 - hip} 200Z`, "#59625d")}<path d="M100 218V233M${99 - leg * 0.75} 235L${99 - leg * 0.65} 266M${101 + leg * 0.75} 235L${101 + leg * 0.65} 266" stroke="#839083" stroke-width="1.5" stroke-linecap="round"/></g>`,
   };
 }
@@ -324,6 +375,11 @@ function aura(id: string): string {
 }
 
 function frameArtwork(id: string): string {
+  if (id === "lattice") {
+    const corner =
+      '<path d="M13 49V14H48M19 40V20H40M13 36H29V14M19 28H36V20"/>';
+    return `<g fill="none" stroke="#a88c68" stroke-width="1.4" stroke-linejoin="round">${corner}<g transform="translate(200 0) scale(-1 1)">${corner}</g><g transform="translate(0 300) scale(1 -1)">${corner}</g><g transform="translate(200 300) scale(-1 -1)">${corner}</g><path d="M58 14H142M58 286H142M13 59V241M187 59V241" stroke-opacity=".5" stroke-width=".8"/></g>`;
+  }
   if (id !== "dragon-frame") return "";
   const guardian =
     '<path d="M14 273Q27 263 15 250Q3 237 15 223T15 194T15 165T15 136T15 107T15 78Q6 63 19 48" stroke="#baaa7c" stroke-width="4" stroke-linecap="round"/><path d="M15 252L21 249M11 233L17 230M15 208L21 205M11 186L17 183M15 163L21 160M11 142L17 139M15 119L21 116M11 95L17 92M14 72L20 69" stroke="#819882" stroke-width="1.5"/><path d="M15 48L17 37L28 32L37 37L32 45L22 49Z" fill="#c5b184" stroke="#9d8b61" stroke-width="1"/><path d="M20 36L18 26L24 31M29 34L32 24M34 41Q45 43 39 51" stroke="#a38f66" stroke-width="1.3" stroke-linecap="round"/><circle cx="27" cy="39" r="1.5" fill="#637c68"/>';
@@ -390,6 +446,7 @@ export function createAvatar(
         ink: "#e8ece6",
         landscape: "#e7e9d9",
         palace: "#eee9dd",
+        "moon-gate": "#ebe7da",
       } as Record<string, string>
     )[bg] ?? PAPER,
   );
@@ -477,7 +534,9 @@ export function createItemArt(item: Item, profile: Profile): HTMLElement {
     expression: `40 ${25 + rig.headShift} 120 120`,
     skin: `40 ${25 + rig.headShift} 120 120`,
     shoes: "53 246 94 54",
-    outfit: `30 ${119 + rig.headShift} 140 ${178 - rig.headShift}`,
+    outfit: ROBE_OUTFITS.has(item.id)
+      ? `30 ${119 + rig.headShift} 140 ${178 - rig.headShift}`
+      : `28 ${134 + rig.headShift - 5 * rig.torsoScale} 144 ${90 * rig.torsoScale}`,
   };
   if (camera[item.slot])
     preview
