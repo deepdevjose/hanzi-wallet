@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { inspectCourseLesson, gradeCourseExercise } from "../src/core/course";
 import { INTRODUCING_YOURSELF } from "../src/course/introducing-yourself";
-import { READING_PREVIEW } from "../src/course/reading-preview";
+import {
+  READING_PREVIEW,
+  supportsReadingPreview,
+} from "../src/course/reading-preview";
 import { courseText } from "../src/course/text";
 import { getLocale, LOCALES, setLocale } from "../src/i18n";
 
@@ -9,6 +12,30 @@ const initialLocale = getLocale();
 afterEach(() => setLocale(initialLocale));
 
 describe("editorial reading preview", () => {
+  it("does not render listening or writing snapshots as a reading activity", () => {
+    expect(supportsReadingPreview(READING_PREVIEW)).toBe(true);
+    expect(
+      supportsReadingPreview({
+        ...INTRODUCING_YOURSELF,
+        id: READING_PREVIEW.id,
+      }),
+    ).toBe(false);
+    expect(
+      supportsReadingPreview({
+        ...READING_PREVIEW,
+        exercises: [
+          ...READING_PREVIEW.exercises,
+          INTRODUCING_YOURSELF.exercises[3]!,
+        ],
+      }),
+    ).toBe(false);
+    expect(supportsReadingPreview({ ...READING_PREVIEW, exercises: [] })).toBe(
+      false,
+    );
+    expect(
+      supportsReadingPreview({ ...READING_PREVIEW, version: "0.2.0" }),
+    ).toBe(true);
+  });
   it("has a separate identity and remains blocked by editorial review and audio", () => {
     expect(READING_PREVIEW.id).not.toBe(INTRODUCING_YOURSELF.id);
     expect(READING_PREVIEW.version).toBe("0.1.0");

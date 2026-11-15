@@ -1030,6 +1030,7 @@ function listen(): void {
           store.importProgress(courseProgress),
         );
         courseApplied = true;
+        window.dispatchEvent(new Event("hanzi-wallet:course-imported"));
       }
       // A legacy backup intentionally never opens or clears course storage.
       failureMessage = t(

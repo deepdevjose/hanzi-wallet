@@ -1,6 +1,6 @@
 # HW-04 · Sesiones y respaldo
 
-Implementación del guardado de la primera misión. No incorpora aún una pantalla de curso ni publica el borrador de Presentarse. El runtime visual corresponde a HW-05/HW-06; audio y revisión editorial siguen pendientes.
+Implementación del guardado de la primera misión. El [runtime de HW-05](MISSION_RUNTIME.md) ya utiliza esta capa para una vista previa de lectura. Audio, revisión editorial y recorrido completo de HW-06 siguen pendientes; el borrador de Presentarse no se publica como misión terminada.
 
 ## Datos preservados
 

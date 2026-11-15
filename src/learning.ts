@@ -1,5 +1,7 @@
 import "./learning.css";
 import { meaning } from "./i18n";
+import { courseText } from "./course/text";
+import type { MissionView } from "./course/view";
 import { icon } from "./icons";
 import { dayKey } from "./core/storage";
 import {
@@ -77,6 +79,10 @@ export class LearningView {
   private options: VocabularyEntry[] | null = null;
   private response: Response | null = null;
   private busy = false;
+  private readonly previewEnabled =
+    new URLSearchParams(location.search).get("mission-preview") === "1";
+  private previewOpening = false;
+  private missionView: MissionView | null = null;
   private recognizedBand = "0";
   private recognizedCharacters: ReadonlySet<string> = new Set();
 
@@ -272,6 +278,10 @@ export class LearningView {
     if (!button || this.busy) return;
     const action = button.dataset.learn;
     const value = button.dataset.value;
+    if (action === "mission-preview" && this.previewEnabled) {
+      void this.openMissionPreview();
+      return;
+    }
     if (action === "back") {
       this.reset();
     } else if (
@@ -440,7 +450,36 @@ export class LearningView {
       this.options = answerOptions(item, this.vocabulary, meaning);
   }
 
+  private async openMissionPreview(): Promise<void> {
+    if (this.previewOpening) return;
+    this.previewOpening = true;
+    try {
+      const { MissionView } = await import("./course/view");
+      this.missionView ??= new MissionView(
+        this.host,
+        this.known,
+        () => {
+          this.render();
+          this.host
+            .querySelector<HTMLElement>('[data-learn="mission-preview"]')
+            ?.focus();
+        },
+        this.write,
+      );
+      await this.missionView.open();
+    } catch {
+      this.notify(courseText("restoreError"));
+    } finally {
+      this.previewOpening = false;
+    }
+  }
+
   render(focus = false): void {
+    if (this.missionView?.active) {
+      this.missionView.render(focus);
+      return;
+    }
+    if (this.previewOpening) return;
     const round = this.round;
     const item = this.current();
     this.host.innerHTML = round
@@ -473,7 +512,7 @@ export class LearningView {
     const progress = levelProgress(profile, xp);
     const level = progress.level;
     const placement = profile.placement;
-    return `<div class="learn-level-picker">
+    return `${this.previewEnabled ? `<section class="glass learn-tile learn-preview-entry"><span class="learn-symbol">${icon("book")}</span><div><h2>${courseText("missionTitle")}</h2><p>${courseText("preview")}</p></div><button class="secondary" data-learn="mission-preview">${courseText("openPreview")}${icon("arrow")}</button></section>` : ""}<div class="learn-level-picker">
       <div class="learn-level-tabs" role="group" aria-label="${l("path")}">${hskLevels
         .map(
           (level) =>

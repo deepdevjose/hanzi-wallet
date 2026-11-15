@@ -50,7 +50,7 @@ Objetivo: continuar desde el paso abandonado. Aceptación: sesión fijada a vers
 
 ### HW-05 · Runtime de misión
 
-Objetivo: recorrer escucha, comprensión y recuperación. Aceptación: avanzar, volver cuando proceda, explicar errores, reintentar y continuar sesión; teclado/táctil; ningún paso exige servicios externos. Validación: recorrido correcto, errores, interrupción y reapertura. UI conserva tokens y componentes existentes.
+Objetivo: recorrer escucha, comprensión y recuperación. Aceptación: avanzar, volver cuando proceda, explicar errores, reintentar y continuar sesión; teclado/táctil; ningún paso exige servicios externos. Validación: recorrido correcto, errores, interrupción y reapertura. UI conserva tokens y componentes existentes. Hay [runtime de lectura en vista previa](MISSION_RUNTIME.md) con tres actividades y reanudación; no sustituye la misión editorial completa ni cierra aceptación de escucha/escritura.
 
 ### HW-06 · Actividades integradas
 

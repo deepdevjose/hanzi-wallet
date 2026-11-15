@@ -2,6 +2,20 @@ import { getLocale, LOCALES } from "../i18n";
 
 type Copy = readonly [string, string, string, string, string];
 const copy = {
+  unsupported: [
+    "Esta actividad todavía no se puede abrir aquí.",
+    "This activity can't be opened here yet.",
+    "此处暂时无法打开这项练习。",
+    "Cette activité ne peut pas encore s'ouvrir ici.",
+    "Esta atividade ainda não pode ser aberta aqui.",
+  ],
+  unsupportedNote: [
+    "Tu progreso sigue guardado. Puedes volver a Aprender o guardar una copia desde Preferencias.",
+    "Your progress is still saved. You can return to Learn or export a backup in Preferences.",
+    "进度仍已保存。你可以返回学习页面，或在偏好设置中导出备份。",
+    "Ta progression reste enregistrée. Tu peux revenir à Apprendre ou exporter une copie dans les préférences.",
+    "Seu progresso continua salvo. Você pode voltar a Aprender ou exportar uma cópia nas preferências.",
+  ],
   missionTitle: [
     "Presentarse",
     "Introducing yourself",

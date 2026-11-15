@@ -60,3 +60,16 @@ export const READING_PREVIEW: CourseLesson = {
     ),
   ],
 };
+
+/** Imported snapshots stay resumable only when this renderer supports them. */
+export function supportsReadingPreview(lesson: CourseLesson): boolean {
+  return (
+    lesson.id === READING_PREVIEW.id &&
+    lesson.exercises.length > 0 &&
+    lesson.exercises.every(
+      (exercise) =>
+        exercise.skill === "reading" &&
+        (exercise.type === "choice" || exercise.type === "order"),
+    )
+  );
+}

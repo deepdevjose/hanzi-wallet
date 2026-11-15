@@ -1,0 +1,110 @@
+[data-course-heading],
+[data-course-feedback],
+.mission-error {
+  scroll-margin-top: 16px;
+}
+.mission-board {
+  margin-inline: auto;
+}
+.mission-board .learn-board-title h2 {
+  overflow-wrap: anywhere;
+}
+.mission-note,
+.mission-save,
+.mission-placeholder {
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+.mission-note {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.mission-dialogue {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+.mission-line,
+.mission-help {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--stage);
+  padding: 16px;
+  margin: 12px 0;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.mission-line p + p {
+  margin-top: 6px;
+}
+.mission-speaker {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.mission-hanzi {
+  font-size: clamp(1.3rem, 2.7vw, 1.8rem);
+  line-height: 1.65;
+}
+.mission-option[aria-pressed="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: var(--soft);
+}
+.mission-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.mission-save {
+  min-height: 1.55em;
+  margin-top: 16px;
+}
+.mission-help > span,
+.mission-order > p {
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+.mission-order > p {
+  margin: 16px 0 8px;
+}
+.mission-token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 50px;
+  align-items: center;
+}
+.mission-answer-row {
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  min-height: 74px;
+}
+.mission-token {
+  min-width: 52px;
+  min-height: 44px;
+}
+.mission-token > span {
+  font-size: 1.2rem;
+}
+.mission-token .icon {
+  width: 12px;
+  height: 12px;
+}
+.mission-results {
+  padding-block: 20px;
+}
+.mission-error {
+  border-inline-start: 3px solid var(--amber);
+}
+.mission-preview-entry {
+  margin-bottom: 16px;
+}
+@media (max-width: 425px) {
+  .mission-board .learn-feedback-actions > button {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
