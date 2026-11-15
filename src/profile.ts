@@ -219,6 +219,27 @@ const words = {
     "Opcional. Você pode mudar quando quiser.",
   ],
   country: ["Tu país", "Your country", "你的国家", "Votre pays", "Seu país"],
+  countrySearch: [
+    "Escribe para buscar tu país…",
+    "Type to find your country…",
+    "输入以搜索国家…",
+    "Recherchez votre pays…",
+    "Digite para buscar seu país…",
+  ],
+  countryOpen: [
+    "Mostrar países",
+    "Show countries",
+    "显示国家列表",
+    "Afficher les pays",
+    "Mostrar países",
+  ],
+  countryEmpty: [
+    "No encontramos ese país.",
+    "No countries found.",
+    "未找到匹配的国家。",
+    "Aucun pays trouvé.",
+    "Nenhum país encontrado.",
+  ],
   choose: [
     "Sin seleccionar",
     "Not selected",
@@ -490,6 +511,8 @@ export function mountProfile(): void {
   let statusText = "";
   let storageFailed = false;
   let composingName = false;
+  let pointerDown = false;
+  let closeCountriesAfterPointer: (() => void) | null = null;
   const identity = (value: Profile) => ({
     name: value.name,
     nationality: value.nationality,
@@ -535,7 +558,7 @@ export function mountProfile(): void {
     const name = dialog.querySelector<HTMLInputElement>('[name="nickname"]');
     if (!name) return;
     const nationality =
-      dialog.querySelector<HTMLSelectElement>('[name="country"]');
+      dialog.querySelector<HTMLInputElement>('[name="country"]');
     const age = dialog.querySelector<HTMLInputElement>('[name="age"]');
     const gender = dialog.querySelector<HTMLSelectElement>('[name="gender"]');
     const ageValue = age?.value ? Number(age.value) : null;
@@ -595,6 +618,7 @@ export function mountProfile(): void {
     done?.();
   };
   const render = (preserveDraft = true): void => {
+    closeCountriesAfterPointer = null;
     if (preserveDraft) {
       captureIdentity();
       if (JSON.stringify(identity(profile)) !== identitySignature)
@@ -1045,32 +1069,191 @@ export function mountProfile(): void {
     );
     content.append(optionalHeading);
     const fields = node("div", "profile-fields");
-    const countryLabel = node(
-      "label",
-      "profile-field profile-country",
-      copy("country"),
-    );
-    const country = node("select", "profile-input");
+    const countryLabel = node("div", "profile-field profile-country");
+    const countryHeading = node("label", "", copy("country"));
+    countryHeading.htmlFor = "profile-country-search";
+    countryHeading.id = "profile-country-label";
+    countryLabel.append(countryHeading);
+    const country = node("input");
+    country.type = "hidden";
     country.name = "country";
     country.autocomplete = "country";
-    const empty = node("option", "", copy("choose"));
-    empty.value = "";
-    country.append(empty);
     const names = new Intl.DisplayNames([getLocale()], { type: "region" });
-    for (const [code, name] of COUNTRY_CODES.map(
-      (code) => [code, names.of(code) || code] as const,
-    ).sort((a, b) => a[1].localeCompare(b[1], getLocale()))) {
-      const option = node("option", "", `${flag(code)} ${name}`);
-      option.value = code;
-      country.append(option);
-    }
+    const english = new Intl.DisplayNames(["en"], { type: "region" });
+    const countries = COUNTRY_CODES.map((code) => ({
+      code,
+      name: names.of(code) || code,
+      english: english.of(code) || code,
+    })).sort((a, b) => a.name.localeCompare(b.name, getLocale()));
+    const fold = (text: string): string =>
+      text
+        .normalize("NFD")
+        .replace(/\p{M}/gu, "")
+        .toLocaleLowerCase(getLocale())
+        .replace(/[^\p{L}\p{N}]+/gu, " ")
+        .trim();
     country.value = profile.nationality;
     country.onchange = () => {
       profile = { ...profile, nationality: country.value };
       persist();
       refreshStageIdentity();
     };
-    countryLabel.append(country);
+    const countryControl = node("div", "profile-country-control");
+    const search = node("input", "profile-input profile-country-search");
+    search.id = "profile-country-search";
+    search.autocomplete = "off";
+    search.spellcheck = false;
+    search.placeholder = copy("countrySearch");
+    search.dataset.focus = "country-search";
+    search.setAttribute("role", "combobox");
+    search.setAttribute("aria-autocomplete", "list");
+    search.setAttribute("aria-expanded", "false");
+    search.setAttribute("aria-controls", "profile-country-results");
+    const results = node("div", "profile-country-results");
+    results.id = "profile-country-results";
+    results.setAttribute("role", "listbox");
+    results.setAttribute("aria-labelledby", countryHeading.id);
+    results.hidden = true;
+    let matches: { code: string; name: string; english: string }[] = [];
+    let active = -1;
+    const confirmedName = (): string => {
+      const selected = countries.find((item) => item.code === country.value);
+      return selected ? `${flag(selected.code)} ${selected.name}` : "";
+    };
+    search.value = confirmedName();
+    const closeCountries = (): void => {
+      results.hidden = true;
+      search.setAttribute("aria-expanded", "false");
+      search.removeAttribute("aria-activedescendant");
+      search.value = confirmedName();
+    };
+    const pickCountry = (code: string): void => {
+      country.value = code;
+      closeCountries();
+      country.dispatchEvent(new Event("change"));
+    };
+    const highlight = (scroll = false): void => {
+      results
+        .querySelectorAll<HTMLElement>("[role=option]")
+        .forEach((option, index) => {
+          option.classList.toggle("active", index === active);
+          if (index === active) {
+            search.setAttribute("aria-activedescendant", option.id);
+            if (scroll) option.scrollIntoView({ block: "nearest" });
+          }
+        });
+      if (active < 0) search.removeAttribute("aria-activedescendant");
+    };
+    const showCountries = (query = ""): void => {
+      const text = fold(query);
+      const exactCode = countries.find(
+        (item) => item.code.toLowerCase() === text,
+      );
+      matches = exactCode
+        ? [exactCode]
+        : countries.filter(
+            (item) =>
+              !text ||
+              fold(item.name).includes(text) ||
+              fold(item.english).includes(text),
+          );
+      if (!text)
+        matches = [{ code: "", name: copy("choose"), english: "" }, ...matches];
+      active = text
+        ? matches.length
+          ? 0
+          : -1
+        : Math.max(
+            0,
+            matches.findIndex((item) => item.code === country.value),
+          );
+      results.replaceChildren();
+      matches.forEach((item, index) => {
+        const option = button(
+          "profile-country-option",
+          `${item.code ? flag(item.code) + " " : ""}${item.name}`,
+          () => pickCountry(item.code),
+        );
+        option.id = `profile-country-option-${item.code || "none"}`;
+        option.dataset.country = item.code;
+        option.tabIndex = -1;
+        option.setAttribute("role", "option");
+        option.setAttribute(
+          "aria-selected",
+          String(item.code === country.value),
+        );
+        option.onpointerdown = (event) => event.preventDefault();
+        option.onpointermove = () => {
+          active = index;
+          highlight();
+        };
+        results.append(option);
+      });
+      if (!matches.length) {
+        const empty = node("p", "profile-country-empty", copy("countryEmpty"));
+        empty.setAttribute("role", "status");
+        results.append(empty);
+      }
+      results.hidden = false;
+      search.setAttribute("aria-expanded", "true");
+      highlight();
+      results.scrollIntoView({ block: "nearest" });
+    };
+    search.onfocus = () => {
+      showCountries();
+      search.select();
+    };
+    search.oninput = () => showCountries(search.value);
+    search.onkeydown = (event) => {
+      if (event.isComposing) return;
+      if (event.key === "Escape" && !results.hidden) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeCountries();
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (results.hidden) showCountries();
+        else if (matches.length)
+          active =
+            (active + (event.key === "ArrowDown" ? 1 : -1) + matches.length) %
+            matches.length;
+        highlight(true);
+      } else if (event.key === "Enter" && !results.hidden && active >= 0) {
+        event.preventDefault();
+        pickCountry(matches[active]!.code);
+      }
+    };
+    countryLabel.addEventListener("focusout", (event) => {
+      if (
+        !(event.relatedTarget instanceof Node) ||
+        !countryLabel.contains(event.relatedTarget)
+      ) {
+        const exact = countries.find(
+          (item) =>
+            fold(item.name) === fold(search.value) ||
+            fold(item.english) === fold(search.value) ||
+            item.code.toLowerCase() === fold(search.value),
+        );
+        if (exact && exact.code !== country.value) {
+          country.value = exact.code;
+          country.dispatchEvent(new Event("change"));
+        }
+        search.value = confirmedName();
+        // Keep the clicked control in place until its click has been delivered.
+        if (pointerDown) closeCountriesAfterPointer = closeCountries;
+        else closeCountries();
+      }
+    });
+    const countryToggle = button("profile-country-toggle", "", () => {
+      if (results.hidden) {
+        search.focus();
+        showCountries();
+      } else closeCountries();
+    });
+    countryToggle.innerHTML = icon("next");
+    countryToggle.setAttribute("aria-label", copy("countryOpen"));
+    countryControl.append(search, countryToggle);
+    countryLabel.append(countryControl, country, results);
     fields.append(countryLabel);
     const ageLabel = node("label", "profile-field", copy("age"));
     const age = node("input", "profile-input");
@@ -1448,6 +1631,22 @@ export function mountProfile(): void {
       resolveSetup = resolve;
       open(true);
     });
+  dialog.addEventListener(
+    "pointerdown",
+    () => {
+      pointerDown = true;
+    },
+    true,
+  );
+  const endPointer = (): void => {
+    pointerDown = false;
+    const dismiss = closeCountriesAfterPointer;
+    closeCountriesAfterPointer = null;
+    // The pointerup default action dispatches click before this next task.
+    if (dismiss) window.setTimeout(dismiss, 0);
+  };
+  window.addEventListener("pointerup", endPointer);
+  window.addEventListener("pointercancel", endPointer);
   dialog.addEventListener("cancel", (event) => {
     event.preventDefault();
     if (!setup) close();
